@@ -1,11 +1,12 @@
 package Instructions_Types;
 
+import Labels.LabelInterface;
+
 public interface Calculable
 {
     public int getCycles();
     public int calcDegree();
     public int getDegree();
-    public int calcCycles();
-    public void calc();
+    public LabelInterface execute();
 
 }

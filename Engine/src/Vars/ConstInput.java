@@ -1,6 +1,9 @@
+/*
 package Vars;
 
-public class ConstInput implements Receivable
+public class ConstInput */
+/*implements Variable*//*
+
 {
     private final int data;
 
@@ -16,8 +19,15 @@ public class ConstInput implements Receivable
     }
 
     @Override
-    public int getValue()
+    public String getVariableRepresentation()
+    {
+        return String.valueOf(data);
+    }
+
+    @Override
+    public long getValue()
     {
         return data;
     }
 }
+*/
