@@ -1,16 +1,12 @@
 package Vars;
 
+import Programs.Program;
+
 public class Z_Var extends VariableImplement
 {
-
-    public Z_Var()
+    public Z_Var(Program context, long serial)
     {
-        super(0);
-    }
-
-    public Z_Var(long serial)
-    {
-        super(serial);
+        super(context, serial);
     }
 
 /*    @Override

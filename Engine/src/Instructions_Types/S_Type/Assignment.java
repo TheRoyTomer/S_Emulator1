@@ -13,15 +13,15 @@ import java.util.List;
 
 public class Assignment extends S_Instruction
 {
-   private final VariableImplement arg1;
+   private final Variable arg1;
 
-    public Assignment(Program holder, Variable var, LabelInterface label, VariableImplement arg1)
+    public Assignment(Program holder, Variable var, LabelInterface label, Variable arg1)
     {
         super("ASSIGNMENT", holder, 4, var, label);
         this.arg1 = arg1;
     }
 
-    public Assignment(Program holder, Variable var, VariableImplement arg1)
+    public Assignment(Program holder, Variable var, Variable arg1)
     {
         this(holder, var, FixedLabels.EMPTY, arg1);
     }

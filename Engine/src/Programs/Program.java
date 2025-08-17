@@ -5,6 +5,7 @@ import Instructions_Types.Instruction;
 import Labels.FixedLabels;
 import Labels.LabelInterface;
 import Labels.Label_Implement;
+import Vars.Variable;
 import Vars.Y_Var;
 
 import java.util.*;
@@ -17,13 +18,18 @@ public class Program implements Calculable
     private final Map<Long, Long> MapForX = new HashMap<>();
     private final Map<Long, Long> MapForZ = new HashMap<>();
     private final Map<Label_Implement, Long> MapForL = new HashMap<>();
-    private static Y_Var outPut = new Y_Var();
+    public static Variable outPut = new Y_Var();
 
-    public Program(int degree, int cycles, List<Instruction> instructions)
+    public Program(/*, List<Instruction> instructions*/)
     {
-        this.degree = degree;
-        this.cycles = cycles;
-        this.instructions = instructions;
+        this.degree = this.calcDegree();
+        this.cycles = this.calcCycles();
+        //this.instructions = instructions;
+    }
+
+    public void addInstruction(Instruction instruction)
+    {
+        instructions.add(instruction);
     }
 
     @Override
@@ -166,7 +172,7 @@ public class Program implements Calculable
     private void CreateMapForL()
     {
         MapForL.clear();
-        long rowCounter = 1;
+        long rowCounter = 0;
         for (Instruction c : instructions)
         {
             //ToDo: Change With Stream
@@ -184,9 +190,8 @@ public class Program implements Calculable
     public LabelInterface execute()
     {
         this.CreateMapForL();
-        long PC = 1;
         LabelInterface label = null;
-        for (;PC <= instructions.size();PC++)
+        for (long PC = 0;PC < instructions.size();)
         {
             label = instructions.get((int)PC).execute();
             if (label == FixedLabels.EMPTY)
@@ -202,5 +207,6 @@ public class Program implements Calculable
                 PC = MapForL.get(label);
             }
         }
+        return FixedLabels.EXIT;
     }
 }

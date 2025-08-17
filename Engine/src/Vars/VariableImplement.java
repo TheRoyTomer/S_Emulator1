@@ -7,9 +7,10 @@ public abstract class VariableImplement implements Variable
     protected long serial;
     protected Program context;
 
-    public VariableImplement(long serial)
+    public VariableImplement(Program context, long serial)
     {
         this.serial = serial;
+        this.context = context;
     }
 
     public long getSerial()

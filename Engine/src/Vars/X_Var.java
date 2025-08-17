@@ -1,16 +1,12 @@
 package Vars;
 
+import Programs.Program;
+
 public class X_Var extends VariableImplement
 {
-
-    public X_Var()
+    public X_Var(Program context, long serial)
     {
-        super(0);
-    }
-
-    public X_Var(long serial)
-    {
-        super(serial);
+        super(context, serial);
     }
 
    /* @Override

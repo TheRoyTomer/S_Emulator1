@@ -14,15 +14,15 @@ public class Goto_Label extends S_Instruction
 {
     LabelInterface labelToJump;
 
-    public Goto_Label(String name, Program holder, int cycles, Variable var, LabelInterface label, LabelInterface labelToJump)
+    public Goto_Label(Program holder, LabelInterface label, LabelInterface labelToJump)
     {
-        super(name, holder, cycles, var, label);
+        super("GOTO_LABEL", holder,1, null, label);
         this.labelToJump = labelToJump;
     }
 
-    public Goto_Label(String name, Program holder, int cycles, Variable var, LabelInterface labelToJump)
+    public Goto_Label(Program holder, LabelInterface labelToJump)
     {
-       this(name, holder, cycles, var, FixedLabels.EMPTY, labelToJump);
+       this(holder, FixedLabels.EMPTY, labelToJump);
 
     }
 

@@ -14,7 +14,7 @@ public class Increase extends B_Instruction
         super("Increase", holder, 1, var, label);
     }
 
-    public Increase(Variable var, Program holder)
+    public Increase(Program holder, Variable var)
     {
         this(holder, var, FixedLabels.EMPTY);
     }
