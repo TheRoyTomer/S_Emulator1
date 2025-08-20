@@ -28,12 +28,6 @@ public abstract class B_Instruction extends Instruction
 
 
     @Override
-    public List<Instruction> getSingleExpansion()
-    {
-        return List.of(this);
-    }
-
-    @Override
     public List<Instruction> expand(int degree)
     {
         return List.of(this);

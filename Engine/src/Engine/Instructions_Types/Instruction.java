@@ -28,15 +28,7 @@ public abstract class Instruction implements Calculable
     public abstract int calcMaxDegree();
 
     @Override
-    public int getMaxDegree()
-    {
-        return this.maxDegree;
-    }
-
-    @Override
     public abstract LabelInterface execute();
-
-    public abstract List<Instruction> getSingleExpansion();
 
     public abstract List<Instruction> expand(int degree);
 

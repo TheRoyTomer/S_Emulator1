@@ -15,7 +15,7 @@ public abstract class S_Instruction extends Instruction
     {
         super(name, context, cycles, var, label);
         this.maxDegree = this.calcMaxDegree();
-        this.instructions = this.getSingleExpansion();
+
     }
 
 
@@ -23,9 +23,9 @@ public abstract class S_Instruction extends Instruction
     public int calcMaxDegree()
     {
         return instructions.stream()
-                .mapToInt(Instruction::getMaxDegree)
+                .mapToInt(Instruction::calcMaxDegree)
                 .max()
-                .orElse(-1) + 1; // keep original empty-case behavior
+                .orElse(-1) + 1;
     }
 
     @Override
@@ -37,11 +37,11 @@ public abstract class S_Instruction extends Instruction
         if (degree == 0) {return List.of(this);}
         else if (degree == 1)
         {
-            return this.getSingleExpansion();
+            return this.instructions;
         }
         else
         {
-            List<Instruction> expandedInstructions = this.getSingleExpansion();
+            List<Instruction> expandedInstructions = this.instructions;
             List<Instruction> result = new ArrayList<>();
             for (Instruction instruction : expandedInstructions)
             {
@@ -50,7 +50,10 @@ public abstract class S_Instruction extends Instruction
             return result;
         }
     }
-
+    public int getMaxDegree()
+    {
+        return this.maxDegree;
+    }
 
 }
 

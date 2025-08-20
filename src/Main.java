@@ -13,6 +13,7 @@ import Engine.Vars.Variable;
 import Engine.Vars.VariableImplement;
 import Engine.Vars.VariableType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main
@@ -26,7 +27,7 @@ public class Main
 
 
         //FirstExpansionTest
-        FirstExpansionTest();
+        FirstExpansionTest(2);
     }
 
     public static Program V_Gets_Twice_V2(long v1Value, long v2Value)
@@ -65,7 +66,7 @@ public class Main
         return program;
     }
 
-    public static void FirstExpansionTest()
+    public static void FirstExpansionTest(int degree)
     {
         Program program = new Program();
         Variable x2 = new VariableImplement(VariableType.INPUT, 2);
@@ -73,21 +74,29 @@ public class Main
         Variable z_FAKE = new VariableImplement(VariableType.WORK,  12);
 
 
-        LabelInterface l1 = new Label_Implement("L1");
-        LabelInterface l2 = new Label_Implement("L2");
-        LabelInterface l3 = new Label_Implement("L3");
-        LabelInterface l4 = new Label_Implement("L4");
+        LabelInterface l6 = new Label_Implement("L6");
         LabelInterface l7 = new Label_Implement("L7");
 
-        program.addInstruction(new Assignment(program, z1, x2));
-        program.addInstruction(new Increase(program, z1));
-        program.addInstruction(new Constant_Assignment(program, Variable.OUTPUT, l7, 3));
 
-        List<Instruction> res = program.expand(1);
-        for (Instruction i : res)
-        {
-            System.out.println(i.getInstructionRepresentation());
-        }
+        program.initVarMap(x2, z1, z_FAKE);
+        program.initLabelMap(l6, l7);
+
+
+        List<Instruction> instructions = new ArrayList<Instruction>(List.of(
+        new Assignment(program, z1, x2, l6),
+        new Increase(program, z1),
+        new Constant_Assignment(program, Variable.OUTPUT, l7, 3)
+        ));
+
+        program.initProgram(instructions);
+
+
+
+
+        //List<Instruction> res = program.expand(degree);
+        program.getNewExpandInstructionList(degree);
+        System.out.println(program);
+        System.out.println(program.getProgramRepresentation());
 
     }
 

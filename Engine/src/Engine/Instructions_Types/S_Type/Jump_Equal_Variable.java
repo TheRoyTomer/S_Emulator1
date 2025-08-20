@@ -25,6 +25,8 @@ public class Jump_Equal_Variable extends S_Instruction
         super("JUMP_EQUAL_VARIABLE", context, 2, var, label);
         this.labelToJump = labelToJump;
         this.arg1 = arg1;
+        this.instructions = this.getSingleExpansion();
+        //this.maxDegree = this.calcMaxDegree();
     }
 
     public Jump_Equal_Variable(Program context, Variable var, LabelInterface labelToJump, Variable arg1)
@@ -42,7 +44,7 @@ public class Jump_Equal_Variable extends S_Instruction
 
     public String getInstructionRepresentation()
     {
-        return String.format("(B) [%s] IF %s = %s GOTO %s(%d)",
+        return String.format("(S) [%s] IF %s = %s GOTO %s(%d)",
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 arg1.getVariableRepresentation(),
@@ -83,7 +85,7 @@ public class Jump_Equal_Variable extends S_Instruction
         new Jump_Zero(context, z_B, label_C, this.labelToJump),
         new Neutral(context, Variable.OUTPUT, label_A)
         ));
-
+        //instructions = result;
         return result;
     }
 

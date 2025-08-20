@@ -23,8 +23,11 @@ public class Assignment extends S_Instruction
 
     public Assignment(Program context, Variable var, Variable arg1, LabelInterface label)
     {
+
         super("ASSIGNMENT", context, 4, var, label);
         this.arg1 = arg1;
+        this.instructions = this.getSingleExpansion();
+        //this.maxDegree = this.calcMaxDegree();
     }
 
     public Assignment(Program context, Variable var, Variable arg1)
@@ -42,7 +45,7 @@ public class Assignment extends S_Instruction
 
     public String getInstructionRepresentation()
     {
-        return String.format("(B) [%s] %s <- %s (%d)",
+        return String.format("(S) [%s] %s <- %s (%d)",
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 arg1.getVariableRepresentation(),
@@ -61,7 +64,6 @@ public class Assignment extends S_Instruction
     @Override
     public List<Instruction> getSingleExpansion()
     {
-
         Variable Z = context.InsertVariableToEmptySpot(VariableType.WORK);
         Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
         LabelInterface label_A = context.InsertLabelToEmptySpot();

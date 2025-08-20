@@ -21,6 +21,8 @@ public class Constant_Assignment extends S_Instruction
     {
         super("CONSTANT_ASSIGNMENT", context, 2, var, label);
         this.constant = constant;
+        this.instructions = this.getSingleExpansion();
+        //this.maxDegree = this.calcMaxDegree();
     }
 
     public Constant_Assignment(Program context, Variable var, long constant)
@@ -38,7 +40,7 @@ public class Constant_Assignment extends S_Instruction
     @Override
     public String getInstructionRepresentation()
     {
-        return String.format("(B) [%s] %s <- %d (%d)",
+        return String.format("(S) [%s] %s <- %d (%d)",
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 constant,
@@ -65,7 +67,7 @@ public class Constant_Assignment extends S_Instruction
                 .mapToObj(i -> new Increase(context, this.var))
                 .collect(Collectors.toList())
         );
-
+        //instructions = result;
         return result;
     }
 }

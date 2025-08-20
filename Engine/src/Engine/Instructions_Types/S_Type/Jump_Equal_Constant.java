@@ -27,6 +27,8 @@ public class Jump_Equal_Constant extends S_Instruction
         super("JUMP_EQUAL_CONSTANT", context, 2, var, label);
         this.labelToJump = labelToJump;
         this.constant = constant;
+        this.instructions = this.getSingleExpansion();
+        //this.maxDegree = this.calcMaxDegree();
     }
 
     public Jump_Equal_Constant(Program context, Variable var, LabelInterface labelToJump, long constant)
@@ -44,7 +46,7 @@ public class Jump_Equal_Constant extends S_Instruction
 
     public String getInstructionRepresentation()
     {
-        return String.format("(B) [%s] IF %s = %d GOTO %s(%d)",
+        return String.format("(S) [%s] IF %s = %d GOTO %s(%d)",
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 constant,
@@ -82,6 +84,7 @@ public class Jump_Equal_Constant extends S_Instruction
         new Neutral(context, Variable.OUTPUT,label_A)
         ));
 
+        //instructions = result;
         return result;
     }
 }

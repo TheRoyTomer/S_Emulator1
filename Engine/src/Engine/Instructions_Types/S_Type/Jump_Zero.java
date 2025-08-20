@@ -23,6 +23,8 @@ public class Jump_Zero extends S_Instruction
     {
         super("JUMP_ZERO", context, 2, var, label);
         this.labelToJump = labelToJump;
+        this.instructions = this.getSingleExpansion();
+        //this.maxDegree = this.calcMaxDegree();
     }
 
     public Jump_Zero(Program context, Variable var, LabelInterface labelToJump)
@@ -40,7 +42,7 @@ public class Jump_Zero extends S_Instruction
 
     public String getInstructionRepresentation()
     {
-        return String.format("(B) [%s] IF %s=0 GOTO %s(%d)",
+        return String.format("(S) [%s] IF %s=0 GOTO %s(%d)",
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 labelToJump.getLabelRepresentation(),
@@ -70,6 +72,7 @@ public class Jump_Zero extends S_Instruction
         new Neutral(context, Variable.OUTPUT, label_A)
         ));
 
+        //instructions = result;
         return result;
 
 

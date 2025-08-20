@@ -12,6 +12,7 @@ import Engine.Vars.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Zero_Variable extends S_Instruction
 {
@@ -19,6 +20,8 @@ public class Zero_Variable extends S_Instruction
     public Zero_Variable(Program context, Variable var, LabelInterface label)
     {
         super("ZERO_VARIABLE", context, 1, var, label);
+        this.instructions = this.getSingleExpansion();
+        //this.maxDegree = this.calcMaxDegree();
     }
 
     public Zero_Variable(Program context, Variable var)
@@ -37,7 +40,7 @@ public class Zero_Variable extends S_Instruction
     @Override
     public String getInstructionRepresentation()
     {
-        return String.format("(B) [%s] %s <- 0 (%d)",
+        return String.format("(S) [%s] %s <- 0 (%d)",
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 cycles);
@@ -57,7 +60,7 @@ public class Zero_Variable extends S_Instruction
     {
         List<Instruction> result = new ArrayList<>();
         LabelInterface labelFirstRow = this.label;
-        if (label.getLabelRepresentation() == FixedLabels.EMPTY.getLabelRepresentation())
+        if (Objects.equals(label.getLabelRepresentation(), FixedLabels.EMPTY.getLabelRepresentation()))
         {
             labelFirstRow = context.InsertLabelToEmptySpot();
 
@@ -65,7 +68,6 @@ public class Zero_Variable extends S_Instruction
 
         result.add(new Decrease(context, this.var,labelFirstRow));
         result.add(new JNZ(context,this.var, labelFirstRow));
-
         return result;
     }
 }

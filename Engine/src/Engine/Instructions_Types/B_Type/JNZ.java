@@ -4,6 +4,7 @@ import Engine.Instructions_Types.B_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Programs.Program;
+import Engine.Vars.OutputWrapper;
 import Engine.Vars.Variable;
 
 public class JNZ extends B_Instruction

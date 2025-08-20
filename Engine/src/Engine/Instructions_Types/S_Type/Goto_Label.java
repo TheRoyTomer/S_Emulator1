@@ -22,6 +22,8 @@ public class Goto_Label extends S_Instruction
     {
         super("GOTO_LABEL", context,1, var, label);
         this.labelToJump = labelToJump;
+        this.instructions = this.getSingleExpansion();
+        //this.maxDegree = this.calcMaxDegree();
     }
 
     public Goto_Label(Program context,Variable var, LabelInterface labelToJump)
@@ -33,7 +35,7 @@ public class Goto_Label extends S_Instruction
     @Override
     public String getInstructionRepresentation()
     {
-        return String.format("(B) [%s] GOTO %s (%d)",
+        return String.format("(S) [%s] GOTO %s (%d)",
                 label.getLabelRepresentation(),
                 labelToJump.getLabelRepresentation(),
                 cycles);
@@ -53,6 +55,7 @@ public class Goto_Label extends S_Instruction
         new Increase(context, this.var, this.label),
         new JNZ(context, this.var, labelToJump)
         ));
+        //instructions = result;
 
         return result;
     }
