@@ -1,24 +1,24 @@
-package Instructions_Types.B_Type;
+package Engine.Instructions_Types.B_Type;
 
-import Instructions_Types.B_Instruction;
-import Labels.FixedLabels;
-import Labels.LabelInterface;
-import Programs.Program;
-import Vars.Variable;
+import Engine.Instructions_Types.B_Instruction;
+import Engine.Labels.FixedLabels;
+import Engine.Labels.LabelInterface;
+import Engine.Programs.Program;
+import Engine.Vars.Variable;
 
 
 public class Decrease extends B_Instruction
 {
-    public Decrease(Program holder , Variable var, LabelInterface label)
+    public Decrease(Program context, Variable var, LabelInterface label)
     {
-        super("Decrease", holder, 1, var, label);
+        super("Decrease", context, 1, var, label);
     }
 
 
 
-    public Decrease(Program holder, Variable var)
+    public Decrease(Program context, Variable var)
     {
-        this(holder, var, FixedLabels.EMPTY);
+        this(context, var, FixedLabels.EMPTY);
     }
 
     @Override
@@ -43,11 +43,10 @@ public class Decrease extends B_Instruction
     @Override
     public LabelInterface execute()
     {
-        long value = var.getValue();
+        long value = context.getVarValue(var);
         if(value > 0) {value--;}
-        var.setValue(value);
+        context.setVarValue(var, value);
         return FixedLabels.EMPTY;
     }
-
 
 }

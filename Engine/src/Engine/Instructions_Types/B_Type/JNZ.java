@@ -1,24 +1,24 @@
-package Instructions_Types.B_Type;
+package Engine.Instructions_Types.B_Type;
 
-import Instructions_Types.B_Instruction;
-import Labels.FixedLabels;
-import Labels.LabelInterface;
-import Programs.Program;
-import Vars.Variable;
+import Engine.Instructions_Types.B_Instruction;
+import Engine.Labels.FixedLabels;
+import Engine.Labels.LabelInterface;
+import Engine.Programs.Program;
+import Engine.Vars.Variable;
 
 public class JNZ extends B_Instruction
 {
     private LabelInterface labelToJump;
 
-    public JNZ(Program holder, Variable var, LabelInterface label, LabelInterface labelToJump)
+    public JNZ(Program context, Variable var, LabelInterface label, LabelInterface labelToJump)
     {
-        super("JUMP_NOT_ZERO", holder, 2, var, label);
+        super("JUMP_NOT_ZERO", context, 2, var, label);
         this.labelToJump = labelToJump;
     }
 
-    public JNZ(Program holder, Variable var, LabelInterface labelToJump)
+    public JNZ(Program context, Variable var, LabelInterface labelToJump)
     {
-        this(holder, var, FixedLabels.EMPTY, labelToJump);
+        this(context, var, FixedLabels.EMPTY, labelToJump);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class JNZ extends B_Instruction
     @Override
     public LabelInterface execute()
     {
-        long value = var.getValue();
+        long value = context.getVarValue(var);
         if(value != 0) return labelToJump;
         return FixedLabels.EMPTY;
     }

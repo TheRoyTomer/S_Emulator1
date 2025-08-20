@@ -1,38 +1,44 @@
-package Instructions_Types;
+package Engine.Instructions_Types;
 
-import Labels.LabelInterface;
-import Programs.Program;
-import Vars.Variable;
+import Engine.Labels.LabelInterface;
+import Engine.Programs.Program;
+import Engine.Vars.Variable;
+
+import java.util.List;
 
 public abstract class Instruction implements Calculable
 {
     protected final String name;
     protected final LabelInterface label; //MyLabel
     protected final int cycles;
-    protected int degree;
+    protected int maxDegree;
     protected final Variable var; // The var Im "working" on
-    protected Program holder;
+    protected Program context;
 
-    public Instruction(String name, Program holder, int cycles, Variable var, LabelInterface label)
+    public Instruction(String name, Program context, int cycles, Variable var, LabelInterface label)
     {;
         this.name = name;
-        this.holder = holder;
+        this.context = context;
         this.cycles = cycles;
         this.var = var;
         this.label = label;
     }
 
     @Override
-    public abstract int calcDegree();
+    public abstract int calcMaxDegree();
 
     @Override
-    public int getDegree()
+    public int getMaxDegree()
     {
-        return this.degree;
+        return this.maxDegree;
     }
 
     @Override
     public abstract LabelInterface execute();
+
+    public abstract List<Instruction> getSingleExpansion();
+
+    public abstract List<Instruction> expand(int degree);
 
     public abstract String getInstructionRepresentation();
 
@@ -45,6 +51,8 @@ public abstract class Instruction implements Calculable
     {
         return this.label;
     }
+
+
 
 }
 

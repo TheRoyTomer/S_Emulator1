@@ -1,22 +1,22 @@
-package Instructions_Types.B_Type;
+package Engine.Instructions_Types.B_Type;
 
-import Instructions_Types.B_Instruction;
-import Labels.FixedLabels;
-import Labels.LabelInterface;
-import Programs.Program;
-import Vars.Variable;
+import Engine.Instructions_Types.B_Instruction;
+import Engine.Labels.FixedLabels;
+import Engine.Labels.LabelInterface;
+import Engine.Programs.Program;
+import Engine.Vars.Variable;
 
 public class Neutral extends B_Instruction
 {
 
-    public Neutral(Program holder, Variable var, LabelInterface label)
+    public Neutral(Program context, Variable var, LabelInterface label)
     {
-        super("NEUTRAL", holder, 0, var, label);
+        super("NEUTRAL", context, 0, var, label);
     }
 
-    public Neutral(Program holder, Variable var)
+    public Neutral(Program context, Variable var)
     {
-        this(holder, var, FixedLabels.EMPTY);
+        this(context, var, FixedLabels.EMPTY);
     }
 
     @Override

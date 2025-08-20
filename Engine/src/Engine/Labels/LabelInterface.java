@@ -1,4 +1,4 @@
-package Labels;
+package Engine.Labels;
 
 public interface LabelInterface
 {

@@ -1,22 +1,22 @@
-package Instructions_Types.B_Type;
+package Engine.Instructions_Types.B_Type;
 
-import Instructions_Types.B_Instruction;
-import Labels.FixedLabels;
-import Labels.LabelInterface;
-import Programs.Program;
-import Vars.Variable;
+import Engine.Instructions_Types.B_Instruction;
+import Engine.Labels.FixedLabels;
+import Engine.Labels.LabelInterface;
+import Engine.Programs.Program;
+import Engine.Vars.Variable;
 
 public class Increase extends B_Instruction
 {
 
-    public Increase(Program holder, Variable var, LabelInterface label)
+    public Increase(Program context, Variable var, LabelInterface label)
     {
-        super("Increase", holder, 1, var, label);
+        super("Increase", context, 1, var, label);
     }
 
-    public Increase(Program holder, Variable var)
+    public Increase(Program context, Variable var)
     {
-        this(holder, var, FixedLabels.EMPTY);
+        this(context, var, FixedLabels.EMPTY);
     }
     @Override
     public String toString()
@@ -38,9 +38,9 @@ public class Increase extends B_Instruction
     @Override
     public LabelInterface execute()
     {
-        long value = var.getValue();
+        long value = context.getVarValue(var);
         value++;
-        var.setValue(value);
+        context.setVarValue(var, value);
         return FixedLabels.EMPTY;
     }
 }

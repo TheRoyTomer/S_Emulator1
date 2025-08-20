@@ -1,6 +1,4 @@
-package Labels;
-
-import java.io.Serializable;
+package Engine.Labels;
 
 public enum FixedLabels implements LabelInterface
 {
@@ -16,7 +14,7 @@ public enum FixedLabels implements LabelInterface
         @Override
         public String getLabelRepresentation()
         {
-            return "";
+            return "  ";
         }
 
     };
