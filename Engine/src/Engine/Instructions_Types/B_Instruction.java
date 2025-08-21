@@ -27,7 +27,6 @@ public abstract class B_Instruction extends Instruction
     @Override
     public abstract LabelInterface execute();
 
-
     @Override
     public List<Instruction> expand(int degree)
     {

@@ -28,7 +28,7 @@ public class Main
 
 
         //FirstExpansionTest
-        FirstExpansionTest(2);
+        FirstExpansionTest(0);
 
     }
 
@@ -94,15 +94,7 @@ public class Main
 
         program.initProgram(instructions);
 
-
-
-
-        //List<Instruction> res = program.expand(degree);
-        //program.getNewExpandInstructionList(degree);
-        program.expand(degree);
-        System.out.println(program);
-        System.out.println(program.getProgramRepresentation());
-
+        program.Run(degree);
     }
 
 

@@ -7,28 +7,19 @@ import Engine.Vars.Variable;
 import Engine.Vars.VariableImplement;
 import Engine.Vars.VariableType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Context
 {
-    private final Map<Integer, Long> MapForX = new HashMap<>();
-    private final Map<Integer, Long> MapForZ = new HashMap<>();
+    private final Map<Variable, Long> MapForX = new HashMap<>();
+    private final Map<Variable, Long> MapForZ = new HashMap<>();
     private final Map<Label_Implement, Long> MapForL = new HashMap<>();
     private final Map<Variable, Long> Y = new HashMap<>();
+    Set<Variable> usedVars = new TreeSet<>();
 
-   /* private final Map<Integer, Long> InitMapX;
-    private final Map<Integer, Long> InitMapZ;
-    private final Map<Label_Implement, Long> InitMapL;*/
 
-    public Context(/*Map<Integer, Long> userX,
-                   Map<Integer, Long> userZ,
-                   Map<Label_Implement, Long> userL*/)
+    public Context()
     {
-        /*this.InitMapX = userX;
-        this.InitMapZ = userZ;
-        this.InitMapL = userL;*/
         Y.put(Variable.OUTPUT, 0L);
     }
 
@@ -39,7 +30,7 @@ public class Context
                 "MapForX=" + MapForX +
                 ", MapForZ=" + MapForZ +
                 ", MapForL=" + MapForL +
-                ", Y=" +getVarValue(Variable.OUTPUT) +
+                ", Y=" + getVarValue(Variable.OUTPUT) +
                 '}';
     }
 
@@ -59,37 +50,27 @@ public class Context
         return MapForL.containsKey(key);
     }
 
-    public Map<?, Long> getrelevantMap(VariableImplement var)
+    public Map<Variable, Long> getrelevantMap(VariableType type)
     {
-        VariableType type = var.getVariableType();
-        switch (type){
-            case INPUT:
-                return MapForX;
-            case WORK:
-                return MapForZ;
-            case OUTPUT:
-                return Y;
-
-            default:
-                return null; //TODO: Handle with exceptions
-        }
+        return switch (type) {
+            case INPUT -> MapForX;
+            case WORK -> MapForZ;
+            case OUTPUT -> Y;
+            default -> null; //TODO: Handle with exceptions
+        };
     }
 
     public long getVarValue(Variable var)
     {
         VariableType varType = var.getVariableType();
 
-        switch (varType) {
-            case VariableType.OUTPUT:
-                return Y.get(Variable.OUTPUT);
-            case VariableType.INPUT:
-                return MapForX.computeIfAbsent(var.getSerial(), k -> 0L);
-            case VariableType.WORK:
-                return MapForZ.computeIfAbsent(var.getSerial(), k -> 0L);
-            default:
-                return -1L; //TODO: Handle with exceptions
+        return switch (varType) {
+            case VariableType.OUTPUT -> Y.get(Variable.OUTPUT);
+            case VariableType.INPUT -> MapForX.computeIfAbsent(var, k -> 0L);
+            case VariableType.WORK -> MapForZ.computeIfAbsent(var, k -> 0L);
+            default -> -1L; //TODO: Handle with exceptions
 
-        }
+        };
 
     }
 
@@ -101,15 +82,15 @@ public class Context
 
         switch (varType) {
             case VariableType.OUTPUT:
-            Y.put(Variable.OUTPUT, fixedValue);
-            break;
+                Y.put(Variable.OUTPUT, fixedValue);
+                break;
 
             case VariableType.INPUT:
-                MapForX.put(var.getSerial(), fixedValue);
+                MapForX.put(var, fixedValue);
                 break;
 
             case VariableType.WORK:
-                MapForZ.put(var.getSerial(), fixedValue);
+                MapForZ.put(var, fixedValue);
                 break;
 
             default:
@@ -124,32 +105,25 @@ public class Context
 
         VariableType varType = var.getVariableType();
 
-        switch (varType) {
-            case VariableType.INPUT:
-                return MapForX.containsKey(var.getSerial());
+        return switch (varType) {
+            case VariableType.INPUT -> MapForX.containsKey(var);
+            case VariableType.WORK -> MapForZ.containsKey(var);
+            case VariableType.OUTPUT -> true; //We Always Have Y.
 
-            case VariableType.WORK:
-                return MapForZ.containsKey(var.getSerial());
-
-            case VariableType.OUTPUT:
-                return true; //We Always Have Y.
-
-            default:
-                return true; //TODO: Handle with exceptions
+            default -> true; //TODO: Handle with exceptions
 
 
-        }
+        };
     }
 
-    public void updateLabelIndexes(List<Instruction> instructions)
+    public void collectVarsAndIndexLabels(List<Instruction> instructions)
     {
+        usedVars.clear();
         MapForL.clear();
         long rowCounter = 0;
-        for (Instruction c : instructions)
-        {
-            //ToDo: Change With Stream
-            if (c.getLabel() instanceof Label_Implement)
-            {
+        for (Instruction c : instructions) {
+            usedVars.addAll(c.getUsedVariables());
+            if (c.getLabel() instanceof Label_Implement) {
                 MapForL.put((Label_Implement) c.getLabel(), rowCounter);
             }
             rowCounter++;
@@ -158,37 +132,35 @@ public class Context
 
     public VariableImplement InsertVariableToEmptySpot(VariableType type)
     {
-        Map<Integer, Long> relevantMap;
-        switch (type) {
-            case VariableType.INPUT:
-                relevantMap = MapForX;
-                break;
-            case VariableType.WORK:
-                relevantMap = MapForZ;
-                break;
-            default:
-                relevantMap = new HashMap<Integer, Long>(); //TODO: Handle with exceptions if type is output
+        //TODO: Handle with exceptions if type is output
+        Map<Variable, Long> relevantMap = getrelevantMap(type);
+        int availableIndex = 1;
+        VariableImplement res = new VariableImplement(type, availableIndex);
+        while (relevantMap.containsKey((res))) {
+            availableIndex++;
+            res = new VariableImplement(type, availableIndex);
         }
-                int availableKey = 1;
-                while (relevantMap.containsKey(availableKey)) {
-                    availableKey++;
-                }
-
-            VariableImplement res = new VariableImplement(type, availableKey);
-            setVarValue(res, 0);
-
-            return res;
+        setVarValue(res, 0); //Just to insert to map. Afterwards updateLabelIndexes will give true value.
+        return res;
     }
-        public Label_Implement InsertLabelToEmptySpot()
-        {
-            int availableIndex = 1;
-            Label_Implement res = new Label_Implement("L" + availableIndex);
-            while (MapForL.containsKey((res))) {
-                availableIndex++;
-                res = new Label_Implement("L" + availableIndex);
-            }
-            setInMapL(res, 0); //Just to insert to map. Afterwards updateLabelIndexes will give true value.
-            return res;
+
+    public Label_Implement InsertLabelToEmptySpot()
+    {
+        int availableIndex = 1;
+        Label_Implement res = new Label_Implement("L" + availableIndex);
+        while (MapForL.containsKey((res))) {
+            availableIndex++;
+            res = new Label_Implement("L" + availableIndex);
         }
+        setInMapL(res, 0); //Just to insert to map. Afterwards updateLabelIndexes will give true value.
+        return res;
     }
+
+    public List<Variable> getUsedVarsInOrder()
+    {
+        return usedVars.stream().toList();
+    }
+
+
+}
 

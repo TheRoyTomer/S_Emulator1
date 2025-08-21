@@ -1,11 +1,12 @@
 package Engine.Vars;
 
-public interface Variable
+import java.util.List;
+
+public interface Variable extends Comparable<Variable>
 {
     public String getVariableRepresentation();
 
     public int getSerial();
-
 
     public VariableType getVariableType();
 

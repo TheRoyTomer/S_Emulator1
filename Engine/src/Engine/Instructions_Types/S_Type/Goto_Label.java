@@ -44,6 +44,12 @@ public class Goto_Label extends S_Instruction
     }
 
     @Override
+    public List<Variable> getUsedVariables()
+    {
+        return List.of();
+    }
+
+    @Override
     public LabelInterface execute()
     {
         return labelToJump;

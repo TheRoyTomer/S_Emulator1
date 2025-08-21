@@ -47,6 +47,12 @@ public class Assignment extends S_Instruction
 
     }
 
+    @Override
+    public List<Variable> getUsedVariables()
+    {
+        return List.of(var,  arg1);
+    }
+
 
     @Override
     public LabelInterface execute()

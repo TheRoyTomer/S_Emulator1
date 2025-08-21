@@ -33,7 +33,6 @@ public abstract class Instruction implements Calculable
 
     public abstract String getInstructionRepresentation();
 
-
     public LabelInterface getLabel()
     {
         return this.label;
@@ -42,6 +41,12 @@ public abstract class Instruction implements Calculable
     public int getCycles()
     {
         return this.instructionData.getCycles();
+    }
+
+    @Override
+    public List<Variable> getUsedVariables()
+    {
+        return List.of(var);
     }
 
 

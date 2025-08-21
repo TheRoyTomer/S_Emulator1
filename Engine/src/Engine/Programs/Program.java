@@ -9,7 +9,7 @@ import Engine.Vars.*;
 
 import java.util.*;
 
-public class Program implements Calculable
+public class Program /*implements Calculable*/
 {
     private final String name;
     private final Context context;
@@ -49,7 +49,7 @@ public class Program implements Calculable
     {
         return "Program{" +
                 "maxDegree=" + maxDegree +
-                ", cycles=" + cycles +
+                ", cycles=" + cycles + ", " +
                 context.toString() +
                 '}';
     }
@@ -58,7 +58,7 @@ public class Program implements Calculable
     {
         int counter =1;
         String res = "";
-        for (Instruction c : instructions)
+        for (Instruction c : this.ExpandedInstructions)
         {
             res += String.format("#<%d> %s \n", counter++, c.getInstructionRepresentation());
         }
@@ -69,7 +69,7 @@ public class Program implements Calculable
     {
         this.instructions = instructions;
     }
-    @Override
+    //@Override
     public int calcMaxDegree()
     {
         return instructions.stream()
@@ -86,10 +86,10 @@ public class Program implements Calculable
     }
 
 
-    @Override
+    //@Override
     public LabelInterface execute()
     {
-        context.updateLabelIndexes(this.ExpandedInstructions);
+        //context.collectVarsAndIndexLabels(this.ExpandedInstructions);
         LabelInterface label = null;
         for (long PC = 0; PC < ExpandedInstructions.size(); ) {
             label = ExpandedInstructions.get((int) PC).execute();
@@ -119,11 +119,13 @@ public class Program implements Calculable
         return res;
     }
 
-        public void initVarMap(Variable... vars)
+    //ToDo: is needed?
+    public void initVarMap(Variable... vars)
     {
         for (Variable var : vars) {context.setVarValue(var,0);}
     }
 
+    //ToDo: is needed?
     public void initLabelMap(LabelInterface... labels)
     {
         for (LabelInterface label : labels) {
@@ -134,12 +136,39 @@ public class Program implements Calculable
         }
     }
 
+    public void Run(int degree)
+    {
+        this.ExpandedInstructions = expand(degree);
+        context.collectVarsAndIndexLabels(this.ExpandedInstructions);
+        execute();
+        displayEndOfRun();
+
+    }
+
+    public void displayEndOfRun()
+    {
+        System.out.println(this.getProgramRepresentation());
+        List<Variable> usedVarsInOrder = context.getUsedVarsInOrder();
+        usedVarsInOrder.forEach(var ->
+                System.out.println(
+                        var.getVariableRepresentation()
+                        + " = "
+                        + context.getVarValue(var)));
+        System.out.println("Total Cycles: " +
+                ExpandedInstructions.stream()
+                .mapToInt(Instruction::getCycles)
+                .sum());
+    }
+
     /*public void getNewExpandInstructionList(int degree)
     {
-        //this.initProgram(expand(degree));
-        this.ExpandedInstructions = expand(degree);
+        this.initProgram(expand(degree));
+        this.instructions = expand(degree);
     }*/
+
+
 }
+
 
 
 
