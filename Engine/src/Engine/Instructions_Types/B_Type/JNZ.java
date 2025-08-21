@@ -1,32 +1,26 @@
 package Engine.Instructions_Types.B_Type;
 
 import Engine.Instructions_Types.B_Instruction;
+import Engine.Instructions_Types.InstructionData;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
+import Engine.Programs.Context;
 import Engine.Programs.Program;
-import Engine.Vars.OutputWrapper;
 import Engine.Vars.Variable;
 
 public class JNZ extends B_Instruction
 {
     private LabelInterface labelToJump;
 
-    public JNZ(Program context, Variable var, LabelInterface label, LabelInterface labelToJump)
+    public JNZ(Context context, Variable var, LabelInterface label, LabelInterface labelToJump)
     {
-        super("JUMP_NOT_ZERO", context, 2, var, label);
+        super(InstructionData.JUMP_NOT_ZERO, context, var, label);
         this.labelToJump = labelToJump;
     }
 
-    public JNZ(Program context, Variable var, LabelInterface labelToJump)
+    public JNZ(Context context, Variable var, LabelInterface labelToJump)
     {
         this(context, var, FixedLabels.EMPTY, labelToJump);
-    }
-
-    @Override
-    public String toString()
-    {
-        //ToDo: String format this bitch
-        return "";
     }
 
 
@@ -36,7 +30,7 @@ public class JNZ extends B_Instruction
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 labelToJump.getLabelRepresentation(),
-                cycles);
+                instructionData.getCycles());
 
     }
 

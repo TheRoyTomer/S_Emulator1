@@ -8,6 +8,7 @@ import Engine.Instructions_Types.S_Type.Goto_Label;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
+import Engine.Programs.Context;
 import Engine.Programs.Program;
 import Engine.Vars.Variable;
 import Engine.Vars.VariableImplement;
@@ -28,11 +29,14 @@ public class Main
 
         //FirstExpansionTest
         FirstExpansionTest(2);
+
     }
 
     public static Program V_Gets_Twice_V2(long v1Value, long v2Value)
     {
-        Program program = new Program();
+
+        Program program = new Program("V_Gets_Twice_V2");
+
         Variable x1 = new VariableImplement(VariableType.INPUT, 1);
         Variable x2 = new VariableImplement(VariableType.INPUT, 2);
         Variable z1 = new VariableImplement(VariableType.WORK,  1);
@@ -43,32 +47,32 @@ public class Main
         LabelInterface l3 = new Label_Implement("L3");
 
 
-        program.addInstruction(new Constant_Assignment(program,x1, v1Value));
-        program.addInstruction(new Constant_Assignment(program,x2, v2Value));
+        program.addInstruction(new Constant_Assignment(program.getContext(),x1, v1Value));
+        program.addInstruction(new Constant_Assignment(program.getContext(),x2, v2Value));
 
 
 
-        program.addInstruction(new JNZ(program,x2 ,l1));
-        program.addInstruction(new Goto_Label(program, z_FAKE, FixedLabels.EXIT));
-        program.addInstruction(new Decrease(program,x1, l1));
-        program.addInstruction(new JNZ(program,x1 ,l1));
-        program.addInstruction(new Increase(program,x1, l2));
-        program.addInstruction(new Increase(program,x1));
-        program.addInstruction(new Increase(program,z1));
-        program.addInstruction(new Decrease(program,x2));
-        program.addInstruction(new JNZ(program, x2, l2));
-        program.addInstruction(new Decrease(program,z1, l3));
-        program.addInstruction(new Increase(program,x2));
-        program.addInstruction(new JNZ(program, z1, l3));
+        program.addInstruction(new JNZ(program.getContext(),x2 ,l1));
+        program.addInstruction(new Goto_Label(program.getContext(), z_FAKE, FixedLabels.EXIT));
+        program.addInstruction(new Decrease(program.getContext(),x1, l1));
+        program.addInstruction(new JNZ(program.getContext(),x1 ,l1));
+        program.addInstruction(new Increase(program.getContext(),x1, l2));
+        program.addInstruction(new Increase(program.getContext(),x1));
+        program.addInstruction(new Increase(program.getContext(),z1));
+        program.addInstruction(new Decrease(program.getContext(),x2));
+        program.addInstruction(new JNZ(program.getContext(), x2, l2));
+        program.addInstruction(new Decrease(program.getContext(),z1, l3));
+        program.addInstruction(new Increase(program.getContext(),x2));
+        program.addInstruction(new JNZ(program.getContext(), z1, l3));
 
-        program.addInstruction(new Assignment(program, Variable.OUTPUT, x1));
+        program.addInstruction(new Assignment(program.getContext(), Variable.OUTPUT, x1));
 
         return program;
     }
 
     public static void FirstExpansionTest(int degree)
     {
-        Program program = new Program();
+        Program program = new Program("FirstExpansionTest");
         Variable x2 = new VariableImplement(VariableType.INPUT, 2);
         Variable z1 = new VariableImplement(VariableType.WORK,  1);
         Variable z_FAKE = new VariableImplement(VariableType.WORK,  12);
@@ -83,9 +87,9 @@ public class Main
 
 
         List<Instruction> instructions = new ArrayList<Instruction>(List.of(
-        new Assignment(program, z1, x2, l6),
-        new Increase(program, z1),
-        new Constant_Assignment(program, Variable.OUTPUT, l7, 3)
+        new Assignment(program.getContext(), z1, x2, l6),
+        new Increase(program.getContext(), z1),
+        new Constant_Assignment(program.getContext(), Variable.OUTPUT, l7, 3)
         ));
 
         program.initProgram(instructions);
@@ -94,7 +98,8 @@ public class Main
 
 
         //List<Instruction> res = program.expand(degree);
-        program.getNewExpandInstructionList(degree);
+        //program.getNewExpandInstructionList(degree);
+        program.expand(degree);
         System.out.println(program);
         System.out.println(program.getProgramRepresentation());
 

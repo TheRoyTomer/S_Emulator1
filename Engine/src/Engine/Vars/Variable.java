@@ -9,5 +9,5 @@ public interface Variable
 
     public VariableType getVariableType();
 
-    OutputWrapper OUTPUT = new OutputWrapper();
+    VariableImplement OUTPUT = new VariableImplement(VariableType.OUTPUT, 0);
 }

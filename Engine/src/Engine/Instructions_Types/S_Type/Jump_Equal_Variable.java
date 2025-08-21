@@ -3,10 +3,12 @@ package Engine.Instructions_Types.S_Type;
 import Engine.Instructions_Types.B_Type.Decrease;
 import Engine.Instructions_Types.B_Type.Neutral;
 import Engine.Instructions_Types.Instruction;
+import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
+import Engine.Programs.Context;
 import Engine.Programs.Program;
 import Engine.Vars.Variable;
 import Engine.Vars.VariableImplement;
@@ -20,27 +22,18 @@ public class Jump_Equal_Variable extends S_Instruction
     private LabelInterface labelToJump;
     private Variable arg1;
 
-    public Jump_Equal_Variable(Program context, Variable var, LabelInterface label, LabelInterface labelToJump, Variable arg1)
+    public Jump_Equal_Variable(Context context, Variable var, LabelInterface label, LabelInterface labelToJump, Variable arg1)
     {
-        super("JUMP_EQUAL_VARIABLE", context, 2, var, label);
+        super(InstructionData.JUMP_EQUAL_VARIABLE, context, var, label);
         this.labelToJump = labelToJump;
         this.arg1 = arg1;
         this.instructions = this.getSingleExpansion();
-        //this.maxDegree = this.calcMaxDegree();
     }
 
-    public Jump_Equal_Variable(Program context, Variable var, LabelInterface labelToJump, Variable arg1)
+    public Jump_Equal_Variable(Context context, Variable var, LabelInterface labelToJump, Variable arg1)
     {
         this(context, var, FixedLabels.EMPTY, labelToJump, arg1);
     }
-
-    @Override
-    public String toString()
-    {
-        //ToDo: add data
-        return "";
-    }
-
 
     public String getInstructionRepresentation()
     {
@@ -49,7 +42,7 @@ public class Jump_Equal_Variable extends S_Instruction
                 var.getVariableRepresentation(),
                 arg1.getVariableRepresentation(),
                 labelToJump.getLabelRepresentation(),
-                cycles);
+                instructionData.getCycles());
 
     }
 

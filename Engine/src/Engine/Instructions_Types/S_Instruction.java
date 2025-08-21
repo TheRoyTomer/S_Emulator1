@@ -1,6 +1,7 @@
 package Engine.Instructions_Types;
 
 import Engine.Labels.LabelInterface;
+import Engine.Programs.Context;
 import Engine.Programs.Program;
 import Engine.Vars.Variable;
 
@@ -11,11 +12,10 @@ public abstract class S_Instruction extends Instruction
 {
     protected List<Instruction> instructions = new ArrayList<>();
 
-    public S_Instruction(String name, Program context, int cycles, Variable var, LabelInterface label)
+    public S_Instruction(InstructionData instructionData, Context context, Variable var, LabelInterface label)
     {
-        super(name, context, cycles, var, label);
+        super(instructionData, context, var, label);
         this.maxDegree = this.calcMaxDegree();
-
     }
 
 

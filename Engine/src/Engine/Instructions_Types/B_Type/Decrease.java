@@ -1,31 +1,26 @@
 package Engine.Instructions_Types.B_Type;
 
 import Engine.Instructions_Types.B_Instruction;
+import Engine.Instructions_Types.InstructionData;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
+import Engine.Programs.Context;
 import Engine.Programs.Program;
 import Engine.Vars.Variable;
 
 
 public class Decrease extends B_Instruction
 {
-    public Decrease(Program context, Variable var, LabelInterface label)
+    public Decrease(Context context, Variable var, LabelInterface label)
     {
-        super("Decrease", context, 1, var, label);
+        super(InstructionData.DECREASE, context, var, label);
     }
 
 
 
-    public Decrease(Program context, Variable var)
+    public Decrease(Context context, Variable var)
     {
         this(context, var, FixedLabels.EMPTY);
-    }
-
-    @Override
-    public String toString()
-    {
-        //ToDo: Data for debug
-        return "";
     }
 
     public String getInstructionRepresentation()
@@ -34,11 +29,9 @@ public class Decrease extends B_Instruction
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 var.getVariableRepresentation(),
-                cycles);
+                instructionData.getCycles());
 
     }
-
-
 
     @Override
     public LabelInterface execute()

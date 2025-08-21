@@ -5,10 +5,12 @@ import Engine.Instructions_Types.B_Type.Increase;
 import Engine.Instructions_Types.B_Type.JNZ;
 import Engine.Instructions_Types.B_Type.Neutral;
 import Engine.Instructions_Types.Instruction;
+import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
+import Engine.Programs.Context;
 import Engine.Programs.Program;
 import Engine.Vars.Variable;
 import Engine.Vars.VariableImplement;
@@ -21,25 +23,17 @@ public class Assignment extends S_Instruction
 {
    private final Variable arg1;
 
-    public Assignment(Program context, Variable var, Variable arg1, LabelInterface label)
+    public Assignment(Context context, Variable var, Variable arg1, LabelInterface label)
     {
 
-        super("ASSIGNMENT", context, 4, var, label);
+        super(InstructionData.ASSIGNMENT, context, var, label);
         this.arg1 = arg1;
         this.instructions = this.getSingleExpansion();
-        //this.maxDegree = this.calcMaxDegree();
     }
 
-    public Assignment(Program context, Variable var, Variable arg1)
+    public Assignment(Context context, Variable var, Variable arg1)
     {
         this(context, var, arg1, FixedLabels.EMPTY);
-    }
-
-    @Override
-    public String toString()
-    {
-        //ToDo: String format this bitch
-        return "";
     }
 
 
@@ -49,7 +43,7 @@ public class Assignment extends S_Instruction
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 arg1.getVariableRepresentation(),
-                cycles);
+                instructionData.getCycles());
 
     }
 

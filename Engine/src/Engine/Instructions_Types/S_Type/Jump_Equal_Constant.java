@@ -4,10 +4,12 @@ import Engine.Instructions_Types.B_Type.Decrease;
 import Engine.Instructions_Types.B_Type.JNZ;
 import Engine.Instructions_Types.B_Type.Neutral;
 import Engine.Instructions_Types.Instruction;
+import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
+import Engine.Programs.Context;
 import Engine.Programs.Program;
 import Engine.Vars.Variable;
 import Engine.Vars.VariableImplement;
@@ -22,27 +24,18 @@ public class Jump_Equal_Constant extends S_Instruction
     private LabelInterface labelToJump;
     private long constant;
 
-    public Jump_Equal_Constant(Program context, Variable var, LabelInterface label, LabelInterface labelToJump, long constant)
+    public Jump_Equal_Constant(Context context, Variable var, LabelInterface label, LabelInterface labelToJump, long constant)
     {
-        super("JUMP_EQUAL_CONSTANT", context, 2, var, label);
+        super(InstructionData.JUMP_EQUAL_CONSTANT, context, var, label);
         this.labelToJump = labelToJump;
         this.constant = constant;
         this.instructions = this.getSingleExpansion();
-        //this.maxDegree = this.calcMaxDegree();
     }
 
-    public Jump_Equal_Constant(Program context, Variable var, LabelInterface labelToJump, long constant)
+    public Jump_Equal_Constant(Context context, Variable var, LabelInterface labelToJump, long constant)
     {
         this(context, var, FixedLabels.EMPTY, labelToJump, constant);
     }
-
-    @Override
-    public String toString()
-    {
-        //ToDo: add data
-        return "";
-    }
-
 
     public String getInstructionRepresentation()
     {
@@ -51,7 +44,7 @@ public class Jump_Equal_Constant extends S_Instruction
                 var.getVariableRepresentation(),
                 constant,
                 labelToJump.getLabelRepresentation(),
-                cycles);
+                instructionData.getCycles());
 
     }
 
