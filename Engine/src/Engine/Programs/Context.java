@@ -161,6 +161,13 @@ public class Context
         return usedVars.stream().toList();
     }
 
-
+    public void clearMaps()
+    {
+        usedVars.clear();
+        MapForL.clear();
+        MapForX.clear();
+        MapForZ.clear();
+        Y.put(Variable.OUTPUT, 0L);
+    }
 }
 

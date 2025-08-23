@@ -7,6 +7,8 @@ import Engine.JAXB.generated.XML_Reader;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
+import Engine.PairDataStructure;
+import Engine.Statistics.StatisticsList;
 import Engine.Vars.*;
 
 import java.io.File;
@@ -20,11 +22,13 @@ public class Program /*implements Calculable*/
     private int cycles;
     private List<Instruction> instructions;/* = new ArrayList<>();*/
     private List<Instruction> ExpandedInstructions;
+    private StatisticsList instructionsStats;
 
     public Program()
     {
         //ToDO: what else?
         this.context = new Context();
+        this.instructionsStats = new StatisticsList();
     }
 
     public Context getContext()
@@ -62,12 +66,31 @@ public class Program /*implements Calculable*/
         File f = new File(PATH);
         XML_Reader reader = new XML_Reader(f);
         loader.loadFromReader(reader);
-        int counter =1;
+        Variable X1 = new VariableImplement(VariableType.INPUT, 1);
+        Variable X2 = new VariableImplement(VariableType.INPUT, 2);
+        context.setVarValue(X1, 8);
+        context.setVarValue(X2, 3);
 
-        context.setVarValue(new VariableImplement(VariableType.INPUT, 1), 8);
-        context.setVarValue(new VariableImplement(VariableType.INPUT, 2), 3);
+        //ToDo: for statistics, need in another way.
+        List<PairDataStructure<Variable, Long>> inputs = new ArrayList<>();
+        inputs.add(new PairDataStructure<Variable, Long>(X1, 8L));
+        inputs.add(new PairDataStructure<Variable, Long>(X2, 3L));
         this.initProgram();
-        Run(1);
+
+        for( int degree = 0; degree <=2; degree++)
+        {
+            context.clearMaps();
+            context.setVarValue(X1, 8);
+            context.setVarValue(X2, 3);
+            Run(degree);
+            long OutputValue = context.getVarValue(Variable.OUTPUT);
+            long totalCycles = calcCyclesExpendedInstructions();
+
+            instructionsStats.addExecutionStatistics(degree, OutputValue, inputs, totalCycles);
+        }
+
+        System.out.println(instructionsStats.getStatisticsListRepresentation());
+
 
        /* String res = "";
         for (Instruction c : this.instructions)
@@ -127,6 +150,13 @@ public class Program /*implements Calculable*/
                 .mapToInt(Instruction::calcMaxDegree)
                 .max()
                 .orElse(0);
+    }
+
+    public int calcCyclesExpendedInstructions()
+    {
+        return ExpandedInstructions.stream()
+                .mapToInt(Instruction::getCycles)
+                .sum();
     }
 
     public int calcCycles()
@@ -215,7 +245,6 @@ public class Program /*implements Calculable*/
                 .mapToInt(Instruction::getCycles)
                 .sum());
     }
-
 
 }
 
