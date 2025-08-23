@@ -7,11 +7,8 @@ import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
-import Engine.Labels.Label_Implement;
 import Engine.Programs.Context;
-import Engine.Programs.Program;
 import Engine.Vars.Variable;
-import Engine.Vars.VariableImplement;
 import Engine.Vars.VariableType;
 
 import java.util.ArrayList;
@@ -27,7 +24,7 @@ public class Jump_Equal_Variable extends S_Instruction
         super(InstructionData.JUMP_EQUAL_VARIABLE, context, var, label);
         this.labelToJump = labelToJump;
         this.arg1 = arg1;
-        this.instructions = this.getSingleExpansion();
+        //this.instructions = this.getSingleExpansion();
     }
 
     public Jump_Equal_Variable(Context context, Variable var, LabelInterface labelToJump, Variable arg1)
@@ -61,7 +58,7 @@ public class Jump_Equal_Variable extends S_Instruction
     }
 
     @Override
-    public List<Instruction> getSingleExpansion()
+    public void getSingleExpansion()
     {
 
 
@@ -73,7 +70,7 @@ public class Jump_Equal_Variable extends S_Instruction
         LabelInterface label_B = context.InsertLabelToEmptySpot();
         LabelInterface label_C = context.InsertLabelToEmptySpot();
 
-        List<Instruction> result = new ArrayList<>(List.of(
+        this.instructions =  new ArrayList<>(List.of(
         new Assignment(context, z_A, this.var, this.label),
         new Assignment(context, z_B, this.arg1),
         new Jump_Zero(context, z_A, label_B, label_C),
@@ -84,8 +81,6 @@ public class Jump_Equal_Variable extends S_Instruction
         new Jump_Zero(context, z_B, label_C, this.labelToJump),
         new Neutral(context, Variable.OUTPUT, label_A)
         ));
-        //instructions = result;
-        return result;
     }
 
 }

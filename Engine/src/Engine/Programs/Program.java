@@ -2,6 +2,7 @@ package Engine.Programs;
 
 import Engine.Instructions_Types.Calculable;
 import Engine.Instructions_Types.Instruction;
+import Engine.Instructions_Types.S_Instruction;
 import Engine.JAXB.generated.XML_Reader;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
@@ -36,9 +37,17 @@ public class Program /*implements Calculable*/
         this.name = name;
     }
 
-    public void initProgram(List<Instruction> instructions)
+    public void InitInstructionsExpensions()
     {
-        //this.instructions = instructions;
+        instructions.stream()
+                .filter(instruction -> instruction instanceof S_Instruction)
+                .map(instruction -> (S_Instruction) instruction)
+                .forEach(S_Instruction::getSingleExpansion);
+    }
+
+    public void initProgram()
+    {
+        InitInstructionsExpensions();
         this.maxDegree = this.calcMaxDegree();
         this.cycles = this.calcCycles();
     }
@@ -48,11 +57,19 @@ public class Program /*implements Calculable*/
     {
         Loader loader = new Loader(this);
         String PATH = "C:\\Users\\beatl\\Desktop\\minus (1).xml";
+        //String PATH = "C:\\Users\\beatl\\Desktop\\my_minus (1).xml";
+
         File f = new File(PATH);
         XML_Reader reader = new XML_Reader(f);
         loader.loadFromReader(reader);
         int counter =1;
-        String res = "";
+
+        context.setVarValue(new VariableImplement(VariableType.INPUT, 1), 8);
+        context.setVarValue(new VariableImplement(VariableType.INPUT, 2), 3);
+        this.initProgram();
+        Run(1);
+
+       /* String res = "";
         for (Instruction c : this.instructions)
         {
             if(c == null) {res += "NULL\n";}
@@ -62,9 +79,10 @@ public class Program /*implements Calculable*/
             }
         }
 
-        System.out.println(res);
+        System.out.println(res);*/
     }
 
+    //ToDO: just for debug, delete later.
     public static void main(String[] args)
     {
         Program program = new Program();
@@ -153,13 +171,13 @@ public class Program /*implements Calculable*/
     }
 
     //ToDo: is needed?
-    public void initVarMap(Variable... vars)
+    /*public void initVarMap(Variable... vars)
     {
         for (Variable var : vars) {context.setVarValue(var,0);}
-    }
+    }*/
 
     //ToDo: is needed?
-    public void initLabelMap(LabelInterface... labels)
+    /*public void initLabelMap(LabelInterface... labels)
     {
         for (LabelInterface label : labels) {
             if (label instanceof Label_Implement)
@@ -167,7 +185,7 @@ public class Program /*implements Calculable*/
                 context.setInMapL((Label_Implement) label, 0);
             }
         }
-    }
+    }*/
 
     public void Run(int degree)
     {

@@ -7,9 +7,7 @@ import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
-import Engine.Labels.Label_Implement;
 import Engine.Programs.Context;
-import Engine.Programs.Program;
 import Engine.Vars.Variable;
 
 import java.util.ArrayList;
@@ -22,7 +20,7 @@ public class Zero_Variable extends S_Instruction
     public Zero_Variable(Context context, Variable var, LabelInterface label)
     {
         super(InstructionData.ZERO_VARIABLE, context, var, label);
-        this.instructions = this.getSingleExpansion();
+        //this.instructions = this.getSingleExpansion();
     }
 
     public Zero_Variable(Context context, Variable var)
@@ -49,7 +47,7 @@ public class Zero_Variable extends S_Instruction
     }
 
     @Override
-    public List<Instruction> getSingleExpansion()
+    public void getSingleExpansion()
     {
         List<Instruction> result = new ArrayList<>();
         LabelInterface labelFirstRow = this.label;
@@ -59,8 +57,10 @@ public class Zero_Variable extends S_Instruction
 
         }
 
-        result.add(new Decrease(context, this.var,labelFirstRow));
-        result.add(new JNZ(context,this.var, labelFirstRow));
-        return result;
+        this.instructions = new ArrayList<>(List.of(
+            new Decrease(context, this.var,labelFirstRow),
+            new JNZ(context,this.var, labelFirstRow)
+        ));
+
     }
 }

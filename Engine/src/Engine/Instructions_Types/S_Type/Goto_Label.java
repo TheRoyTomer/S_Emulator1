@@ -8,9 +8,7 @@ import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
-import Engine.Programs.Program;
 import Engine.Vars.Variable;
-import Engine.Vars.VariableImplement;
 import Engine.Vars.VariableType;
 
 import java.util.ArrayList;
@@ -24,7 +22,7 @@ public class Goto_Label extends S_Instruction
     {
         super(InstructionData.GOTO_LABEL, context, var, label);
         this.labelToJump = labelToJump;
-        this.instructions = this.getSingleExpansion();
+        //this.instructions = this.getSingleExpansion();
     }
 
     public Goto_Label(Context context,Variable var, LabelInterface labelToJump)
@@ -56,15 +54,13 @@ public class Goto_Label extends S_Instruction
     }
 
     @Override
-    public List<Instruction> getSingleExpansion()
+    public void getSingleExpansion()
     {
-        List<Instruction> result = new ArrayList<>(List.of(
-        new Increase(context, this.var, this.label),
+        Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
+        this.instructions = new ArrayList<>(List.of(
+        new Increase(context, Z_FAKE, this.label),
         new JNZ(context, this.var, labelToJump)
         ));
-        //instructions = result;
-
-        return result;
     }
 
 

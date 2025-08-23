@@ -2,7 +2,6 @@ package Engine.Instructions_Types;
 
 import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
-import Engine.Programs.Program;
 import Engine.Vars.Variable;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public abstract class S_Instruction extends Instruction
 
     @Override
     public abstract LabelInterface execute();
-    public abstract List<Instruction> getSingleExpansion();
+    public abstract void getSingleExpansion();
 
     public List<Instruction> expand(int degree)
     {

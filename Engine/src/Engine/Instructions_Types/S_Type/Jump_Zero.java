@@ -7,11 +7,8 @@ import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
-import Engine.Labels.Label_Implement;
 import Engine.Programs.Context;
-import Engine.Programs.Program;
 import Engine.Vars.Variable;
-import Engine.Vars.VariableImplement;
 import Engine.Vars.VariableType;
 
 import java.util.ArrayList;
@@ -25,7 +22,7 @@ public class Jump_Zero extends S_Instruction
     {
         super(InstructionData.JUMP_ZERO, context, var, label);
         this.labelToJump = labelToJump;
-        this.instructions = this.getSingleExpansion();
+        //this.instructions = this.getSingleExpansion();
     }
 
     public Jump_Zero(Context context, Variable var, LabelInterface labelToJump)
@@ -35,7 +32,7 @@ public class Jump_Zero extends S_Instruction
 
     public String getInstructionRepresentation()
     {
-        return String.format("(S) [%s] IF %s=0 GOTO %s(%d)",
+        return String.format("(S) [%s] IF %s = 0 GOTO %s(%d)",
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 labelToJump.getLabelRepresentation(),
@@ -52,23 +49,17 @@ public class Jump_Zero extends S_Instruction
     }
 
     @Override
-    public List<Instruction> getSingleExpansion()
+    public void getSingleExpansion()
     {
         Variable z_A = context.InsertVariableToEmptySpot(VariableType.WORK);;
         Variable z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
 
         LabelInterface label_A = context.InsertLabelToEmptySpot();
 
-        List<Instruction> result = new ArrayList<>(List.of(
+        this.instructions =  new ArrayList<>(List.of(
         new JNZ(context,this.var, label_A, this.label),
         new Goto_Label(context, z_FAKE, this.labelToJump),
         new Neutral(context, Variable.OUTPUT, label_A)
         ));
-
-        //instructions = result;
-        return result;
-
-
-
     }
 }

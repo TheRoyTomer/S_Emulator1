@@ -1,3 +1,4 @@
+/*
 import Engine.Instructions_Types.B_Type.Decrease;
 import Engine.Instructions_Types.B_Type.Increase;
 import Engine.Instructions_Types.B_Type.JNZ;
@@ -21,10 +22,13 @@ public class Main
 {
     public static void main(String[] args)
     {
-        /*//V_Gets_Twice_V2
+        */
+/*//*
+/V_Gets_Twice_V2
         Program program = V_Gets_Twice_V2(5, 25);
         program.execute();
-        System.out.println("OutPut: " + Variable.OUTPUT.getValue());*/
+        System.out.println("OutPut: " + Variable.OUTPUT.getValue());*//*
+
 
 
         //FirstExpansionTest
@@ -98,4 +102,4 @@ public class Main
     }
 
 
-}
+}*/

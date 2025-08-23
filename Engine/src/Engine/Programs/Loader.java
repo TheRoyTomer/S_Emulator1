@@ -50,54 +50,54 @@ public class Loader
     }
 
 
-    public LabelInterface convertToLabelInterface(String labelName)
-    {
-        //TODO:ADD TO MAP?
+    public LabelInterface convertToLabelInterface(String labelName) {
+        if (labelName == null) {labelName = "";}
 
-        if(labelName == null) labelName = "";
+        LabelInterface label = switch (labelName.toUpperCase())
+        {
+            case "EXIT" -> FixedLabels.EXIT;
+            case ""     -> FixedLabels.EMPTY;
+            default     -> new Label_Implement(labelName);
+        };
 
-        switch (labelName.toUpperCase()) {
-            case "EXIT":
-                return FixedLabels.EXIT;
-
-            case "":
-                return FixedLabels.EMPTY;
-            default:
-                return new Label_Implement(labelName);
-
-        }
-
+        if (label instanceof Label_Implement) { context.setInMapL((Label_Implement) label, 0);}
+        return label;
     }
 
     public Variable convertToVariable(String varName)
     {
         try {
+
             int serial = convertSerial(varName);
-            switch (Character.toUpperCase(varName.charAt(0))) {
-                case 'X':
-                    return new VariableImplement(VariableType.INPUT, serial);
-                case 'Z':
-                    return new VariableImplement(VariableType.WORK, serial);
-                case 'Y':
-                    return Variable.OUTPUT;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + varName.charAt(0));
-            }
+
+            Variable var = switch (Character.toUpperCase(varName.charAt(0))) {
+                case 'X' -> new VariableImplement(VariableType.INPUT, serial);
+                case 'Z' -> new VariableImplement(VariableType.WORK, serial);
+                case 'Y' -> Variable.OUTPUT;
+                default -> throw new IllegalStateException("Unexpected value: " + varName.charAt(0));
+            };
+
+            context.setVarValue(var, 0);
+            return var;
+
         }
         catch (RuntimeException e)
         {
             throw e;
         }
 
+
     }
 
     public int convertSerial(String varName) {
         try {
-            if (varName == null) {
+            if (varName == null)
+            {
                 throw new IllegalArgumentException("Variable name cannot be null");
             }
 
-            if (varName.equalsIgnoreCase("Y")) {
+            if (varName.equalsIgnoreCase("Y"))
+            {
                 return 0;
             }
 
@@ -157,11 +157,10 @@ public class Loader
                 case "DECREASE":
                     return new Decrease(context, var, label);
 
-                case "JUMP_NOT_ZERO": {
+                case "JUMP_NOT_ZERO":
                     labelToJump = requireArg(Instruction, "JNZLabel",
                             this::convertToLabelInterface, "JUMP_NOT_ZERO");
                     return new JNZ(context, var, label, labelToJump);
-                }
 
                 case "NEUTRAL":
                     return new Neutral(context, var, label);
@@ -169,11 +168,10 @@ public class Loader
                 case "ZERO_VARIABLE":
                     return new Zero_Variable(context, var, label);
 
-                case "ASSIGNMENT": {
+                case "ASSIGNMENT":
                     arg = requireArg(Instruction, "assignedVariable",
                             this::convertToVariable, "ASSIGNMENT");
                     return new Assignment(context, var, arg, label);
-                }
 
                 case "CONSTANT_ASSIGNMENT":
                     constant = requireArg(Instruction, "constantValue",

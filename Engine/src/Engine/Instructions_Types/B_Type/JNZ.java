@@ -26,7 +26,7 @@ public class JNZ extends B_Instruction
 
     public String getInstructionRepresentation()
     {
-        return String.format("(B) [%s] IF %s!=0 GOTO %s(%d)",
+        return String.format("(B) [%s] IF %s != 0 GOTO %s(%d)",
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 labelToJump.getLabelRepresentation(),

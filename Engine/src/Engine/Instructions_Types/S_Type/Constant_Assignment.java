@@ -7,7 +7,6 @@ import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
-import Engine.Programs.Program;
 import Engine.Vars.Variable;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class Constant_Assignment extends S_Instruction
     {
         super(InstructionData.CONSTANT_ASSIGNMENT, context, var, label);
         this.constant = constant;
-        this.instructions = this.getSingleExpansion();
+        //this.instructions = this.getSingleExpansion();
     }
 
     public Constant_Assignment(Context context, Variable var, long constant)
@@ -51,7 +50,7 @@ public class Constant_Assignment extends S_Instruction
     }
 
     @Override
-    public List<Instruction> getSingleExpansion()
+    public void getSingleExpansion()
     {
         List<Instruction> result = new ArrayList<>();
 
@@ -61,7 +60,6 @@ public class Constant_Assignment extends S_Instruction
                 .mapToObj(i -> new Increase(context, this.var))
                 .collect(Collectors.toList())
         );
-        //instructions = result;
-        return result;
+        this.instructions = result;
     }
 }
