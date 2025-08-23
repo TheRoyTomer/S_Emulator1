@@ -67,7 +67,6 @@ public class VariableImplement implements Variable
         return serial;
     }
 
-
     @Override
     public VariableType getVariableType()
     {

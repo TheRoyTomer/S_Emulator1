@@ -71,17 +71,51 @@ public class Loader
 
     public Variable convertToVariable(String varName)
     {
-        switch (Character.toUpperCase(varName.charAt(0))) {
-            case 'X':
-                return new VariableImplement(VariableType.INPUT, varName.charAt(1));
-            case 'Z':
-                return new VariableImplement(VariableType.WORK, varName.charAt(1));
-            case 'Y':
-                return Variable.OUTPUT;
-            default:
-                throw new IllegalStateException("Unexpected value: " + varName.charAt(0));
+        try {
+            int serial = convertSerial(varName);
+            switch (Character.toUpperCase(varName.charAt(0))) {
+                case 'X':
+                    return new VariableImplement(VariableType.INPUT, serial);
+                case 'Z':
+                    return new VariableImplement(VariableType.WORK, serial);
+                case 'Y':
+                    return Variable.OUTPUT;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + varName.charAt(0));
+            }
+        }
+        catch (RuntimeException e)
+        {
+            throw e;
         }
 
+    }
+
+    public int convertSerial(String varName) {
+        try {
+            if (varName == null) {
+                throw new IllegalArgumentException("Variable name cannot be null");
+            }
+
+            if (varName.equalsIgnoreCase("Y")) {
+                return 0;
+            }
+
+            if (varName.length() <= 1) {
+                throw new IllegalArgumentException("Invalid variable name: " + varName);
+            }
+
+            int serial = Integer.parseInt(varName.substring(1));
+            if (serial < 0) {
+                throw new IllegalArgumentException("Invalid serial number: " + serial);
+            }
+
+            return serial;
+        } catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException("Invalid variable name format: " + varName, e);
+        }
     }
 
     public String getArg(SInstruction instruction, String name)
@@ -89,8 +123,9 @@ public class Loader
         List<SInstructionArgument> args =
                 instruction.getSInstructionArguments().getSInstructionArgument();
 
-        return args.stream().map(arg -> arg.getName()).
-                filter(s -> s.equals(name))
+        return args.stream()
+                .filter(arg -> arg.getName().equals(name))
+                .map(SInstructionArgument::getValue)
                 .findFirst()
                 .orElse(null);
     }
