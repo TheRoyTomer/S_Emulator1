@@ -2,40 +2,73 @@ package Engine.Programs;
 
 import Engine.Instructions_Types.Calculable;
 import Engine.Instructions_Types.Instruction;
+import Engine.JAXB.generated.XML_Reader;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
 import Engine.Vars.*;
 
+import java.io.File;
 import java.util.*;
 
 public class Program /*implements Calculable*/
 {
-    private final String name;
+    private String name;
     private final Context context;
     private int maxDegree;
     private int cycles;
-    private List<Instruction> instructions = new ArrayList<>();
+    private List<Instruction> instructions;/* = new ArrayList<>();*/
     private List<Instruction> ExpandedInstructions;
 
-    public Program(String name)
+    public Program()
     {
-        this.name = name;
         //ToDO: what else?
         this.context = new Context();
     }
 
-    //ToDo:NEED?
     public Context getContext()
     {
         return context;
     }
 
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
     public void initProgram(List<Instruction> instructions)
     {
-        this.instructions = instructions;
+        //this.instructions = instructions;
         this.maxDegree = this.calcMaxDegree();
         this.cycles = this.calcCycles();
+    }
+
+    //ToDO: just for debug, delete later.
+    public void YuvalLoveDebug()
+    {
+        Loader loader = new Loader(this);
+        String PATH = "C:\\Users\\beatl\\Desktop\\minus (1).xml";
+        File f = new File(PATH);
+        XML_Reader reader = new XML_Reader(f);
+        loader.loadFromReader(reader);
+        int counter =1;
+        String res = "";
+        for (Instruction c : this.instructions)
+        {
+            if(c == null) {res += "NULL\n";}
+            else
+            {
+            res += String.format("#<%d> %s \n", counter++, c.getInstructionRepresentation());
+            }
+        }
+
+        System.out.println(res);
+    }
+
+    public static void main(String[] args)
+    {
+        Program program = new Program();
+        program.YuvalLoveDebug();
     }
 
     //ToDo:NEED?
@@ -148,23 +181,22 @@ public class Program /*implements Calculable*/
     public void displayEndOfRun()
     {
         System.out.println(this.getProgramRepresentation());
+
+        System.out.println(Variable.OUTPUT.getVariableRepresentation()
+                + " = " + context.getVarValue(Variable.OUTPUT));
+
         List<Variable> usedVarsInOrder = context.getUsedVarsInOrder();
         usedVarsInOrder.forEach(var ->
                 System.out.println(
                         var.getVariableRepresentation()
                         + " = "
                         + context.getVarValue(var)));
+
         System.out.println("Total Cycles: " +
                 ExpandedInstructions.stream()
                 .mapToInt(Instruction::getCycles)
                 .sum());
     }
-
-    /*public void getNewExpandInstructionList(int degree)
-    {
-        this.initProgram(expand(degree));
-        this.instructions = expand(degree);
-    }*/
 
 
 }

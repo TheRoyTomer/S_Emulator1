@@ -1,5 +1,7 @@
 package Engine.Instructions_Types;
 
+import java.util.Arrays;
+
 public enum InstructionData
 {
     INCREASE("INCREASE", 1),
@@ -22,6 +24,7 @@ public enum InstructionData
         this.name = name;
         this.cycles = cycles;
     }
+
 
     public String getName() { return name;}
 
