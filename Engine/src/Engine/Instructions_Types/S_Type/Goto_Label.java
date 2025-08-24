@@ -2,7 +2,6 @@ package Engine.Instructions_Types.S_Type;
 
 import Engine.Instructions_Types.B_Type.Increase;
 import Engine.Instructions_Types.B_Type.JNZ;
-import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
@@ -18,23 +17,24 @@ public class Goto_Label extends S_Instruction
 {
     LabelInterface labelToJump;
 
-    public Goto_Label(Context context, Variable var, LabelInterface label, LabelInterface labelToJump)
+    public Goto_Label(Context context, S_Instruction holder, Variable var, LabelInterface label, LabelInterface labelToJump)
     {
-        super(InstructionData.GOTO_LABEL, context, var, label);
+        super(InstructionData.GOTO_LABEL, context, holder, var, label);
         this.labelToJump = labelToJump;
         //this.instructions = this.getSingleExpansion();
     }
 
-    public Goto_Label(Context context,Variable var, LabelInterface labelToJump)
+    public Goto_Label(Context context, S_Instruction holder, Variable var, LabelInterface labelToJump)
     {
-       this(context, var, FixedLabels.EMPTY, labelToJump);
+       this(context, holder, var, FixedLabels.EMPTY, labelToJump);
 
     }
 
     @Override
     public String getInstructionRepresentation()
     {
-        return String.format("(S) [%s] GOTO %s (%d)",
+        return String.format("#<%d>(S) [%s] GOTO %s (%d)",
+                this.lineIndex,
                 label.getLabelRepresentation(),
                 labelToJump.getLabelRepresentation(),
                 instructionData.getCycles());
@@ -48,18 +48,24 @@ public class Goto_Label extends S_Instruction
     }
 
     @Override
+    public List<LabelInterface> getUsedLabels()
+    {
+        return List.of(label, labelToJump);
+    }
+
+    @Override
     public LabelInterface execute()
     {
         return labelToJump;
     }
 
     @Override
-    public void getSingleExpansion()
+    public void setSingleExpansion()
     {
         Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
         this.instructions = new ArrayList<>(List.of(
-        new Increase(context, Z_FAKE, this.label),
-        new JNZ(context, this.var, labelToJump)
+        new Increase(context, this, Z_FAKE, this.label),
+        new JNZ(context, this, this.var, labelToJump)
         ));
     }
 

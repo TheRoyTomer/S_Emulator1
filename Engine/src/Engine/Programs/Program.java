@@ -3,6 +3,7 @@ package Engine.Programs;
 import Engine.Instructions_Types.Calculable;
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.S_Instruction;
+import Engine.JAXB.generated.SInstructions;
 import Engine.JAXB.generated.XML_Reader;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
@@ -44,10 +45,42 @@ public class Program /*implements Calculable*/
     public void InitInstructionsExpensions()
     {
         instructions.stream()
-                .filter(instruction -> instruction instanceof S_Instruction)
-                .map(instruction -> (S_Instruction) instruction)
-                .forEach(S_Instruction::getSingleExpansion);
+                .filter(S_Instruction.class::isInstance)
+                .map(S_Instruction.class::cast)
+                .forEach(S_Instruction::InitMaxExpansions);
+        setListIndices(1, this.instructions);
+
     }
+
+    public void setListIndices(int startIndex, List<Instruction> lst)
+    {
+        for (Instruction instruction : this.instructions)
+        {
+            instruction.setLineIndex(startIndex);
+            startIndex++;
+        }
+    }
+
+    /*public void InitInstructionsExpensions()
+    {
+        int counter = 0;
+        List<Instruction> lst =  this.instructions;
+        List<Instruction> lst2 = new ArrayList<>();
+         boolean SinstructionFlag = true;
+
+         while  (SinstructionFlag)
+         {
+             SinstructionFlag = false;
+             for(Instruction instruction : lst){
+                 if (instruction instanceof S_Instruction)
+                 {
+                     SinstructionFlag = true;
+                     ((S_Instruction)instruction).getSingleExpansion();
+
+                 }
+             }
+         }
+    }*/
 
     public void initProgram()
     {
@@ -77,7 +110,8 @@ public class Program /*implements Calculable*/
         inputs.add(new PairDataStructure<Variable, Long>(X2, 3L));
         this.initProgram();
 
-        for( int degree = 0; degree <=2; degree++)
+        Run(0);
+       /* for( int degree = 0; degree <=2; degree++)
         {
             context.clearMaps();
             context.setVarValue(X1, 8);
@@ -87,7 +121,7 @@ public class Program /*implements Calculable*/
             long totalCycles = calcCyclesExpendedInstructions();
 
             instructionsStats.addExecutionStatistics(degree, OutputValue, inputs, totalCycles);
-        }
+        }*/
 
         System.out.println(instructionsStats.getStatisticsListRepresentation());
 
@@ -106,10 +140,35 @@ public class Program /*implements Calculable*/
     }
 
     //ToDO: just for debug, delete later.
+    public void YuvalLovesDisplayingPrograms()
+    {
+        Loader loader = new Loader(this);
+        String PATH = "C:\\Users\\beatl\\Desktop\\minus (1).xml";
+        //String PATH = "C:\\Users\\beatl\\Desktop\\my_minus (1).xml";
+
+        File f = new File(PATH);
+        XML_Reader reader = new XML_Reader(f);
+        loader.loadFromReader(reader);
+        Variable X1 = new VariableImplement(VariableType.INPUT, 1);
+        Variable X2 = new VariableImplement(VariableType.INPUT, 2);
+        context.setVarValue(X1, 8);
+        context.setVarValue(X2, 3);
+
+        //ToDo: for statistics, need in another way.
+        List<PairDataStructure<Variable, Long>> inputs = new ArrayList<>();
+        inputs.add(new PairDataStructure<Variable, Long>(X1, 8L));
+        inputs.add(new PairDataStructure<Variable, Long>(X2, 3L));
+        this.initProgram();
+
+        this.displayProgram();
+    }
+
+    //ToDO: just for debug, delete later.
     public static void main(String[] args)
     {
         Program program = new Program();
-        program.YuvalLoveDebug();
+        //program.YuvalLoveDebug();
+        program.YuvalLovesDisplayingPrograms();
     }
 
     //ToDo:NEED?
@@ -128,13 +187,13 @@ public class Program /*implements Calculable*/
                 '}';
     }
 
-    public String getProgramRepresentation()
+    public String getProgramRepresentation(List <Instruction> instructions)
     {
-        int counter =1;
+
         String res = "";
-        for (Instruction c : this.ExpandedInstructions)
+        for (Instruction c : instructions)
         {
-            res += String.format("#<%d> %s \n", counter++, c.getInstructionRepresentation());
+            res += String.format("%s \n", c.getInstructionRepresentation());
         }
         return res;
     }
@@ -168,12 +227,16 @@ public class Program /*implements Calculable*/
 
 
     //@Override
-    public LabelInterface execute()
+    public int execute()
     {
         //context.collectVarsAndIndexLabels(this.ExpandedInstructions);
+        int sumCycles = 0;
         LabelInterface label = null;
+        Instruction currentInstruction;
         for (long PC = 0; PC < ExpandedInstructions.size(); ) {
-            label = ExpandedInstructions.get((int) PC).execute();
+            currentInstruction =  ExpandedInstructions.get((int) PC);
+            label = currentInstruction.execute();
+            sumCycles += currentInstruction.getCycles();
             if (label == FixedLabels.EMPTY) {
                 PC++;
             } else if (label == FixedLabels.EXIT || !context.isExistInMapL(label)) {
@@ -182,13 +245,13 @@ public class Program /*implements Calculable*/
                 PC = context.getFromMapL((Label_Implement) label);
             }
         }
-        return FixedLabels.EXIT;
+        return sumCycles;
     }
 
 
     public List<Instruction> expand(int degree)
     {
-        List<Instruction> res = new ArrayList<>();
+       /* List<Instruction> res = new ArrayList<>();
         if (degree == 0)
         {
             return this.instructions;
@@ -197,7 +260,25 @@ public class Program /*implements Calculable*/
         {
             res.addAll(instruction.expand(degree));
         }
-        return res;
+        return res;*/
+
+        List<Instruction> currDegreeInstructions = this.instructions;
+        List<Instruction> nextDegreeInstructions = new ArrayList<>();
+        int lineIndex;
+        while (degree != 0) {
+            lineIndex = 1;
+            for (Instruction instruction : currDegreeInstructions) {
+                nextDegreeInstructions.addAll(instruction.getOneExpand());
+            }
+            for (Instruction instruction : nextDegreeInstructions) {
+                instruction.setLineIndex(lineIndex);
+                lineIndex++;
+            }
+            currDegreeInstructions = nextDegreeInstructions;
+            nextDegreeInstructions.clear();
+            degree--;
+        }
+        return currDegreeInstructions;
     }
 
     //ToDo: is needed?
@@ -222,11 +303,11 @@ public class Program /*implements Calculable*/
         this.ExpandedInstructions = expand(degree);
         context.collectVarsAndIndexLabels(this.ExpandedInstructions);
         execute();
-        displayEndOfRun();
+        //displayEndOfRun();
 
     }
 
-    public void displayEndOfRun()
+   /* public void displayEndOfRun()
     {
         System.out.println(this.getProgramRepresentation());
 
@@ -245,8 +326,23 @@ public class Program /*implements Calculable*/
                 .mapToInt(Instruction::getCycles)
                 .sum());
     }
+*/
+
+    public void displayProgram()
+    {
+        System.out.println(this.name + "\n");
+        System.out.println(context.getAll_X_InList(this.instructions) + "\n");
+        System.out.println(context.getAll_L_InList(this.instructions) + "\n");
+        System.out.println(this.getProgramRepresentation(this.instructions) + "\n");
+    }
 
 }
+
+
+
+
+
+
 
 
 

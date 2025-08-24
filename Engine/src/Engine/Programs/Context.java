@@ -1,6 +1,8 @@
 package Engine.Programs;
 
 import Engine.Instructions_Types.Instruction;
+import Engine.Labels.FixedLabels;
+import Engine.Labels.LabelComperator;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
 import Engine.Vars.Variable;
@@ -8,6 +10,7 @@ import Engine.Vars.VariableImplement;
 import Engine.Vars.VariableType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Context
 {
@@ -56,7 +59,6 @@ public class Context
             case INPUT -> MapForX;
             case WORK -> MapForZ;
             case OUTPUT -> Y;
-            default -> null; //TODO: Handle with exceptions
         };
     }
 
@@ -68,7 +70,6 @@ public class Context
             case VariableType.OUTPUT -> Y.get(Variable.OUTPUT);
             case VariableType.INPUT -> MapForX.computeIfAbsent(var, k -> 0L);
             case VariableType.WORK -> MapForZ.computeIfAbsent(var, k -> 0L);
-            default -> -1L; //TODO: Handle with exceptions
 
         };
 
@@ -92,10 +93,6 @@ public class Context
             case VariableType.WORK:
                 MapForZ.put(var, fixedValue);
                 break;
-
-            default:
-
-
         }
     }
 
@@ -109,9 +106,6 @@ public class Context
             case VariableType.INPUT -> MapForX.containsKey(var);
             case VariableType.WORK -> MapForZ.containsKey(var);
             case VariableType.OUTPUT -> true; //We Always Have Y.
-
-            default -> true; //TODO: Handle with exceptions
-
 
         };
     }
@@ -168,6 +162,24 @@ public class Context
         MapForX.clear();
         MapForZ.clear();
         Y.put(Variable.OUTPUT, 0L);
+    }
+
+    public TreeSet<Variable> getAll_X_InList(List<Instruction> instructions)
+    {
+        return instructions.stream()
+                .flatMap(inst -> inst.getUsedVariables().stream())
+                .filter(v -> v.getVariableType() == VariableType.INPUT)
+                .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    public Set<LabelInterface> getAll_L_InList(List<Instruction> instructions)
+    {
+        //Todo: Do with Treeset
+        //TreeSet<LabelInterface> res = new TreeSet<>();
+        return instructions.stream()
+                .flatMap(inst -> inst.getUsedLabels().stream())
+                .filter(label -> label != FixedLabels.EMPTY)
+                .collect(Collectors.toSet());
     }
 }
 

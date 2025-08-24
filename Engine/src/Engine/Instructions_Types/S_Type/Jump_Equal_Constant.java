@@ -21,28 +21,34 @@ public class Jump_Equal_Constant extends S_Instruction
     private LabelInterface labelToJump;
     private long constant;
 
-    public Jump_Equal_Constant(Context context, Variable var, LabelInterface label, LabelInterface labelToJump, long constant)
+    public Jump_Equal_Constant(Context context, S_Instruction holder, Variable var, LabelInterface label, LabelInterface labelToJump, long constant)
     {
-        super(InstructionData.JUMP_EQUAL_CONSTANT, context, var, label);
+        super(InstructionData.JUMP_EQUAL_CONSTANT, context, holder, var, label);
         this.labelToJump = labelToJump;
         this.constant = constant;
-        //this.instructions = this.getSingleExpansion();
     }
 
-    public Jump_Equal_Constant(Context context, Variable var, LabelInterface labelToJump, long constant)
+    public Jump_Equal_Constant(Context context, S_Instruction holder, Variable var, LabelInterface labelToJump, long constant)
     {
-        this(context, var, FixedLabels.EMPTY, labelToJump, constant);
+        this(context, holder, var, FixedLabels.EMPTY, labelToJump, constant);
     }
 
     public String getInstructionRepresentation()
     {
-        return String.format("(S) [%s] IF %s = %d GOTO %s(%d)",
+        return String.format("#<%d>(S) [%s] IF %s = %d GOTO %s(%d)",
+                this.lineIndex,
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 constant,
                 labelToJump.getLabelRepresentation(),
                 instructionData.getCycles());
 
+    }
+
+    @Override
+    public List<LabelInterface> getUsedLabels()
+    {
+        return List.of(label, labelToJump);
     }
 
     @Override
@@ -54,24 +60,24 @@ public class Jump_Equal_Constant extends S_Instruction
     }
 
     @Override
-    public void getSingleExpansion()
+    public void setSingleExpansion()
     {
         Variable Z = context.InsertVariableToEmptySpot(VariableType.WORK);;
         Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
         LabelInterface label_A = context.InsertLabelToEmptySpot();
 
         List<Instruction> result = new ArrayList<>();
-        result.add(new Assignment(context,Z, this.var, this.label));
+        result.add(new Assignment(context, this, Z, this.var, this.label));
 
         LongStream.range(0, constant)
                 .forEach(i -> result.addAll(List.of(
-                        new Jump_Zero(context, Z, label_A),
-                        new Decrease(context, Z)
+                        new Jump_Zero(context, this, Z, label_A),
+                        new Decrease(context, this, Z)
                 )));
         result.addAll(List.of(
-        new JNZ(context, Z,label_A),
-        new Goto_Label(context, Z_FAKE,label_A),
-        new Neutral(context, Variable.OUTPUT,label_A)
+        new JNZ(context, this, Z,label_A),
+        new Goto_Label(context, this, Z_FAKE,label_A),
+        new Neutral(context, this, Variable.OUTPUT,label_A)
         ));
 
         this.instructions = result;

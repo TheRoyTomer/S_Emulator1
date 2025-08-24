@@ -19,22 +19,23 @@ public class Jump_Equal_Variable extends S_Instruction
     private LabelInterface labelToJump;
     private Variable arg1;
 
-    public Jump_Equal_Variable(Context context, Variable var, LabelInterface label, LabelInterface labelToJump, Variable arg1)
+    public Jump_Equal_Variable(Context context, S_Instruction holder, Variable var, LabelInterface label, LabelInterface labelToJump, Variable arg1)
     {
-        super(InstructionData.JUMP_EQUAL_VARIABLE, context, var, label);
+        super(InstructionData.JUMP_EQUAL_VARIABLE, context, holder, var, label);
         this.labelToJump = labelToJump;
         this.arg1 = arg1;
         //this.instructions = this.getSingleExpansion();
     }
 
-    public Jump_Equal_Variable(Context context, Variable var, LabelInterface labelToJump, Variable arg1)
+    public Jump_Equal_Variable(Context context, S_Instruction holder, Variable var, LabelInterface labelToJump, Variable arg1)
     {
-        this(context, var, FixedLabels.EMPTY, labelToJump, arg1);
+        this(context, holder, var, FixedLabels.EMPTY, labelToJump, arg1);
     }
 
     public String getInstructionRepresentation()
     {
-        return String.format("(S) [%s] IF %s = %s GOTO %s(%d)",
+        return String.format("#<%d>(S) [%s] IF %s = %s GOTO %s(%d)",
+                this.lineIndex,
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 arg1.getVariableRepresentation(),
@@ -50,6 +51,12 @@ public class Jump_Equal_Variable extends S_Instruction
     }
 
     @Override
+    public List<LabelInterface> getUsedLabels()
+    {
+        return List.of(label, labelToJump);
+    }
+
+    @Override
     public LabelInterface execute()
     {
         long value = context.getVarValue(var);
@@ -58,7 +65,7 @@ public class Jump_Equal_Variable extends S_Instruction
     }
 
     @Override
-    public void getSingleExpansion()
+    public void setSingleExpansion()
     {
 
 
@@ -71,15 +78,15 @@ public class Jump_Equal_Variable extends S_Instruction
         LabelInterface label_C = context.InsertLabelToEmptySpot();
 
         this.instructions =  new ArrayList<>(List.of(
-        new Assignment(context, z_A, this.var, this.label),
-        new Assignment(context, z_B, this.arg1),
-        new Jump_Zero(context, z_A, label_B, label_C),
-        new Jump_Zero(context, z_B, label_A),
-        new Decrease(context, z_A),
-        new Decrease(context, z_B),
-        new Goto_Label(context, z_FAKE, label_B),
-        new Jump_Zero(context, z_B, label_C, this.labelToJump),
-        new Neutral(context, Variable.OUTPUT, label_A)
+        new Assignment(context, this, z_A, this.var, this.label),
+        new Assignment(context, this, z_B, this.arg1),
+        new Jump_Zero(context, this, z_A, label_B, label_C),
+        new Jump_Zero(context, this, z_B, label_A),
+        new Decrease(context, this, z_A),
+        new Decrease(context, this, z_B),
+        new Goto_Label(context, this, z_FAKE, label_B),
+        new Jump_Zero(context, this, z_B, label_C, this.labelToJump),
+        new Neutral(context, this, Variable.OUTPUT, label_A)
         ));
     }
 

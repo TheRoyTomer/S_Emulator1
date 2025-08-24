@@ -18,22 +18,22 @@ public class Constant_Assignment extends S_Instruction
 {
     private final long constant;
 
-    public Constant_Assignment(Context context, Variable var, LabelInterface label, long constant)
+    public Constant_Assignment(Context context, S_Instruction holder, Variable var, LabelInterface label, long constant)
     {
-        super(InstructionData.CONSTANT_ASSIGNMENT, context, var, label);
+        super(InstructionData.CONSTANT_ASSIGNMENT, context, holder, var, label);
         this.constant = constant;
-        //this.instructions = this.getSingleExpansion();
     }
 
-    public Constant_Assignment(Context context, Variable var, long constant)
+    public Constant_Assignment(Context context, S_Instruction holder, Variable var, long constant)
     {
-        this(context, var, FixedLabels.EMPTY, constant);
+        this(context, holder, var, FixedLabels.EMPTY, constant);
     }
 
     @Override
     public String getInstructionRepresentation()
     {
-        return String.format("(S) [%s] %s <- %d (%d)",
+        return String.format("#<%d>(S) [%s] %s <- %d (%d)",
+                this.lineIndex,
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 constant,
@@ -50,14 +50,14 @@ public class Constant_Assignment extends S_Instruction
     }
 
     @Override
-    public void getSingleExpansion()
+    public void setSingleExpansion()
     {
         List<Instruction> result = new ArrayList<>();
 
-        result.add(new Zero_Variable(context,this.var, this.label));
+        result.add(new Zero_Variable(context, this, this.var, this.label));
 
         result.addAll(LongStream.range(0, constant)
-                .mapToObj(i -> new Increase(context, this.var))
+                .mapToObj(i -> new Increase(context, this, this.var))
                 .collect(Collectors.toList())
         );
         this.instructions = result;

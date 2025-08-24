@@ -2,7 +2,6 @@ package Engine.Instructions_Types;
 
 import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
-import Engine.Programs.Program;
 import Engine.Vars.Variable;
 
 import java.util.List;
@@ -14,13 +13,16 @@ public abstract class Instruction implements Calculable
     protected int maxDegree;
     protected final Variable var; // The var Im "working" on
     protected Context context;
+    protected S_Instruction holder;
+    protected int lineIndex;
 
-    public Instruction(InstructionData instructionData, Context context, Variable var, LabelInterface label)
+    public Instruction(InstructionData instructionData, Context context, S_Instruction holder, Variable var, LabelInterface label)
     {
         this.instructionData = instructionData;
         this.context = context;
         this.var = var;
         this.label = label;
+        this.holder = holder;
     }
 
     @Override
@@ -29,7 +31,7 @@ public abstract class Instruction implements Calculable
     @Override
     public abstract LabelInterface execute();
 
-    public abstract List<Instruction> expand(int degree);
+    public abstract List<Instruction> getOneExpand();
 
     public abstract String getInstructionRepresentation();
 
@@ -49,6 +51,19 @@ public abstract class Instruction implements Calculable
         return List.of(var);
     }
 
+    public List<LabelInterface> getUsedLabels()
+    {
+        return List.of(label);
+    }
 
+    public int getLineIndex()
+    {
+        return lineIndex;
+    }
+
+    public void setLineIndex(int lineIndex)
+    {
+        this.lineIndex = lineIndex;
+    }
 }
 

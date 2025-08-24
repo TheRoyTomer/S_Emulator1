@@ -20,23 +20,23 @@ public class Assignment extends S_Instruction
 {
    private final Variable arg1;
 
-    public Assignment(Context context, Variable var, Variable arg1, LabelInterface label)
+    public Assignment(Context context, S_Instruction holder, Variable var, Variable arg1, LabelInterface label)
     {
 
-        super(InstructionData.ASSIGNMENT, context, var, label);
+        super(InstructionData.ASSIGNMENT, context, holder, var, label);
         this.arg1 = arg1;
-        //this.instructions = this.getSingleExpansion();
     }
 
-    public Assignment(Context context, Variable var, Variable arg1)
+    public Assignment(Context context, S_Instruction holder, Variable var, Variable arg1)
     {
-        this(context, var, arg1, FixedLabels.EMPTY);
+        this(context, holder, var, arg1, FixedLabels.EMPTY);
     }
 
 
     public String getInstructionRepresentation()
     {
-        return String.format("(S) [%s] %s <- %s (%d)",
+        return String.format("#<%d>(S) [%s] %s <- %s (%d)",
+                this.lineIndex,
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 arg1.getVariableRepresentation(),
@@ -59,7 +59,7 @@ public class Assignment extends S_Instruction
     }
 
     @Override
-    public void getSingleExpansion()
+    public void setSingleExpansion()
     {
         Variable Z = context.InsertVariableToEmptySpot(VariableType.WORK);
         Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
@@ -68,17 +68,17 @@ public class Assignment extends S_Instruction
         LabelInterface label_C = context.InsertLabelToEmptySpot();
 
         this.instructions = new ArrayList<>(List.of(
-        new Zero_Variable(context,this.var, this.label),
-        new JNZ(context, this.arg1, label_A),
-        new Goto_Label(context, Z_FAKE,label_C),
-        new Decrease(context, this.arg1, label_A),
-        new Increase(context, Z),
-        new JNZ(context, this.arg1, label_A),
-        new Decrease(context, Z, label_B),
-        new Increase(context, this.var),
-        new Increase(context, this.arg1),
-        new JNZ(context, Z, label_B),
-        new Neutral(context, this.var, label_C)
+        new Zero_Variable(context, this, this.var, this.label),
+        new JNZ(context, this, this.arg1, label_A),
+        new Goto_Label(context, this, Z_FAKE,label_C),
+        new Decrease(context, this, this.arg1, label_A),
+        new Increase(context, this, Z),
+        new JNZ(context, this, this.arg1, label_A),
+        new Decrease(context, this, Z, label_B),
+        new Increase(context, this, this.var),
+        new Increase(context, this, this.arg1),
+        new JNZ(context, this, Z, label_B),
+        new Neutral(context, this, this.var, label_C)
         ));
 
 

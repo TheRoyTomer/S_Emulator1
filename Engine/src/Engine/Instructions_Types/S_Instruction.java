@@ -1,3 +1,4 @@
+
 package Engine.Instructions_Types;
 
 import Engine.Labels.LabelInterface;
@@ -11,9 +12,9 @@ public abstract class S_Instruction extends Instruction
 {
     protected List<Instruction> instructions = new ArrayList<>();
 
-    public S_Instruction(InstructionData instructionData, Context context, Variable var, LabelInterface label)
+    public S_Instruction(InstructionData instructionData, Context context, S_Instruction holder, Variable var, LabelInterface label)
     {
-        super(instructionData, context, var, label);
+        super(instructionData, context, holder, var, label);
         this.maxDegree = this.calcMaxDegree();
     }
 
@@ -29,31 +30,39 @@ public abstract class S_Instruction extends Instruction
 
     @Override
     public abstract LabelInterface execute();
-    public abstract void getSingleExpansion();
+    public abstract void setSingleExpansion();
 
-    public List<Instruction> expand(int degree)
+    public List<Instruction> getOneExpand()
     {
-        if (degree == 0) {return List.of(this);}
-        else if (degree == 1)
-        {
-            return this.instructions;
-        }
-        else
-        {
-            List<Instruction> expandedInstructions = this.instructions;
-            List<Instruction> result = new ArrayList<>();
-            for (Instruction instruction : expandedInstructions)
-            {
-                result.addAll(instruction.expand(degree - 1));
-            }
-            return result;
-        }
+        return this.instructions;
+
     }
     public int getMaxDegree()
     {
         return this.maxDegree;
     }
 
+    public void InitMaxExpansions()
+    {
+        this.setSingleExpansion();
+        instructions.stream()
+                .filter(S_Instruction.class::isInstance)
+                .map(S_Instruction.class::cast)
+                .forEach(S_Instruction::InitMaxExpansions);
+    }
+
 }
 
+/*
 
+public void foo()
+{
+    this.Instructions = getSingleExpansion();
+    for (Instruction c : this. Instructions)
+    {
+        if (instruction instanceof S_Instruction)
+        {
+            c.foo();
+        }
+    }
+}*/

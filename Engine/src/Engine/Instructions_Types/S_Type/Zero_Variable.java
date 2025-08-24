@@ -17,21 +17,22 @@ import java.util.Objects;
 public class Zero_Variable extends S_Instruction
 {
 
-    public Zero_Variable(Context context, Variable var, LabelInterface label)
+    public Zero_Variable(Context context, S_Instruction holder, Variable var, LabelInterface label)
     {
-        super(InstructionData.ZERO_VARIABLE, context, var, label);
+        super(InstructionData.ZERO_VARIABLE, context, holder, var, label);
         //this.instructions = this.getSingleExpansion();
     }
 
-    public Zero_Variable(Context context, Variable var)
+    public Zero_Variable(Context context, S_Instruction holder, Variable var)
     {
-        this(context, var, FixedLabels.EMPTY);
+        this(context, holder, var, FixedLabels.EMPTY);
     }
 
     @Override
     public String getInstructionRepresentation()
     {
-        return String.format("(S) [%s] %s <- 0 (%d)",
+        return String.format("#<%d>(S) [%s] %s <- 0 (%d)",
+                this.lineIndex,
                 label.getLabelRepresentation(),
                 var.getVariableRepresentation(),
                 instructionData.getCycles());
@@ -47,7 +48,7 @@ public class Zero_Variable extends S_Instruction
     }
 
     @Override
-    public void getSingleExpansion()
+    public void setSingleExpansion()
     {
         List<Instruction> result = new ArrayList<>();
         LabelInterface labelFirstRow = this.label;
@@ -58,9 +59,10 @@ public class Zero_Variable extends S_Instruction
         }
 
         this.instructions = new ArrayList<>(List.of(
-            new Decrease(context, this.var,labelFirstRow),
-            new JNZ(context,this.var, labelFirstRow)
+            new Decrease(context, this, this.var,labelFirstRow),
+            new JNZ(context, this, this.var, labelFirstRow)
         ));
 
     }
+
 }

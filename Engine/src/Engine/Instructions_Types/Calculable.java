@@ -12,5 +12,5 @@ public interface Calculable
     public List<Variable> getUsedVariables();
 
 
-    public List<Instruction> expand(int degree);
+    public List<Instruction> getOneExpand();
 }
