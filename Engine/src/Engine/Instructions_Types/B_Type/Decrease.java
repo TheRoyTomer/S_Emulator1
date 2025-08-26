@@ -24,6 +24,13 @@ public class Decrease extends B_Instruction
         this(context, holder, var, FixedLabels.EMPTY);
     }
 
+    public String getCommandRep()
+    {
+        return String.format("%s <- %s - 1",
+                this.var.getVariableRepresentation()
+                ,this.var.getVariableRepresentation());
+    }
+
     public String getInstructionRepresentation()
     {
         return String.format("#<%d>(B) [%s] %s <- %s - 1 (%d)",

@@ -1,29 +1,31 @@
 package Engine.Programs;
 
-import Engine.Instructions_Types.Calculable;
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.S_Instruction;
-import Engine.JAXB.generated.SInstructions;
-import Engine.JAXB.generated.XML_Reader;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
-import Engine.PairDataStructure;
 import Engine.Statistics.StatisticsList;
-import Engine.Vars.*;
 
-import java.io.File;
 import java.util.*;
 
-public class Program /*implements Calculable*/
+public class Program
 {
     private String name;
     private final Context context;
     private int maxDegree;
-    private int cycles;
     private List<Instruction> instructions;/* = new ArrayList<>();*/
+
+    public void setExpandedInstructions(List<Instruction> expandedInstructions)
+    {
+        ExpandedInstructions = expandedInstructions;
+    }
+
     private List<Instruction> ExpandedInstructions;
     private StatisticsList instructionsStats;
+
+    //ToDo: delete?
+    private List<Long> inputs = new ArrayList<>();
 
     public Program()
     {
@@ -32,10 +34,16 @@ public class Program /*implements Calculable*/
         this.instructionsStats = new StatisticsList();
     }
 
+    public List<Instruction> getInstructions() {return instructions;}
+
+    public List<Instruction> getExpandedInstructions() {return ExpandedInstructions;}
+
     public Context getContext()
     {
         return context;
     }
+
+    public String getName() {return name;}
 
     public void setName(String name)
     {
@@ -48,6 +56,7 @@ public class Program /*implements Calculable*/
                 .filter(S_Instruction.class::isInstance)
                 .map(S_Instruction.class::cast)
                 .forEach(S_Instruction::InitMaxExpansions);
+
         setListIndices(1, this.instructions);
 
     }
@@ -61,120 +70,12 @@ public class Program /*implements Calculable*/
         }
     }
 
-    /*public void InitInstructionsExpensions()
-    {
-        int counter = 0;
-        List<Instruction> lst =  this.instructions;
-        List<Instruction> lst2 = new ArrayList<>();
-         boolean SinstructionFlag = true;
-
-         while  (SinstructionFlag)
-         {
-             SinstructionFlag = false;
-             for(Instruction instruction : lst){
-                 if (instruction instanceof S_Instruction)
-                 {
-                     SinstructionFlag = true;
-                     ((S_Instruction)instruction).getSingleExpansion();
-
-                 }
-             }
-         }
-    }*/
 
     public void initProgram()
     {
+        context.clearMaps();
         InitInstructionsExpensions();
         this.maxDegree = this.calcMaxDegree();
-        this.cycles = this.calcCycles();
-    }
-
-    //ToDO: just for debug, delete later.
-    public void YuvalLoveDebug()
-    {
-        Loader loader = new Loader(this);
-        String PATH = "C:\\Users\\beatl\\Desktop\\minus (1).xml";
-        //String PATH = "C:\\Users\\beatl\\Desktop\\my_minus (1).xml";
-
-        File f = new File(PATH);
-        XML_Reader reader = new XML_Reader(f);
-        loader.loadFromReader(reader);
-        Variable X1 = new VariableImplement(VariableType.INPUT, 1);
-        Variable X2 = new VariableImplement(VariableType.INPUT, 2);
-        context.setVarValue(X1, 8);
-        context.setVarValue(X2, 3);
-
-        //ToDo: for statistics, need in another way.
-        List<PairDataStructure<Variable, Long>> inputs = new ArrayList<>();
-        inputs.add(new PairDataStructure<Variable, Long>(X1, 8L));
-        inputs.add(new PairDataStructure<Variable, Long>(X2, 3L));
-        this.initProgram();
-
-        Run(0);
-       /* for( int degree = 0; degree <=2; degree++)
-        {
-            context.clearMaps();
-            context.setVarValue(X1, 8);
-            context.setVarValue(X2, 3);
-            Run(degree);
-            long OutputValue = context.getVarValue(Variable.OUTPUT);
-            long totalCycles = calcCyclesExpendedInstructions();
-
-            instructionsStats.addExecutionStatistics(degree, OutputValue, inputs, totalCycles);
-        }*/
-
-        System.out.println(instructionsStats.getStatisticsListRepresentation());
-
-
-       /* String res = "";
-        for (Instruction c : this.instructions)
-        {
-            if(c == null) {res += "NULL\n";}
-            else
-            {
-            res += String.format("#<%d> %s \n", counter++, c.getInstructionRepresentation());
-            }
-        }
-
-        System.out.println(res);*/
-    }
-
-    //ToDO: just for debug, delete later.
-    public void YuvalLovesDisplayingPrograms()
-    {
-        Loader loader = new Loader(this);
-        String PATH = "C:\\Users\\beatl\\Desktop\\minus (1).xml";
-        //String PATH = "C:\\Users\\beatl\\Desktop\\my_minus (1).xml";
-
-        File f = new File(PATH);
-        XML_Reader reader = new XML_Reader(f);
-        loader.loadFromReader(reader);
-        Variable X1 = new VariableImplement(VariableType.INPUT, 1);
-        Variable X2 = new VariableImplement(VariableType.INPUT, 2);
-        context.setVarValue(X1, 8);
-        context.setVarValue(X2, 3);
-
-        //ToDo: for statistics, need in another way.
-        List<PairDataStructure<Variable, Long>> inputs = new ArrayList<>();
-        inputs.add(new PairDataStructure<Variable, Long>(X1, 8L));
-        inputs.add(new PairDataStructure<Variable, Long>(X2, 3L));
-        this.initProgram();
-
-        this.displayProgram();
-    }
-
-    //ToDO: just for debug, delete later.
-    public static void main(String[] args)
-    {
-        Program program = new Program();
-        //program.YuvalLoveDebug();
-        program.YuvalLovesDisplayingPrograms();
-    }
-
-    //ToDo:NEED?
-    public void addInstruction(Instruction instruction)
-    {
-        instructions.add(instruction);
     }
 
     @Override
@@ -182,27 +83,16 @@ public class Program /*implements Calculable*/
     {
         return "Program{" +
                 "maxDegree=" + maxDegree +
-                ", cycles=" + cycles + ", " +
-                context.toString() +
+                ", " + context.toString() +
                 '}';
     }
 
-    public String getProgramRepresentation(List <Instruction> instructions)
-    {
 
-        String res = "";
-        for (Instruction c : instructions)
-        {
-            res += String.format("%s \n", c.getInstructionRepresentation());
-        }
-        return res;
-    }
 
     public void setInstructions(List<Instruction> instructions)
     {
         this.instructions = instructions;
     }
-    //@Override
     public int calcMaxDegree()
     {
         return instructions.stream()
@@ -211,130 +101,18 @@ public class Program /*implements Calculable*/
                 .orElse(0);
     }
 
-    public int calcCyclesExpendedInstructions()
+    public List<Instruction> getProperListByDegree(int degree)
     {
-        return ExpandedInstructions.stream()
-                .mapToInt(Instruction::getCycles)
-                .sum();
-    }
-
-    public int calcCycles()
-    {
-        return instructions.stream()
-                .mapToInt(Instruction::getCycles)
-                .sum();
+        return degree == 0
+                ? this.instructions
+                : this.ExpandedInstructions;
     }
 
 
-    //@Override
-    public int execute()
-    {
-        //context.collectVarsAndIndexLabels(this.ExpandedInstructions);
-        int sumCycles = 0;
-        LabelInterface label = null;
-        Instruction currentInstruction;
-        for (long PC = 0; PC < ExpandedInstructions.size(); ) {
-            currentInstruction =  ExpandedInstructions.get((int) PC);
-            label = currentInstruction.execute();
-            sumCycles += currentInstruction.getCycles();
-            if (label == FixedLabels.EMPTY) {
-                PC++;
-            } else if (label == FixedLabels.EXIT || !context.isExistInMapL(label)) {
-                break;
-            } else {
-                PC = context.getFromMapL((Label_Implement) label);
-            }
-        }
-        return sumCycles;
-    }
 
 
-    public List<Instruction> expand(int degree)
-    {
-       /* List<Instruction> res = new ArrayList<>();
-        if (degree == 0)
-        {
-            return this.instructions;
-        }
-        for (Instruction instruction : instructions)
-        {
-            res.addAll(instruction.expand(degree));
-        }
-        return res;*/
 
-        List<Instruction> currDegreeInstructions = this.instructions;
-        List<Instruction> nextDegreeInstructions = new ArrayList<>();
-        int lineIndex;
-        while (degree != 0) {
-            lineIndex = 1;
-            for (Instruction instruction : currDegreeInstructions) {
-                nextDegreeInstructions.addAll(instruction.getOneExpand());
-            }
-            for (Instruction instruction : nextDegreeInstructions) {
-                instruction.setLineIndex(lineIndex);
-                lineIndex++;
-            }
-            currDegreeInstructions = nextDegreeInstructions;
-            nextDegreeInstructions.clear();
-            degree--;
-        }
-        return currDegreeInstructions;
-    }
 
-    //ToDo: is needed?
-    /*public void initVarMap(Variable... vars)
-    {
-        for (Variable var : vars) {context.setVarValue(var,0);}
-    }*/
-
-    //ToDo: is needed?
-    /*public void initLabelMap(LabelInterface... labels)
-    {
-        for (LabelInterface label : labels) {
-            if (label instanceof Label_Implement)
-            {
-                context.setInMapL((Label_Implement) label, 0);
-            }
-        }
-    }*/
-
-    public void Run(int degree)
-    {
-        this.ExpandedInstructions = expand(degree);
-        context.collectVarsAndIndexLabels(this.ExpandedInstructions);
-        execute();
-        //displayEndOfRun();
-
-    }
-
-   /* public void displayEndOfRun()
-    {
-        System.out.println(this.getProgramRepresentation());
-
-        System.out.println(Variable.OUTPUT.getVariableRepresentation()
-                + " = " + context.getVarValue(Variable.OUTPUT));
-
-        List<Variable> usedVarsInOrder = context.getUsedVarsInOrder();
-        usedVarsInOrder.forEach(var ->
-                System.out.println(
-                        var.getVariableRepresentation()
-                        + " = "
-                        + context.getVarValue(var)));
-
-        System.out.println("Total Cycles: " +
-                ExpandedInstructions.stream()
-                .mapToInt(Instruction::getCycles)
-                .sum());
-    }
-*/
-
-    public void displayProgram()
-    {
-        System.out.println(this.name + "\n");
-        System.out.println(context.getAll_X_InList(this.instructions) + "\n");
-        System.out.println(context.getAll_L_InList(this.instructions) + "\n");
-        System.out.println(this.getProgramRepresentation(this.instructions) + "\n");
-    }
 
 }
 

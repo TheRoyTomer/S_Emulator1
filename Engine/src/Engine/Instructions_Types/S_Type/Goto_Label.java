@@ -30,6 +30,12 @@ public class Goto_Label extends S_Instruction
 
     }
 
+    public String getCommandRep()
+    {
+        return String.format("GOTO %s",
+                this.labelToJump.getLabelRepresentation());
+    }
+
     @Override
     public String getInstructionRepresentation()
     {
@@ -65,7 +71,7 @@ public class Goto_Label extends S_Instruction
         Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
         this.instructions = new ArrayList<>(List.of(
         new Increase(context, this, Z_FAKE, this.label),
-        new JNZ(context, this, this.var, labelToJump)
+        new JNZ(context, this, Z_FAKE, labelToJump)
         ));
     }
 

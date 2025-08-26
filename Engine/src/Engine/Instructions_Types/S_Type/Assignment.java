@@ -32,6 +32,13 @@ public class Assignment extends S_Instruction
         this(context, holder, var, arg1, FixedLabels.EMPTY);
     }
 
+    public String getCommandRep()
+    {
+        return String.format("%s <- %s",
+                this.var.getVariableRepresentation()
+                ,this.arg1.getVariableRepresentation());
+    }
+
 
     public String getInstructionRepresentation()
     {

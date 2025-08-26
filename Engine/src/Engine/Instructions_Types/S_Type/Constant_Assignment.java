@@ -29,6 +29,13 @@ public class Constant_Assignment extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY, constant);
     }
 
+    public String getCommandRep()
+    {
+        return String.format("%s <- %s",
+                this.var.getVariableRepresentation()
+                ,this.constant);
+    }
+
     @Override
     public String getInstructionRepresentation()
     {

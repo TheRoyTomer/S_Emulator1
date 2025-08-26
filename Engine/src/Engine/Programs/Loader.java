@@ -23,8 +23,8 @@ import java.util.function.Function;
 
 public class Loader
 {
-    private Program destProgram;
-    private Context context;
+    private final Program destProgram;
+    private final Context context;
 
 
 
@@ -34,13 +34,19 @@ public class Loader
         this.context = destProgram.getContext();
     }
 
+    public void load(String path)
+    {
+        XML_Reader reader = new XML_Reader(path);
+        loadFromReader(reader);
+    }
+
     public void loadFromReader(XML_Reader reader)
     {
-        try {
-            destProgram.setName(reader.getName());
-            destProgram.setInstructions(convertToInstructionList(reader.getSInstructionList()));
-        }  catch (RuntimeException e) {/*ToDo: handle Exception};*/}
-
+        destProgram.setName(reader.getName());
+        destProgram.setInstructions(convertToInstructionList(reader.getSInstructionList()));
+        String invalidLabel = reader.checkLabelValidity();
+        if (!invalidLabel.isEmpty()) {throw new IllegalArgumentException("Undefined label: " + invalidLabel);}
+        destProgram.initProgram();
     }
 
     public List<Instruction> convertToInstructionList(List<SInstruction> fromJAXB)

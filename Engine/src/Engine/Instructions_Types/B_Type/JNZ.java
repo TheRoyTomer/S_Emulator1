@@ -26,7 +26,12 @@ public class JNZ extends B_Instruction
         this(context,holder , var, FixedLabels.EMPTY, labelToJump);
     }
 
-
+    public String getCommandRep()
+    {
+        return String.format("IF %s != 0 GOTO %s",
+                this.var.getVariableRepresentation()
+                ,this.labelToJump.getLabelRepresentation());
+    }
     public String getInstructionRepresentation()
     {
         return String.format("#<%d>(B) [%s] IF %s != 0 GOTO %s(%d)",

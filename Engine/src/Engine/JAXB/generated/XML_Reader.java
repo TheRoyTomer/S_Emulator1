@@ -14,9 +14,11 @@ public class XML_Reader
     private SProgram sProgram;
     private File XMLfile;
 
-    public XML_Reader(File XMLfile)
+    public XML_Reader(String path)
     {
-        this.XMLfile = Objects.requireNonNull(XMLfile, "XMLfile is null");
+
+        File file = new File(path);
+        this.XMLfile = Objects.requireNonNull(file, "XMLfile is null");
 
         if (!XMLfile.exists() || !XMLfile.isFile()) {
             throw new IllegalArgumentException("XML file not found: " + XMLfile.getAbsolutePath());

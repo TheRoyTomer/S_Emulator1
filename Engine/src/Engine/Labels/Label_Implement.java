@@ -2,7 +2,7 @@ package Engine.Labels;
 
 import java.util.Objects;
 
-public class Label_Implement implements LabelInterface
+public class Label_Implement implements LabelInterface, Comparable<Label_Implement>
 {
     private final String name;
 
@@ -23,6 +23,14 @@ public class Label_Implement implements LabelInterface
     public int hashCode()
     {
         return Objects.hashCode(name);
+    }
+
+    @Override
+    public int compareTo(Label_Implement other)
+    {
+        int thisNum = Integer.parseInt(this.name.substring(1));
+        int otherNum = Integer.parseInt(other.name.substring(1));
+        return Integer.compare(thisNum, otherNum);
     }
 
     @Override

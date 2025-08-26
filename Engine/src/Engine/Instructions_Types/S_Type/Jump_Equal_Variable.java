@@ -32,6 +32,14 @@ public class Jump_Equal_Variable extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY, labelToJump, arg1);
     }
 
+    public String getCommandRep()
+    {
+        return String.format("IF %s = %s GOTO %s",
+                this.var.getVariableRepresentation()
+                ,this.arg1.getVariableRepresentation()
+                , this.labelToJump.getLabelRepresentation());
+    }
+
     public String getInstructionRepresentation()
     {
         return String.format("#<%d>(S) [%s] IF %s = %s GOTO %s(%d)",

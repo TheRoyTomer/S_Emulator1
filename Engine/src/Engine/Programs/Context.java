@@ -2,7 +2,6 @@ package Engine.Programs;
 
 import Engine.Instructions_Types.Instruction;
 import Engine.Labels.FixedLabels;
-import Engine.Labels.LabelComperator;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
 import Engine.Vars.Variable;
@@ -18,7 +17,6 @@ public class Context
     private final Map<Variable, Long> MapForZ = new HashMap<>();
     private final Map<Label_Implement, Long> MapForL = new HashMap<>();
     private final Map<Variable, Long> Y = new HashMap<>();
-    Set<Variable> usedVars = new TreeSet<>();
 
 
     public Context()
@@ -35,6 +33,15 @@ public class Context
                 ", MapForL=" + MapForL +
                 ", Y=" + getVarValue(Variable.OUTPUT) +
                 '}';
+    }
+
+    public void insertInputsToMap(List<Long> inputs)
+    {
+        int counter = 1;
+        for (Long input : inputs) {
+            setVarValue(new VariableImplement(VariableType.INPUT, counter), input);
+            counter++;
+        }
     }
 
     public long getFromMapL(Label_Implement label)
@@ -110,13 +117,11 @@ public class Context
         };
     }
 
-    public void collectVarsAndIndexLabels(List<Instruction> instructions)
+    public void updateIndexLabels(List<Instruction> instructions)
     {
-        usedVars.clear();
         MapForL.clear();
         long rowCounter = 0;
         for (Instruction c : instructions) {
-            usedVars.addAll(c.getUsedVariables());
             if (c.getLabel() instanceof Label_Implement) {
                 MapForL.put((Label_Implement) c.getLabel(), rowCounter);
             }
@@ -150,18 +155,20 @@ public class Context
         return res;
     }
 
-    public List<Variable> getUsedVarsInOrder()
-    {
-        return usedVars.stream().toList();
-    }
-
     public void clearMaps()
     {
-        usedVars.clear();
         MapForL.clear();
         MapForX.clear();
         MapForZ.clear();
         Y.put(Variable.OUTPUT, 0L);
+    }
+
+    public void resetMapsState()
+    {
+        MapForL.replaceAll((k, v) -> 0L);
+        MapForX.clear();
+        setVarValue(Variable.OUTPUT, 0L);
+        MapForZ.replaceAll((k, v) -> 0L);
     }
 
     public TreeSet<Variable> getAll_X_InList(List<Instruction> instructions)
@@ -172,14 +179,34 @@ public class Context
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public Set<LabelInterface> getAll_L_InList(List<Instruction> instructions)
+    public TreeSet<Variable> getAllVarsInList(List<Instruction> instructions)
     {
-        //Todo: Do with Treeset
-        //TreeSet<LabelInterface> res = new TreeSet<>();
         return instructions.stream()
-                .flatMap(inst -> inst.getUsedLabels().stream())
-                .filter(label -> label != FixedLabels.EMPTY)
-                .collect(Collectors.toSet());
+                .flatMap(inst -> inst.getUsedVariables().stream())
+                .collect(Collectors.toCollection(TreeSet::new));
     }
-}
 
+
+    public List<LabelInterface> getAll_L_InList(List<Instruction> instructions)
+    {
+        boolean isExitExist = false;
+        Set<Label_Implement> All_True_Labels = new TreeSet<>();
+        for (Instruction inst : instructions) {
+
+            for (LabelInterface label : inst.getUsedLabels()) {
+                if (label instanceof Label_Implement) {
+                    All_True_Labels.add((Label_Implement) label);
+                } else if (label == FixedLabels.EXIT) {
+                    isExitExist = true;
+                }
+            }
+        }
+        List<LabelInterface> res = new ArrayList<>(All_True_Labels);
+        if (isExitExist) {
+            res.add(FixedLabels.EXIT);
+        }
+
+        return res;
+    }
+
+}
