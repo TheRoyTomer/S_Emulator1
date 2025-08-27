@@ -52,13 +52,16 @@ public class Executer
         int sumCycles = 0;
         LabelInterface label = null;
         Instruction currentInstruction;
-        for (long PC = 0; PC < instructions.size(); ) {
+        for (long PC = 0; PC < instructions.size(); )
+        {
             currentInstruction = instructions.get((int) PC);
             label = currentInstruction.execute();
             sumCycles += currentInstruction.getCycles();
-            if (label == FixedLabels.EMPTY) {
+            if (label == FixedLabels.EMPTY)
+            {
                 PC++;
-            } else if (label == FixedLabels.EXIT || !context.isExistInMapL(label)) {
+            } else if (label == FixedLabels.EXIT)
+            {
                 break;
             } else {
                 PC = context.getFromMapL((Label_Implement) label);
