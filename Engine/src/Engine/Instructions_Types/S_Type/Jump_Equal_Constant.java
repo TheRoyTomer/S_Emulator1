@@ -14,6 +14,7 @@ import Engine.Vars.VariableType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.LongStream;
 
 public class Jump_Equal_Constant extends S_Instruction
@@ -33,13 +34,6 @@ public class Jump_Equal_Constant extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY, labelToJump, constant);
     }
 
-    public String getCommandRep()
-    {
-        return String.format("IF %s = %d GOTO %s",
-                this.var.getVariableRepresentation()
-                ,this.constant
-                , this.labelToJump.getLabelRepresentation());
-    }
 
     public String getInstructionRepresentation()
     {
@@ -89,5 +83,17 @@ public class Jump_Equal_Constant extends S_Instruction
         ));
 
         this.instructions = result;
+    }
+
+    @Override
+    public Optional<LabelInterface> getLabelToJumpIfExist()
+    {
+        return Optional.ofNullable(this.labelToJump);
+    }
+
+    @Override
+    public Optional<Long> getConstantfExist()
+    {
+        return Optional.ofNullable(this.constant);
     }
 }

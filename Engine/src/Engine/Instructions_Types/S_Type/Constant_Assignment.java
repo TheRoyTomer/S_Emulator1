@@ -11,6 +11,7 @@ import Engine.Vars.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -29,12 +30,6 @@ public class Constant_Assignment extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY, constant);
     }
 
-    public String getCommandRep()
-    {
-        return String.format("%s <- %s",
-                this.var.getVariableRepresentation()
-                ,this.constant);
-    }
 
     @Override
     public String getInstructionRepresentation()
@@ -68,5 +63,11 @@ public class Constant_Assignment extends S_Instruction
                 .collect(Collectors.toList())
         );
         this.instructions = result;
+    }
+
+    @Override
+    public Optional<Long> getConstantfExist()
+    {
+        return Optional.ofNullable(this.constant);
     }
 }

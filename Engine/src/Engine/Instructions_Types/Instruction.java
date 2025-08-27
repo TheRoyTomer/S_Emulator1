@@ -3,8 +3,10 @@ package Engine.Instructions_Types;
 import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
 import Engine.Vars.Variable;
+import EngineObject.InstructionDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Instruction implements Calculable
 {
@@ -35,7 +37,6 @@ public abstract class Instruction implements Calculable
 
     public abstract String getInstructionRepresentation();
 
-    public abstract String getCommandRep();
 
     public LabelInterface getLabel()
     {
@@ -46,8 +47,14 @@ public abstract class Instruction implements Calculable
     {
         return this.instructionData.getCycles();
     }
+    public String getName()
+    {
+        return this.instructionData.getName();
+    }
 
-    public S_Instruction getHolder() {return holder;}
+    public S_Instruction getHolder() {return this.holder;}
+
+    public Variable getVar() {return this.var;}
 
     @Override
     public List<Variable> getUsedVariables()
@@ -69,5 +76,25 @@ public abstract class Instruction implements Calculable
     {
         this.lineIndex = lineIndex;
     }
+
+    //For the DTO
+    public Optional<Variable> getArgIfExist()
+    {
+        return Optional.empty();
+    }
+
+    //For the DTO
+    public Optional<Long> getConstantfExist()
+    {
+        return Optional.empty();
+    }
+
+    //For the DTO
+    public Optional<LabelInterface> getLabelToJumpIfExist()
+    {
+        return Optional.empty();
+    }
+
+
 }
 

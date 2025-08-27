@@ -6,10 +6,10 @@ import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
-import Engine.Programs.Program;
 import Engine.Vars.Variable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class JNZ extends B_Instruction
 {
@@ -26,12 +26,7 @@ public class JNZ extends B_Instruction
         this(context,holder , var, FixedLabels.EMPTY, labelToJump);
     }
 
-    public String getCommandRep()
-    {
-        return String.format("IF %s != 0 GOTO %s",
-                this.var.getVariableRepresentation()
-                ,this.labelToJump.getLabelRepresentation());
-    }
+
     public String getInstructionRepresentation()
     {
         return String.format("#<%d>(B) [%s] IF %s != 0 GOTO %s(%d)",
@@ -55,5 +50,11 @@ public class JNZ extends B_Instruction
         long value = context.getVarValue(var);
         if(value != 0) return labelToJump;
         return FixedLabels.EMPTY;
+    }
+
+    @Override
+    public Optional<LabelInterface> getLabelToJumpIfExist()
+    {
+        return Optional.ofNullable(this.labelToJump);
     }
 }

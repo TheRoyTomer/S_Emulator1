@@ -12,6 +12,7 @@ import Engine.Vars.VariableType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Jump_Zero extends S_Instruction
 {
@@ -26,13 +27,6 @@ public class Jump_Zero extends S_Instruction
     public Jump_Zero(Context context, S_Instruction holder, Variable var, LabelInterface labelToJump)
     {
         this(context, holder, var, FixedLabels.EMPTY, labelToJump);
-    }
-
-    public String getCommandRep()
-    {
-        return String.format("IF %s = 0 GOTO %s",
-                this.var.getVariableRepresentation()
-                , this.labelToJump.getLabelRepresentation());
     }
 
     public String getInstructionRepresentation()
@@ -73,5 +67,11 @@ public class Jump_Zero extends S_Instruction
         new Goto_Label(context, this, z_FAKE, this.labelToJump),
         new Neutral(context, this, Variable.OUTPUT, label_A)
         ));
+    }
+
+    @Override
+    public Optional<LabelInterface> getLabelToJumpIfExist()
+    {
+        return Optional.ofNullable(this.labelToJump);
     }
 }

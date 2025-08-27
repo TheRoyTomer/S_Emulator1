@@ -12,6 +12,7 @@ import Engine.Vars.VariableType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Goto_Label extends S_Instruction
 {
@@ -30,11 +31,6 @@ public class Goto_Label extends S_Instruction
 
     }
 
-    public String getCommandRep()
-    {
-        return String.format("GOTO %s",
-                this.labelToJump.getLabelRepresentation());
-    }
 
     @Override
     public String getInstructionRepresentation()
@@ -73,6 +69,12 @@ public class Goto_Label extends S_Instruction
         new Increase(context, this, Z_FAKE, this.label),
         new JNZ(context, this, Z_FAKE, labelToJump)
         ));
+    }
+
+    @Override
+    public Optional<LabelInterface> getLabelToJumpIfExist()
+    {
+        return Optional.ofNullable(this.labelToJump);
     }
 
 

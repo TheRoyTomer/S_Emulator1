@@ -1,13 +1,18 @@
 package EngineObject;
 
+import java.util.Optional;
+
 public record InstructionDTO(
         int lineIndex,
         boolean isSynthetic,
         String label,
-        String commandBody,
+        VariableDTO var,
+        String name,
         InstructionDTO holder,
-        int cycles)
-{
-}
+        int cycles,
+        Optional<VariableDTO> arg,
+        Optional<Long> constant,
+        Optional<String> labelToJump)
+{}
 
 

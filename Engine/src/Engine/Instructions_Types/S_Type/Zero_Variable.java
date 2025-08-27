@@ -28,10 +28,6 @@ public class Zero_Variable extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY);
     }
 
-    public String getCommandRep()
-    {
-        return String.format("%s <- 0", this.var.getVariableRepresentation());
-    }
 
     @Override
     public String getInstructionRepresentation()

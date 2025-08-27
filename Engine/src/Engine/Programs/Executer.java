@@ -4,6 +4,8 @@ import Engine.Instructions_Types.Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
+import Engine.Vars.Variable;
+import Out.ExecuteResultDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +21,29 @@ public class Executer
         this.context = program.getContext();
     }
 
-    public int execute(int degree, List<Long> inputs)
+    public ExecuteResultDTO execute(int degree, List<Long> inputs)
     {
         context.resetMapsState();
         context.insertInputsToMap(inputs);
         expand(degree);
         context.updateIndexLabels(program.getExpandedInstructions());
-        return runProgram();
+        int totalCycles = runProgram();
+
+        program.getHistory().addExecutionStatistics(
+                degree,
+                context.getVarValue(Variable.OUTPUT),
+                inputs,
+                totalCycles);
+
+        return new ExecuteResultDTO(
+                program.getName(),
+                Convertor.convertInstructionsListToDTO(program.getExpandedInstructions()),
+                context.getVarValue(Variable.OUTPUT),
+                context.getAllVarsInList(program.getExpandedInstructions())
+                        .stream()
+                        .map(Convertor::VariableToDTO)
+                        .toList(),
+                totalCycles);
     }
 
     public int runProgram()

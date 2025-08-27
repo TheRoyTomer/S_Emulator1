@@ -1,6 +1,5 @@
 package Engine.Statistics;
 
-import Engine.PairDataStructure;
 import Engine.Vars.Variable;
 
 import java.util.List;
@@ -9,16 +8,16 @@ public class ExecutionStatistics
 {
     private final int executeId;
     private final int executeDegree;
-    private final List<PairDataStructure<Variable, Long>> Inputs;
+    private final List<Long> inputsVals;
     private final long finalYValue;
-    private final long totalCycles;
+    private final int totalCycles;
 
-    public ExecutionStatistics(int executeDegree, int executeId, long finalYValue, List<PairDataStructure<Variable, Long>> inputs, long totalCycles)
+    public ExecutionStatistics(int executeDegree, int executeId, long finalYValue, List<Long> inputsVals, int totalCycles)
     {
         this.executeDegree = executeDegree;
         this.executeId = executeId;
         this.finalYValue = finalYValue;
-        Inputs = inputs;
+        this.inputsVals = inputsVals;
         this.totalCycles = totalCycles;
     }
 
@@ -28,7 +27,7 @@ public class ExecutionStatistics
         return "ExecutionStatistics{" +
                 "executeId=" + executeId +
                 ", executeDegree=" + executeDegree +
-                ", Inputs=" + Inputs +
+                ", Inputs=" + inputsVals +
                 ", finalYValue=" + finalYValue +
                 ", totalCycles=" + totalCycles +
                 '}';
@@ -39,9 +38,34 @@ public class ExecutionStatistics
         return "ExecutionStatistics{" +
                 "executeId = " + executeId +
                 ", executeDegree = " + executeDegree +
-                ", Inputs = " + Inputs +
+                ", Inputs = " + inputsVals +
                 ", Y = " + finalYValue +
                 ", totalCycles = " + totalCycles +
                 '}';
+    }
+
+    public int getExecuteId()
+    {
+        return executeId;
+    }
+
+    public int getExecuteDegree()
+    {
+        return executeDegree;
+    }
+
+    public List<Long> getInputsVals()
+    {
+        return inputsVals;
+    }
+
+    public long getFinalYValue()
+    {
+        return finalYValue;
+    }
+
+    public int getTotalCycles()
+    {
+        return totalCycles;
     }
 }

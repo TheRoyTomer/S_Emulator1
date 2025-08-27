@@ -22,12 +22,6 @@ public class Neutral extends B_Instruction
         this(context, holder, var, FixedLabels.EMPTY);
     }
 
-    public String getCommandRep()
-    {
-        return String.format("%s <- %s",
-                this.var.getVariableRepresentation()
-                ,this.var.getVariableRepresentation());
-    }
 
     public String getInstructionRepresentation()
     {

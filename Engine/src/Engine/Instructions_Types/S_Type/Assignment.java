@@ -15,6 +15,7 @@ import Engine.Vars.VariableType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Assignment extends S_Instruction
 {
@@ -30,13 +31,6 @@ public class Assignment extends S_Instruction
     public Assignment(Context context, S_Instruction holder, Variable var, Variable arg1)
     {
         this(context, holder, var, arg1, FixedLabels.EMPTY);
-    }
-
-    public String getCommandRep()
-    {
-        return String.format("%s <- %s",
-                this.var.getVariableRepresentation()
-                ,this.arg1.getVariableRepresentation());
     }
 
 
@@ -87,7 +81,11 @@ public class Assignment extends S_Instruction
         new JNZ(context, this, Z, label_B),
         new Neutral(context, this, this.var, label_C)
         ));
+    }
 
-
+    @Override
+    public Optional<Variable> getArgIfExist()
+    {
+        return Optional.ofNullable(this.arg1);
     }
 }

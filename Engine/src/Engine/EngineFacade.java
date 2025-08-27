@@ -1,14 +1,14 @@
 package Engine;
 
-import Engine.Programs.Executer;
-import Engine.Programs.Loader;
-import Engine.Programs.Program;
-import Engine.Programs.Viewer;
-import Engine.Statistics.StatisticsList;
+import Engine.Programs.*;
+import Engine.Statistics.HistoryList;
+import EngineObject.StatisticDTO;
+import EngineObject.VariableDTO;
+import Out.ExecuteResultDTO;
 import Out.LoadResultDTO;
 import Out.ViewResultDTO;
 
-import javax.swing.text.View;
+import java.util.List;
 
 public class EngineFacade
 {
@@ -16,7 +16,8 @@ public class EngineFacade
     private final Executer executer;
     private final Loader loader;
     private final Viewer viewer;
-    private final StatisticsList statsList;
+    private final Convertor convertor;
+    private final HistoryList statsList;
 
     public EngineFacade()
     {
@@ -24,13 +25,22 @@ public class EngineFacade
         this.executer = new Executer(program);
         this.loader = new Loader(program);
         this.viewer = new Viewer(program);
-        this.statsList = new StatisticsList();
+        this.convertor = new Convertor(program.getContext());
+        this.statsList = new HistoryList();
 
+    }
+    public int getMaxDegree() { return program.calcMaxDegree();}
+
+    public List<VariableDTO> getInputVariablesPreExecute(int degree)
+    {
+        return program.getContext().getAll_X_InList(program.getInstructions())
+                .stream()
+                .map(Convertor::VariableToDTO)
+                .toList();
     }
 
     public LoadResultDTO loadFromXML(String filePath)
     {
-        //LoadResultDTO loadResultDTO = new LoadResultDTO();
         try
         {
            loader.load(filePath);
@@ -42,6 +52,25 @@ public class EngineFacade
 
     public ViewResultDTO viewOriginalProgram()
     {
-
+        return viewer.viewProgram(0);
     }
+
+    public ViewResultDTO viewExpandedProgram(int degree)
+    {
+        executer.expand(degree);
+        return viewer.viewProgram(degree);
+    }
+
+    public ExecuteResultDTO executeProgram(int degree, List<Long> inputsVal)
+    {
+         return executer.execute(degree, inputsVal);
+    }
+
+    public List<StatisticDTO> getHistory()
+    {
+        return statsList.getHistory();
+    }
+
+
+
 }

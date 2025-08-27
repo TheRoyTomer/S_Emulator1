@@ -11,7 +11,7 @@ import Engine.Vars.VariableType;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Context
+public class  Context
 {
     private final Map<Variable, Long> MapForX = new HashMap<>();
     private final Map<Variable, Long> MapForZ = new HashMap<>();
@@ -38,7 +38,8 @@ public class Context
     public void insertInputsToMap(List<Long> inputs)
     {
         int counter = 1;
-        for (Long input : inputs) {
+        for (Long input : inputs)
+        {
             setVarValue(new VariableImplement(VariableType.INPUT, counter), input);
             counter++;
         }
@@ -46,8 +47,7 @@ public class Context
 
     public long getFromMapL(Label_Implement label)
     {
-        Long value = MapForL.computeIfAbsent(label, k -> 0L);
-        return value;
+        return MapForL.computeIfAbsent(label, k -> 0L);
     }
 
     public void setInMapL(Label_Implement label, long value)
@@ -55,10 +55,12 @@ public class Context
         MapForL.put(label, Math.max(0, value));
     }
 
+/*
     public Boolean isExistInMapL(LabelInterface key)
     {
         return MapForL.containsKey(key);
     }
+*/
 
     public Map<Variable, Long> getrelevantMap(VariableType type)
     {
@@ -104,7 +106,7 @@ public class Context
     }
 
 
-    public boolean isExistInMap(VariableImplement var)
+    /*public boolean isExistInMap(VariableImplement var)
     {
 
         VariableType varType = var.getVariableType();
@@ -115,7 +117,7 @@ public class Context
             case VariableType.OUTPUT -> true; //We Always Have Y.
 
         };
-    }
+    }*/
 
     public void updateIndexLabels(List<Instruction> instructions)
     {
@@ -131,7 +133,6 @@ public class Context
 
     public VariableImplement InsertVariableToEmptySpot(VariableType type)
     {
-        //TODO: Handle with exceptions if type is output
         Map<Variable, Long> relevantMap = getrelevantMap(type);
         int availableIndex = 1;
         VariableImplement res = new VariableImplement(type, availableIndex);

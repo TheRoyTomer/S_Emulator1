@@ -2,10 +2,7 @@ package Engine.Programs;
 
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.S_Instruction;
-import Engine.Labels.FixedLabels;
-import Engine.Labels.LabelInterface;
-import Engine.Labels.Label_Implement;
-import Engine.Statistics.StatisticsList;
+import Engine.Statistics.HistoryList;
 
 import java.util.*;
 
@@ -14,25 +11,23 @@ public class Program
     private String name;
     private final Context context;
     private int maxDegree;
-    private List<Instruction> instructions;/* = new ArrayList<>();*/
+    private List<Instruction> instructions;
+    private List<Instruction> ExpandedInstructions;
+    private HistoryList history = new HistoryList();
+
+
+    public Program()
+    {
+        this.context = new Context();
+    }
+
 
     public void setExpandedInstructions(List<Instruction> expandedInstructions)
     {
         ExpandedInstructions = expandedInstructions;
     }
 
-    private List<Instruction> ExpandedInstructions;
-    private StatisticsList instructionsStats;
-
-    //ToDo: delete?
-    private List<Long> inputs = new ArrayList<>();
-
-    public Program()
-    {
-        //ToDO: what else?
-        this.context = new Context();
-        this.instructionsStats = new StatisticsList();
-    }
+    public HistoryList getHistory() {return history;}
 
     public List<Instruction> getInstructions() {return instructions;}
 
@@ -74,6 +69,7 @@ public class Program
     public void initProgram()
     {
         context.clearMaps();
+        history.reset();
         InitInstructionsExpensions();
         this.maxDegree = this.calcMaxDegree();
     }
@@ -107,6 +103,8 @@ public class Program
                 ? this.instructions
                 : this.ExpandedInstructions;
     }
+
+
 
 
 

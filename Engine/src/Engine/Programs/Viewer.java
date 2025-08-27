@@ -2,6 +2,7 @@ package Engine.Programs;
 
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.S_Instruction;
+import Engine.Labels.LabelInterface;
 import Engine.Vars.Variable;
 import EngineObject.InstructionDTO;
 import EngineObject.VariableDTO;
@@ -9,6 +10,7 @@ import Out.ViewResultDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Viewer
 {
@@ -21,29 +23,36 @@ public class Viewer
         this.context = program.getContext();
     }
 
-    public ViewResultDTO viewOriginalProgram()
+
+
+    public ViewResultDTO viewProgram(int degree)
     {
 
+        Convertor convertor = new Convertor(context);
+        List<Instruction> currInstructions = program.getProperListByDegree(degree);
+
+
+        List<VariableDTO> Xlist = context.getAll_X_InList(currInstructions)
+                .stream()
+                .map(Convertor::VariableToDTO)
+                .toList();
+
+        List<String> Llist = context.getAll_L_InList(currInstructions)
+                .stream()
+                .map(LabelInterface::getLabelRepresentation)
+                .toList();
+
+
+
+        return new ViewResultDTO(
+                program.getName(),
+                Convertor.convertInstructionsListToDTO(currInstructions),
+                context.getVarValue(Variable.OUTPUT),
+                Xlist,
+                Llist);
     }
 
-    public InstructionDTO InstructionToDTO(Instruction inst)
-    {
-        if (inst == null) {return null;}
-        return new InstructionDTO(
-                inst.getLineIndex(),
-                inst instanceof S_Instruction,
-                inst.getLabel().getLabelRepresentation(),
-                inst.getCommandRep(),
-                InstructionToDTO(inst.getHolder()),
-                inst.getCycles());
-    }
 
-    public VariableDTO VariableToDTO(Variable v)
-    {
-        return new VariableDTO(
-                v.getVariableRepresentation(),
-                context.getVarValue(v));
-    }
 
 
 
