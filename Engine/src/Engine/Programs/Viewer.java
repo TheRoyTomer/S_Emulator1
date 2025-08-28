@@ -14,8 +14,8 @@ import java.util.Optional;
 
 public class Viewer
 {
-    private Program program;
-    private Context context;
+    private final Program program;
+    private final Context context;
 
     public Viewer(Program program)
     {
@@ -53,6 +53,7 @@ public class Viewer
 
 
 
+/*
 
 
     //***ToDO: Transfer To UI****
@@ -103,4 +104,5 @@ public class Viewer
         }
         return res.toString();
     }
+*/
 }

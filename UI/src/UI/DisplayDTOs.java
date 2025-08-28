@@ -32,7 +32,7 @@ public class DisplayDTOs
                 .collect(Collectors.joining("\n"));
     }
 
-    public String getExecuteResultDTO(ExecuteResultDTO result)
+    public String getExecuteDTORepresentation(ExecuteResultDTO result)
     {
         return String.format("%s\n%s\n Y = %d\nUsed Vars: %s\nTotal cycles: %d\n",
                 result.programName(),
@@ -44,7 +44,7 @@ public class DisplayDTOs
                 result.cycles());
     }
 
-    public String getViewResultDTO(ViewResultDTO result)
+    public String getViewDTORepresentation(ViewResultDTO result)
     {
         return String.format("%s\n%s\n Y = %d\nUsed Input Vars: %s\nUsed Labels: %s\n",
                 result.programName(),
@@ -55,13 +55,5 @@ public class DisplayDTOs
                         .collect(Collectors.joining(" , ")),
                 String.join(" , ", result.usedLabelsByOrder()));
     }
-
-    public String getStatisticsViewDTO(StatisticsViewDTO result)
-    {
-        return result.history().stream()
-                .map(StatisticDTO::getStatRepresentation)
-                .collect(Collectors.joining("\n"));
-    }
-
 
 }

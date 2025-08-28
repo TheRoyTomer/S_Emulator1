@@ -18,7 +18,6 @@ public class Convertor
 
     public Convertor(Context context)
     {
-
         Convertor.context = context;
     }
 

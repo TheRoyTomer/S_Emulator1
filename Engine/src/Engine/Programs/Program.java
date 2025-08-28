@@ -13,12 +13,13 @@ public class Program
     private int maxDegree;
     private List<Instruction> instructions;
     private List<Instruction> ExpandedInstructions;
-    private HistoryList history = new HistoryList();
-
+    private final HistoryList history = new HistoryList();
+    Convertor convertor;
 
     public Program()
     {
         this.context = new Context();
+        convertor = new Convertor(context);
     }
 
 

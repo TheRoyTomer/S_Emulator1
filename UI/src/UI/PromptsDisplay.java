@@ -57,13 +57,4 @@ public class PromptsDisplay
 
 
 
-    //ToDo: delete
-    public static void main(String[] args)
-    {
-        showMenu(false);
-        showMenu(true);
-        getPathFromUser(false);
-        getDegreeFromUser(false, 7);
-        getInputsFromUser(false, new ArrayList<String>(List.of("X1", "X8", "X9")));
-    }
 }
