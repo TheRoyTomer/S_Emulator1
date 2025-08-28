@@ -16,7 +16,6 @@ public class EngineFacade
     private final Executer executer;
     private final Loader loader;
     private final Viewer viewer;
-    private final Convertor convertor;
     private final HistoryList statsList;
 
     public EngineFacade()
@@ -25,7 +24,6 @@ public class EngineFacade
         this.executer = new Executer(program);
         this.loader = new Loader(program);
         this.viewer = new Viewer(program);
-        this.convertor = new Convertor(program.getContext());
         this.statsList = new HistoryList();
 
     }

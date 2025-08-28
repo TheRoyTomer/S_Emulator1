@@ -34,7 +34,7 @@ public class Assignment extends S_Instruction
     }
 
 
-    public String getInstructionRepresentation()
+   /* public String getInstructionRepresentation()
     {
         return String.format("#<%d>(S) [%s] %s <- %s (%d)",
                 this.lineIndex,
@@ -43,7 +43,7 @@ public class Assignment extends S_Instruction
                 arg1.getVariableRepresentation(),
                 instructionData.getCycles());
 
-    }
+    }*/
 
     @Override
     public List<Variable> getUsedVariables()

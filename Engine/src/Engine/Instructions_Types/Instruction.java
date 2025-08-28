@@ -35,7 +35,7 @@ public abstract class Instruction implements Calculable
 
     public abstract List<Instruction> getOneExpand();
 
-    public abstract String getInstructionRepresentation();
+    //public abstract String getInstructionRepresentation();
 
 
     public LabelInterface getLabel()

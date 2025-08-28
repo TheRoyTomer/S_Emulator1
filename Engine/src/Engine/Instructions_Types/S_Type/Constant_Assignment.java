@@ -32,7 +32,7 @@ public class Constant_Assignment extends S_Instruction
 
 
     @Override
-    public String getInstructionRepresentation()
+    /*public String getInstructionRepresentation()
     {
         return String.format("#<%d>(S) [%s] %s <- %d (%d)",
                 this.lineIndex,
@@ -41,7 +41,7 @@ public class Constant_Assignment extends S_Instruction
                 constant,
                 instructionData.getCycles());
 
-    }
+    }*/
 
 
     @Override

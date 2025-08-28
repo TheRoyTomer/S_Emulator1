@@ -29,7 +29,7 @@ public class Jump_Zero extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY, labelToJump);
     }
 
-    public String getInstructionRepresentation()
+    /*public String getInstructionRepresentation()
     {
         return String.format("#<%d>(S) [%s] IF %s = 0 GOTO %s(%d)",
                 this.lineIndex,
@@ -39,7 +39,7 @@ public class Jump_Zero extends S_Instruction
                 instructionData.getCycles());
 
     }
-
+*/
     @Override
     public List<LabelInterface> getUsedLabels()
     {

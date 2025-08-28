@@ -33,7 +33,7 @@ public class Jump_Equal_Variable extends S_Instruction
     }
 
 
-    public String getInstructionRepresentation()
+   /* public String getInstructionRepresentation()
     {
         return String.format("#<%d>(S) [%s] IF %s = %s GOTO %s(%d)",
                 this.lineIndex,
@@ -43,7 +43,7 @@ public class Jump_Equal_Variable extends S_Instruction
                 labelToJump.getLabelRepresentation(),
                 instructionData.getCycles());
 
-    }
+    }*/
 
     @Override
     public List<Variable> getUsedVariables()

@@ -32,7 +32,7 @@ public class Goto_Label extends S_Instruction
     }
 
 
-    @Override
+   /* @Override
     public String getInstructionRepresentation()
     {
         return String.format("#<%d>(S) [%s] GOTO %s (%d)",
@@ -41,7 +41,7 @@ public class Goto_Label extends S_Instruction
                 labelToJump.getLabelRepresentation(),
                 instructionData.getCycles());
 
-    }
+    }*/
 
     @Override
     public List<Variable> getUsedVariables()

@@ -25,7 +25,7 @@ public class Decrease extends B_Instruction
     }
 
 
-    public String getInstructionRepresentation()
+    /*public String getInstructionRepresentation()
     {
         return String.format("#<%d>(B) [%s] %s <- %s - 1 (%d)",
                 this.lineIndex,
@@ -34,7 +34,7 @@ public class Decrease extends B_Instruction
                 var.getVariableRepresentation(),
                 instructionData.getCycles());
 
-    }
+    }*/
 
     @Override
     public LabelInterface execute()

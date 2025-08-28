@@ -28,7 +28,6 @@ public class Viewer
     public ViewResultDTO viewProgram(int degree)
     {
 
-        Convertor convertor = new Convertor(context);
         List<Instruction> currInstructions = program.getProperListByDegree(degree);
 
 

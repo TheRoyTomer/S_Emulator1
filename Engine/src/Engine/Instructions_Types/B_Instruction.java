@@ -21,7 +21,7 @@ public abstract class B_Instruction extends Instruction
         return 0;
     }
 
-    public abstract String getInstructionRepresentation();
+    //public abstract String getInstructionRepresentation();
 
     @Override
     public abstract LabelInterface execute();

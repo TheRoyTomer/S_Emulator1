@@ -29,7 +29,7 @@ public class Zero_Variable extends S_Instruction
     }
 
 
-    @Override
+   /* @Override
     public String getInstructionRepresentation()
     {
         return String.format("#<%d>(S) [%s] %s <- 0 (%d)",
@@ -38,7 +38,7 @@ public class Zero_Variable extends S_Instruction
                 var.getVariableRepresentation(),
                 instructionData.getCycles());
 
-    }
+    }*/
 
 
     @Override

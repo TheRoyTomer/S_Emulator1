@@ -27,7 +27,7 @@ public class JNZ extends B_Instruction
     }
 
 
-    public String getInstructionRepresentation()
+    /*public String getInstructionRepresentation()
     {
         return String.format("#<%d>(B) [%s] IF %s != 0 GOTO %s(%d)",
                 this.lineIndex,
@@ -36,7 +36,7 @@ public class JNZ extends B_Instruction
                 labelToJump.getLabelRepresentation(),
                 instructionData.getCycles());
 
-    }
+    }*/
 
     @Override
     public List<LabelInterface> getUsedLabels()
