@@ -75,8 +75,8 @@ public class menuControl
 
     public void Expand()
     {
-
-        ViewResultDTO res = facade.viewExpandedProgram(this.getIntFromUser());
+        int degree = getAndValidateDegree();
+        ViewResultDTO res = facade.viewExpandedProgram(degree);
         System.out.println(displayDTOs.getViewDTORepresentation(res));
     }
 
@@ -92,8 +92,8 @@ public class menuControl
     public int getAndValidateDegree()
     {
         int maxDegree = facade.getMaxDegree();
-        System.out.print("Enter expansion level (0 to " + maxDegree + "): ");
-        int degree = Integer.parseInt(scanner.nextLine());
+        System.out.print("Enter expansion level (max degree for this program is " + maxDegree + "): ");
+        int degree = getIntFromUser();
 
         if(maxDegree < degree) throw new RuntimeException("Invalid Degree! must be not greater than " + maxDegree);
         else if (degree < 0) throw new RuntimeException("Invalid Degree! must be greater than 0");
@@ -143,7 +143,7 @@ public class menuControl
                 System.out.println("Enter your choise: ");
                 currAction = getActionTypeToExecute(this.getIntFromUser());
                 switch (currAction) {
-                    case LOAD -> this.isLoaded = loadProgram();
+                    case LOAD -> this.isLoaded |= loadProgram();
                     case VIEW_ORIGINAL_PROGRAM -> viewOriginalProgram();
                     case EXPAND_VIEW -> Expand();
                     case EXECUTE -> execution();

@@ -69,7 +69,7 @@ public class Program
 
     public void initProgram()
     {
-        context.clearMaps();
+        //context.clearMaps();
         history.reset();
         InitInstructionsExpensions();
         this.maxDegree = this.calcMaxDegree();

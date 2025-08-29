@@ -34,7 +34,7 @@ public class HistoryList
         historyList.add(new ExecutionStatistics(historyList.size() + 1, executeDegree, finalYValue, inputsVals, totalCycles));
     }
 
-    public List<StatisticDTO> getHistory() {
+    public List<StatisticDTO> getListAsDTOs() {
         return historyList.stream()
                 .map(Convertor::convertStatisticToDTO)
                 .toList();

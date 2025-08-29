@@ -46,7 +46,6 @@ public class Viewer
         return new ViewResultDTO(
                 program.getName(),
                 Convertor.convertInstructionsListToDTO(currInstructions),
-                context.getVarValue(Variable.OUTPUT),
                 Xlist,
                 Llist);
     }

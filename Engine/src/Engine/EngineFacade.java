@@ -1,7 +1,6 @@
 package Engine;
 
 import Engine.Programs.*;
-import Engine.Statistics.HistoryList;
 import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
 import Out.ExecuteResultDTO;
@@ -16,7 +15,6 @@ public class EngineFacade
     private final Executer executer;
     private final Loader loader;
     private final Viewer viewer;
-    private final HistoryList statsList;
 
     public EngineFacade()
     {
@@ -24,7 +22,6 @@ public class EngineFacade
         this.executer = new Executer(program);
         this.loader = new Loader(program);
         this.viewer = new Viewer(program);
-        this.statsList = new HistoryList();
 
     }
     public int getMaxDegree() { return program.calcMaxDegree();}
@@ -66,7 +63,7 @@ public class EngineFacade
 
     public List<StatisticDTO> getHistory()
     {
-        return statsList.getHistory();
+        return program.getHistory().getListAsDTOs();
     }
 
 

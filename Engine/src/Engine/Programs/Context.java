@@ -155,6 +155,11 @@ public class  Context
         setInMapL(res, 0); //Just to insert to map. Afterwards updateLabelIndexes will give true value.
         return res;
     }
+    public void clearAndInsertLmap(Map<Label_Implement, Long> map)
+    {
+        MapForL.clear();
+        MapForL.putAll(map);
+    }
 
     public void clearMaps()
     {

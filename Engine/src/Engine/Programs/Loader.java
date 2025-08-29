@@ -17,7 +17,9 @@ import Engine.Vars.Variable;
 import Engine.Vars.VariableImplement;
 import Engine.Vars.VariableType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -25,6 +27,7 @@ public class Loader
 {
     private final Program destProgram;
     private final Context context;
+    private Map<Label_Implement, Long> tempMapForLabel;
 
 
 
@@ -42,10 +45,12 @@ public class Loader
 
     public void loadFromReader(XML_Reader reader)
     {
+        tempMapForLabel = new HashMap<>();
         destProgram.setName(reader.getName());
         destProgram.setInstructions(convertToInstructionList(reader.getSInstructionList()));
         String invalidLabel = reader.checkLabelValidity();
         if (!invalidLabel.isEmpty()) {throw new IllegalArgumentException("Undefined label: " + invalidLabel);}
+        context.clearAndInsertLmap(tempMapForLabel);
         destProgram.initProgram();
     }
 
@@ -65,7 +70,8 @@ public class Loader
             default     -> new Label_Implement(labelName);
         };
 
-        if (label instanceof Label_Implement) { context.setInMapL((Label_Implement) label, 0);}
+        if (label instanceof Label_Implement) { /*context.setInMapL((Label_Implement)label, 0L)*/
+            tempMapForLabel.put((Label_Implement)label, 0L);}
         return label;
     }
 

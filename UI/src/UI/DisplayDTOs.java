@@ -46,10 +46,9 @@ public class DisplayDTOs
 
     public String getViewDTORepresentation(ViewResultDTO result)
     {
-        return String.format("%s\n%s\n Y = %d\nUsed Input Vars: %s\nUsed Labels: %s\n",
+        return String.format("%s\n%s\nUsed Input Vars: %s\nUsed Labels: %s\n",
                 result.programName(),
                 this.getProgramRepresentation(result.instructions()),
-                result.outputVal(),
                 result.usedInputsVarsByOrder().stream()
                         .map(VariableDTO::getVarRepresentation)
                         .collect(Collectors.joining(" , ")),
