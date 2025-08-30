@@ -32,12 +32,14 @@ public abstract class S_Instruction extends Instruction
     public abstract LabelInterface execute();
     public abstract void setSingleExpansion();
 
+    //Gets the one expand from this command, holds as List as data member
     public List<Instruction> getOneExpand()
     {
         return this.instructions;
 
     }
 
+    //Helps at the initialization of the program to prepare all the extensions.
     public void InitMaxExpansions()
     {
         this.setSingleExpansion();

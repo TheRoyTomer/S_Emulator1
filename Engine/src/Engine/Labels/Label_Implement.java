@@ -26,7 +26,7 @@ public class Label_Implement implements LabelInterface, Comparable<Label_Impleme
     }
 
     @Override
-    public int compareTo(Label_Implement other)
+    public int compareTo(Label_Implement other) //Comparing by the serial number of the label.
     {
         int thisNum = Integer.parseInt(this.name.substring(1));
         int otherNum = Integer.parseInt(other.name.substring(1));

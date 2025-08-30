@@ -3,10 +3,7 @@ package UI;
 import Engine.EngineFacade;
 import EngineObject.VariableDTO;
 
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MenuControl
@@ -84,6 +81,7 @@ public class MenuControl
         System.out.println("all in one line, separated by commas.");
         List<Long> res =  new ArrayList<>();
         String input = scanner.nextLine();
+        if (input.isEmpty()) {return Collections.emptyList();}
         long value;
         String[] split = input.split(",");
         for(String s : split)
@@ -97,8 +95,6 @@ public class MenuControl
         }
         return res;
     }
-
-
 
     public void runProject()
     {

@@ -29,6 +29,7 @@ public class Executer
         context.updateIndexLabels(program.getExpandedInstructions());
         int totalCycles = runProgram();
 
+        //Inserts new statistic to the history.
         program.getHistory().addExecutionStatistics(
                 degree,
                 context.getVarValue(Variable.OUTPUT),

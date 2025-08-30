@@ -13,12 +13,11 @@ public class VariableImplement implements Variable
         this.serial = serial;
     }
 
-    @Override
-    public String toString()
-    {
-        return type.getVariableRepresentation(serial);
-    }
 
+    // Natural order for variables:
+    //First y
+    //Then, X sorted by their serial in ascending order.
+    //Then, Z sorted by their serial in ascending order.
     @Override
     public int compareTo(Variable o)
     {
@@ -35,7 +34,6 @@ public class VariableImplement implements Variable
             case OUTPUT -> 0; // Y
             case INPUT -> 1; // X
             case WORK -> 2; // Z
-            default -> Integer.MAX_VALUE; // others last
         };
     }
 
@@ -43,8 +41,7 @@ public class VariableImplement implements Variable
     public boolean equals(Object obj)
     {
         if (this == obj) return true;
-        if (!(obj instanceof Variable)) return false;
-        Variable other = (Variable) obj;
+        if (!(obj instanceof Variable other)) return false;
         return this.serial == other.getSerial() && this.type == other.getVariableType();
     }
 

@@ -11,6 +11,7 @@ import EngineObject.VariableDTO;
 
 import java.util.List;
 
+//Convert from engine Objects to their related DTOs.
 public class Convertor
 {
     private static Context context;

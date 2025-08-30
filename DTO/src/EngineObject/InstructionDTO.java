@@ -20,6 +20,7 @@ public record InstructionDTO(
         String argRep = this.arg.map(VariableDTO::getVarRepresentation).orElse("");
         String constRep = this.constant.map(Object::toString).orElse("");
         String label2JumpRep = this.labelToJump.map(Object::toString).orElse("");
+        //Gets command representation from Instruction Name
         return switch (this.name)
         {
 

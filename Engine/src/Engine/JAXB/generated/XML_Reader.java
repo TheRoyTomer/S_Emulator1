@@ -48,6 +48,7 @@ public class XML_Reader
         return this.sProgram.getSInstructions().getSInstruction();
     }
 
+    //Checks that the file is in the path and is a XML file
     public void checkFileValidity(File file)
     {
         this.XMLfile = Objects.requireNonNull(file, "XML file is null");

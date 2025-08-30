@@ -67,23 +67,13 @@ public class Program
     }
 
 
+    //Init program after file Loaded successfully.
     public void initProgram()
     {
         history.reset();
         InitInstructionsExpensions();
         this.maxDegree = this.calcMaxDegree();
     }
-
-    @Override
-    public String toString()
-    {
-        return "Program{" +
-                "maxDegree=" + maxDegree +
-                ", " + context.toString() +
-                '}';
-    }
-
-
 
     public void setInstructions(List<Instruction> instructions)
     {

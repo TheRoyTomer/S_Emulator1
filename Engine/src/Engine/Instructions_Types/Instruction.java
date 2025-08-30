@@ -34,8 +34,6 @@ public abstract class Instruction implements Calculable
 
     public abstract List<Instruction> getOneExpand();
 
-    //public abstract String getInstructionRepresentation();
-
 
     public LabelInterface getLabel()
     {
@@ -46,6 +44,7 @@ public abstract class Instruction implements Calculable
     {
         return this.instructionData.getCycles();
     }
+
     public String getName()
     {
         return this.instructionData.getName();

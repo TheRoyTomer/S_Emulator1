@@ -55,6 +55,7 @@ public class Loader
 
     public LabelInterface convertToLabelInterface(String labelName)
     {
+        //If label is null, means that it is the empty label.
         if (labelName == null) {
             labelName = "";
         }

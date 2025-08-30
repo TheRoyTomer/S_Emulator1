@@ -24,17 +24,6 @@ public class  Context
         Y.put(Variable.OUTPUT, 0L);
     }
 
-    @Override
-    public String toString()
-    {
-        return "Context{" +
-                "MapForX=" + MapForX +
-                ", MapForZ=" + MapForZ +
-                ", MapForL=" + MapForL +
-                ", Y=" + getVarValue(Variable.OUTPUT) +
-                '}';
-    }
-
     public void insertInputsToMap(List<Long> inputs)
     {
         int counter = 1;
@@ -98,20 +87,7 @@ public class  Context
         }
     }
 
-
-    /*public boolean isExistInMap(VariableImplement var)
-    {
-
-        VariableType varType = var.getVariableType();
-
-        return switch (varType) {
-            case VariableType.INPUT -> MapForX.containsKey(var);
-            case VariableType.WORK -> MapForZ.containsKey(var);
-            case VariableType.OUTPUT -> true; //We Always Have Y.
-
-        };
-    }*/
-
+    //Find the row number for the labels in the list, and insert the row number as value to map.
     public void updateIndexLabels(List<Instruction> instructions)
     {
         MapForL.clear();
@@ -124,6 +100,7 @@ public class  Context
         }
     }
 
+    //Finds the minimal serial for variable that hasn't been used.
     public VariableImplement InsertVariableToEmptySpot(VariableType type)
     {
         Map<Variable, Long> relevantMap = getrelevantMap(type);
@@ -137,6 +114,7 @@ public class  Context
         return res;
     }
 
+    //Finds the minimal serial for label that hasn't been used.
     public Label_Implement InsertLabelToEmptySpot()
     {
         int availableIndex = 1;
