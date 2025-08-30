@@ -1,18 +1,15 @@
 package UI;
 
 import EngineObject.InstructionDTO;
-import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
 import Out.ExecuteResultDTO;
-import Out.StatisticsViewDTO;
 import Out.ViewResultDTO;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DisplayDTOs
 {
-    private String getFullPathInstructionRepresentation(InstructionDTO inst)
+    private static String getFullPathInstructionRepresentation(InstructionDTO inst)
     {
         StringBuilder str =  new StringBuilder();
         str.append(inst.getInstructionRepresentation());
@@ -25,18 +22,18 @@ public class DisplayDTOs
         return str.toString();
     }
 
-    private String getProgramRepresentation(List<InstructionDTO> instructions)
+    private static String getProgramRepresentation(List<InstructionDTO> instructions)
     {
         return instructions.stream()
-                .map(this::getFullPathInstructionRepresentation)
+                .map(DisplayDTOs::getFullPathInstructionRepresentation)
                 .collect(Collectors.joining("\n"));
     }
 
-    public String getExecuteDTORepresentation(ExecuteResultDTO result)
+    public static String getExecuteDTORepresentation(ExecuteResultDTO result)
     {
-        return String.format("%s\n%s\n Y = %d\nUsed Vars: %s\nTotal cycles: %d\n",
+        return String.format("%s\n%s\nY = %d\nUsed Vars: %s\nTotal cycles: %d\n",
                 result.programName(),
-                this.getProgramRepresentation(result.instructions()),
+                DisplayDTOs.getProgramRepresentation(result.instructions()),
                 result.outputVal(),
                 result.usedVarsByOrder().stream()
                         .map(VariableDTO::getVarAndValueRepresentation)
@@ -44,11 +41,11 @@ public class DisplayDTOs
                 result.cycles());
     }
 
-    public String getViewDTORepresentation(ViewResultDTO result)
+    public static String getViewDTORepresentation(ViewResultDTO result)
     {
         return String.format("%s\n%s\nUsed Input Vars: %s\nUsed Labels: %s\n",
                 result.programName(),
-                this.getProgramRepresentation(result.instructions()),
+                DisplayDTOs.getProgramRepresentation(result.instructions()),
                 result.usedInputsVarsByOrder().stream()
                         .map(VariableDTO::getVarRepresentation)
                         .collect(Collectors.joining(" , ")),

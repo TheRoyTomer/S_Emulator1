@@ -4,7 +4,6 @@ import Engine.Instructions_Types.B_Type.Decrease;
 import Engine.Instructions_Types.B_Type.Increase;
 import Engine.Instructions_Types.B_Type.JNZ;
 import Engine.Instructions_Types.B_Type.Neutral;
-import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
@@ -34,17 +33,6 @@ public class Assignment extends S_Instruction
     }
 
 
-   /* public String getInstructionRepresentation()
-    {
-        return String.format("#<%d>(S) [%s] %s <- %s (%d)",
-                this.lineIndex,
-                label.getLabelRepresentation(),
-                var.getVariableRepresentation(),
-                arg1.getVariableRepresentation(),
-                instructionData.getCycles());
-
-    }*/
-
     @Override
     public List<Variable> getUsedVariables()
     {
@@ -63,7 +51,7 @@ public class Assignment extends S_Instruction
     public void setSingleExpansion()
     {
         Variable Z = context.InsertVariableToEmptySpot(VariableType.WORK);
-        Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
+        Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);
         LabelInterface label_A = context.InsertLabelToEmptySpot();
         LabelInterface label_B = context.InsertLabelToEmptySpot();
         LabelInterface label_C = context.InsertLabelToEmptySpot();

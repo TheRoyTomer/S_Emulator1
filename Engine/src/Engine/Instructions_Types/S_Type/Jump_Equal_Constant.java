@@ -19,8 +19,8 @@ import java.util.stream.LongStream;
 
 public class Jump_Equal_Constant extends S_Instruction
 {
-    private LabelInterface labelToJump;
-    private long constant;
+    private final LabelInterface labelToJump;
+    private final long constant;
 
     public Jump_Equal_Constant(Context context, S_Instruction holder, Variable var, LabelInterface label, LabelInterface labelToJump, long constant)
     {
@@ -32,19 +32,6 @@ public class Jump_Equal_Constant extends S_Instruction
     public Jump_Equal_Constant(Context context, S_Instruction holder, Variable var, LabelInterface labelToJump, long constant)
     {
         this(context, holder, var, FixedLabels.EMPTY, labelToJump, constant);
-    }
-
-
-    public String getInstructionRepresentation()
-    {
-        return String.format("#<%d>(S) [%s] IF %s = %d GOTO %s(%d)",
-                this.lineIndex,
-                label.getLabelRepresentation(),
-                var.getVariableRepresentation(),
-                constant,
-                labelToJump.getLabelRepresentation(),
-                instructionData.getCycles());
-
     }
 
     @Override
@@ -64,8 +51,8 @@ public class Jump_Equal_Constant extends S_Instruction
     @Override
     public void setSingleExpansion()
     {
-        Variable Z = context.InsertVariableToEmptySpot(VariableType.WORK);;
-        Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
+        Variable Z = context.InsertVariableToEmptySpot(VariableType.WORK);
+        Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);
         LabelInterface label_A = context.InsertLabelToEmptySpot();
 
         List<Instruction> result = new ArrayList<>();
@@ -92,8 +79,8 @@ public class Jump_Equal_Constant extends S_Instruction
     }
 
     @Override
-    public Optional<Long> getConstantfExist()
+    public Optional<Long> getConstantIfExist()
     {
-        return Optional.ofNullable(this.constant);
+        return Optional.of(this.constant);
     }
 }

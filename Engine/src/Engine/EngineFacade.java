@@ -26,7 +26,7 @@ public class EngineFacade
     }
     public int getMaxDegree() { return program.calcMaxDegree();}
 
-    public List<VariableDTO> getInputVariablesPreExecute(int degree)
+    public List<VariableDTO> getInputVariablesPreExecute()
     {
         return program.getContext().getAll_X_InList(program.getInstructions())
                 .stream()

@@ -22,7 +22,6 @@ public class Goto_Label extends S_Instruction
     {
         super(InstructionData.GOTO_LABEL, context, holder, var, label);
         this.labelToJump = labelToJump;
-        //this.instructions = this.getSingleExpansion();
     }
 
     public Goto_Label(Context context, S_Instruction holder, Variable var, LabelInterface labelToJump)
@@ -30,18 +29,6 @@ public class Goto_Label extends S_Instruction
        this(context, holder, var, FixedLabels.EMPTY, labelToJump);
 
     }
-
-
-   /* @Override
-    public String getInstructionRepresentation()
-    {
-        return String.format("#<%d>(S) [%s] GOTO %s (%d)",
-                this.lineIndex,
-                label.getLabelRepresentation(),
-                labelToJump.getLabelRepresentation(),
-                instructionData.getCycles());
-
-    }*/
 
     @Override
     public List<Variable> getUsedVariables()
@@ -64,7 +51,7 @@ public class Goto_Label extends S_Instruction
     @Override
     public void setSingleExpansion()
     {
-        Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
+        Variable Z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);
         this.instructions = new ArrayList<>(List.of(
         new Increase(context, this, Z_FAKE, this.label),
         new JNZ(context, this, Z_FAKE, labelToJump)

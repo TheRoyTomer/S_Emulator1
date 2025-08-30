@@ -17,19 +17,13 @@ import Engine.Vars.Variable;
 import Engine.Vars.VariableImplement;
 import Engine.Vars.VariableType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 public class Loader
 {
     private final Program destProgram;
     private final Context context;
-    private Map<Label_Implement, Long> tempMapForLabel;
-
-
 
     public Loader(Program destProgram)
     {
@@ -45,12 +39,11 @@ public class Loader
 
     public void loadFromReader(XML_Reader reader)
     {
-        tempMapForLabel = new HashMap<>();
+        context.clearMaps();
+
         destProgram.setName(reader.getName());
-        destProgram.setInstructions(convertToInstructionList(reader.getSInstructionList()));
-        String invalidLabel = reader.checkLabelValidity();
-        if (!invalidLabel.isEmpty()) {throw new IllegalArgumentException("Undefined label: " + invalidLabel);}
-        context.clearAndInsertLmap(tempMapForLabel);
+        List<SInstruction> newInstructions = reader.getSInstructionList();
+        destProgram.setInstructions(convertToInstructionList(newInstructions));
         destProgram.initProgram();
     }
 
@@ -60,18 +53,21 @@ public class Loader
     }
 
 
-    public LabelInterface convertToLabelInterface(String labelName) {
-        if (labelName == null) {labelName = "";}
+    public LabelInterface convertToLabelInterface(String labelName)
+    {
+        if (labelName == null) {
+            labelName = "";
+        }
 
-        LabelInterface label = switch (labelName.toUpperCase())
-        {
+        LabelInterface label = switch (labelName.toUpperCase()) {
             case "EXIT" -> FixedLabels.EXIT;
-            case ""     -> FixedLabels.EMPTY;
-            default     -> new Label_Implement(labelName);
+            case "" -> FixedLabels.EMPTY;
+            default -> new Label_Implement(labelName);
         };
 
-        if (label instanceof Label_Implement) { /*context.setInMapL((Label_Implement)label, 0L)*/
-            tempMapForLabel.put((Label_Implement)label, 0L);}
+        if (label instanceof Label_Implement) {
+            context.setInMapL((Label_Implement) label, 0L);
+        }
         return label;
     }
 

@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface Calculable
 {
-    public int calcMaxDegree();
-    public LabelInterface execute();
-    public List<Variable> getUsedVariables();
+    int calcMaxDegree();
+    LabelInterface execute();
+    List<Variable> getUsedVariables();
 
 
-    public List<Instruction> getOneExpand();
+    List<Instruction> getOneExpand();
 }

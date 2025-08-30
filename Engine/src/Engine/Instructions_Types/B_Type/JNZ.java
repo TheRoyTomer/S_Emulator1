@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class JNZ extends B_Instruction
 {
-    private LabelInterface labelToJump;
+    private final LabelInterface labelToJump;
 
     public JNZ(Context context, S_Instruction holder, Variable var, LabelInterface label, LabelInterface labelToJump)
     {
@@ -25,18 +25,6 @@ public class JNZ extends B_Instruction
     {
         this(context,holder , var, FixedLabels.EMPTY, labelToJump);
     }
-
-
-    /*public String getInstructionRepresentation()
-    {
-        return String.format("#<%d>(B) [%s] IF %s != 0 GOTO %s(%d)",
-                this.lineIndex,
-                label.getLabelRepresentation(),
-                var.getVariableRepresentation(),
-                labelToJump.getLabelRepresentation(),
-                instructionData.getCycles());
-
-    }*/
 
     @Override
     public List<LabelInterface> getUsedLabels()

@@ -21,17 +21,10 @@ public class HistoryList
 
     public void reset() { historyList.clear();}
 
-
-    public String getStatisticsListRepresentation()
-    {
-        return historyList.stream()
-                .map(ExecutionStatistics::GetStatisticRepresentation)
-                .collect(Collectors.joining(System.lineSeparator()));
-    }
-
     public void addExecutionStatistics(int executeDegree, long finalYValue, List<Long> inputsVals, int totalCycles)
     {
-        historyList.add(new ExecutionStatistics(historyList.size() + 1, executeDegree, finalYValue, inputsVals, totalCycles));
+        int newExecuteID = historyList.size() + 1;
+        historyList.add(new ExecutionStatistics(newExecuteID, executeDegree, finalYValue, inputsVals, totalCycles));
     }
 
     public List<StatisticDTO> getListAsDTOs() {

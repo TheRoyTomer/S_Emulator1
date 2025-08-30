@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class Jump_Zero extends S_Instruction
 {
-    private LabelInterface labelToJump;
+    private final LabelInterface labelToJump;
 
     public Jump_Zero(Context context, S_Instruction holder, Variable var, LabelInterface label, LabelInterface labelToJump)
     {
@@ -29,17 +29,6 @@ public class Jump_Zero extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY, labelToJump);
     }
 
-    /*public String getInstructionRepresentation()
-    {
-        return String.format("#<%d>(S) [%s] IF %s = 0 GOTO %s(%d)",
-                this.lineIndex,
-                label.getLabelRepresentation(),
-                var.getVariableRepresentation(),
-                labelToJump.getLabelRepresentation(),
-                instructionData.getCycles());
-
-    }
-*/
     @Override
     public List<LabelInterface> getUsedLabels()
     {
@@ -57,8 +46,7 @@ public class Jump_Zero extends S_Instruction
     @Override
     public void setSingleExpansion()
     {
-        Variable z_A = context.InsertVariableToEmptySpot(VariableType.WORK);;
-        Variable z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
+        Variable z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);
 
         LabelInterface label_A = context.InsertLabelToEmptySpot();
 

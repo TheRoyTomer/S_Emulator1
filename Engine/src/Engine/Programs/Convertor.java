@@ -4,7 +4,6 @@ import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.LabelInterface;
 import Engine.Statistics.ExecutionStatistics;
-import Engine.Statistics.HistoryList;
 import Engine.Vars.Variable;
 import EngineObject.InstructionDTO;
 import EngineObject.StatisticDTO;
@@ -35,7 +34,7 @@ public class Convertor
                 InstructionToDTO(inst.getHolder()),
                 inst.getCycles(),
                 inst.getArgIfExist().map(Convertor::VariableToDTO),
-                inst.getConstantfExist(),
+                inst.getConstantIfExist(),
                 inst.getLabelToJumpIfExist().map(LabelInterface::getLabelRepresentation));
     }
 

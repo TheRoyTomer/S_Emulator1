@@ -55,13 +55,6 @@ public class  Context
         MapForL.put(label, Math.max(0, value));
     }
 
-/*
-    public Boolean isExistInMapL(LabelInterface key)
-    {
-        return MapForL.containsKey(key);
-    }
-*/
-
     public Map<Variable, Long> getrelevantMap(VariableType type)
     {
         return switch (type) {
@@ -140,7 +133,7 @@ public class  Context
             availableIndex++;
             res = new VariableImplement(type, availableIndex);
         }
-        setVarValue(res, 0); //Just to insert to map. Afterwards updateLabelIndexes will give true value.
+        setVarValue(res, 0); //Just to insert to map. Afterward updateLabelIndexes will give true value.
         return res;
     }
 
@@ -152,13 +145,8 @@ public class  Context
             availableIndex++;
             res = new Label_Implement("L" + availableIndex);
         }
-        setInMapL(res, 0); //Just to insert to map. Afterwards updateLabelIndexes will give true value.
+        setInMapL(res, 0); //Just to insert to map. Afterward updateLabelIndexes will give true value.
         return res;
-    }
-    public void clearAndInsertLmap(Map<Label_Implement, Long> map)
-    {
-        MapForL.clear();
-        MapForL.putAll(map);
     }
 
     public void clearMaps()

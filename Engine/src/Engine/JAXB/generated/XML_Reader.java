@@ -18,19 +18,11 @@ public class XML_Reader
     {
 
         File file = new File(path);
-        this.XMLfile = Objects.requireNonNull(file, "XMLfile is null");
-
-        if (!XMLfile.exists() || !XMLfile.isFile()) {
-            throw new IllegalArgumentException("XML file not found: " + XMLfile.getAbsolutePath());
-        }
-
-        String name = XMLfile.getName().toLowerCase(Locale.ROOT);
-        if (!name.endsWith(".xml")) {
-            throw new IllegalArgumentException("File must end with .xml: " + XMLfile.getAbsolutePath());
-        }
-
+       checkFileValidity(file);
 
         loadXML();
+        checkLabelValidity();
+
     }
 
     private void loadXML()
@@ -44,10 +36,6 @@ public class XML_Reader
         }
     }
 
-    public SProgram getsProgram()
-    {
-        return sProgram;
-    }
 
     public String getName()
     {
@@ -60,9 +48,23 @@ public class XML_Reader
         return this.sProgram.getSInstructions().getSInstruction();
     }
 
+    public void checkFileValidity(File file)
+    {
+        this.XMLfile = Objects.requireNonNull(file, "XML file is null");
+
+        if (!XMLfile.exists() || !XMLfile.isFile()) {
+            throw new IllegalArgumentException("XML file not found: " + XMLfile.getAbsolutePath());
+        }
+
+        String name = XMLfile.getName().toLowerCase(Locale.ROOT);
+        if (!name.endsWith(".xml")) {
+            throw new IllegalArgumentException("File must end with .xml: " + XMLfile.getAbsolutePath());
+        }
+    }
 
 
-    public String checkLabelValidity()
+
+    public void checkLabelValidity()
     {
         List<SInstruction> list = getSInstructionList();
 
@@ -70,7 +72,7 @@ public class XML_Reader
                 .map(SInstruction::getSLabel)      // extract the label of each instruction
                 .filter(Objects::nonNull)          // skip null labels
                 .collect(Collectors.toSet());      // put into a Set for fast lookup
-        defined.add("EXIT"); //Adding EXIT because it is the only LABEL that doesn't appears but can be referenced
+        defined.add("EXIT"); //Adding EXIT because it is the only LABEL that doesn't appear but can be referenced
 
         List<String> allArgs = list.stream()
                 .map(SInstruction::getSInstructionArguments)             // get the arguments block
@@ -80,10 +82,10 @@ public class XML_Reader
                 .filter(Objects::nonNull)                                // skip null values
                 .toList();                           // gather into a list
 
-        return allArgs.stream()
-                .filter(val -> val.startsWith("L"))        // must start with 'L' to be considered a label
-                .filter(lbl -> !defined.contains(lbl))     // keep only labels not defined
-                .findFirst()                               // return the first invalid label found
-                .orElse("");                               // if none found → return empty string
+
+        allArgs.stream()
+                .filter(val -> val.startsWith("L") && !defined.contains(val))
+                .findFirst()
+                .ifPresent(lbl -> { throw new IllegalArgumentException("Undefined label: " + lbl); });
     }
 }

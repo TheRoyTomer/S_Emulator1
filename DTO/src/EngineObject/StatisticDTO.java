@@ -12,7 +12,7 @@ public record StatisticDTO(
 {
     public String getStatRepresentation()
     {
-        return String.format("#(%d)\n Degree: %d\n Inputs: %s\nOutput: %d\nTotal cycles: %d\n",
+        return String.format("#(%d)\nDegree: %d\nInputs: %s\nOutput: %d\nTotal cycles: %d\n",
                 this.executeID,
                 this.degree,
                 inputs.stream()

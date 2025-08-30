@@ -3,7 +3,6 @@ package Engine.Instructions_Types;
 import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
 import Engine.Vars.Variable;
-import EngineObject.InstructionDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +12,7 @@ public abstract class Instruction implements Calculable
     protected InstructionData instructionData;
     protected final LabelInterface label; //MyLabel
     protected int maxDegree;
-    protected final Variable var; // The var Im "working" on
+    protected final Variable var; // The var I'm "working" on
     protected Context context;
     protected S_Instruction holder;
     protected int lineIndex;
@@ -84,7 +83,7 @@ public abstract class Instruction implements Calculable
     }
 
     //For the DTO
-    public Optional<Long> getConstantfExist()
+    public Optional<Long> getConstantIfExist()
     {
         return Optional.empty();
     }

@@ -1,32 +1,35 @@
 package UI;
 
 import Engine.EngineFacade;
-import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
-import Out.ExecuteResultDTO;
-import Out.LoadResultDTO;
-import Out.ViewResultDTO;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public class menuControl
+public class MenuControl
 
 {
     private final EngineFacade facade;
     Scanner scanner = new Scanner(System.in);
-    DisplayDTOs  displayDTOs = new DisplayDTOs();
     boolean isLoaded = false;
-    public menuControl(EngineFacade facade)
+
+    public MenuControl(EngineFacade facade)
     {
         this.facade = facade;
     }
 
+    public EngineFacade getFacade() {return facade;}
+
     public int getIntFromUser()
     {
-        return Integer.parseInt(scanner.nextLine());
+        try {
+            return Integer.parseInt(scanner.nextLine());
+        }catch (NumberFormatException e) {
+            throw new InputMismatchException("Invalid input! this is not a number!");
+        }
     }
 
 
@@ -58,36 +61,6 @@ public class menuControl
         };
     }
 
-    public boolean loadProgram()
-    {
-        System.out.println("Enter XML file path: ");
-
-        LoadResultDTO res = facade.loadFromXML(scanner.nextLine());
-        System.out.println(res.message());
-        return res.isLoaded();
-    }
-
-    public void viewOriginalProgram()
-    {
-        ViewResultDTO res = facade.viewOriginalProgram();
-        System.out.println(displayDTOs.getViewDTORepresentation(res));
-    }
-
-    public void Expand()
-    {
-        int degree = getAndValidateDegree();
-        ViewResultDTO res = facade.viewExpandedProgram(degree);
-        System.out.println(displayDTOs.getViewDTORepresentation(res));
-    }
-
-    public void execution()
-    {
-        int maxDegree = facade.getMaxDegree();
-        int degree = getAndValidateDegree();
-        List<Long> input = getAndValidateInputs(degree);
-        ExecuteResultDTO res = facade.executeProgram(degree, input);
-        System.out.println(displayDTOs.getExecuteDTORepresentation(res));
-    }
 
     public int getAndValidateDegree()
     {
@@ -100,11 +73,11 @@ public class menuControl
         return degree;
     }
 
-    public List<Long> getAndValidateInputs(int degree)
+    public List<Long> getAndValidateInputs()
     {
 
         System.out.println("The program requires the following input variables:");
-        System.out.println(facade.getInputVariablesPreExecute(degree).stream()
+        System.out.println(facade.getInputVariablesPreExecute().stream()
                 .map(VariableDTO::getVarRepresentation)
                 .collect(Collectors.joining(" , ")));
         System.out.println("Please enter non-negative values for these variables,");
@@ -125,13 +98,7 @@ public class menuControl
         return res;
     }
 
-    public void displayHistory()
-    {
-        List<StatisticDTO> res = facade.getHistory();
-        res.stream()
-                .map(StatisticDTO::getStatRepresentation)
-                .forEach(System.out::println);
-    }
+
 
     public void runProject()
     {
@@ -139,16 +106,17 @@ public class menuControl
         do
         {
             try {
+                Action_Impl action = new Action_Impl(this);
                 PromptsDisplay.showMenu(this.isLoaded);
-                System.out.println("Enter your choise: ");
+                System.out.println("Enter your choice: ");
                 currAction = getActionTypeToExecute(this.getIntFromUser());
                 switch (currAction) {
-                    case LOAD -> this.isLoaded |= loadProgram();
-                    case VIEW_ORIGINAL_PROGRAM -> viewOriginalProgram();
-                    case EXPAND_VIEW -> Expand();
-                    case EXECUTE -> execution();
-                    case HISTORY -> displayHistory();
-                    case EXIT -> System.out.println("Goodbye!");
+                    case LOAD -> this.isLoaded |= action.loadProgram();
+                    case VIEW_ORIGINAL_PROGRAM -> action.viewOriginalProgram();
+                    case EXPAND_VIEW -> action.Expand();
+                    case EXECUTE -> action.execution();
+                    case HISTORY -> action.displayHistory();
+                    case EXIT -> System.out.println("Goodbye! We are sure we deserve 100 on this excellent S_EMULATOR");
                 }
             }
             catch(RuntimeException e){
@@ -157,5 +125,4 @@ public class menuControl
 
         }while (currAction!=ActionTypes.EXIT);
     }
-
 }

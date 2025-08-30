@@ -1,6 +1,5 @@
 package Engine.Instructions_Types;
 
-import java.util.Arrays;
 
 public enum InstructionData
 {

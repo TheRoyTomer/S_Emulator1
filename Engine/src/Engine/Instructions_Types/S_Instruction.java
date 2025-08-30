@@ -37,10 +37,6 @@ public abstract class S_Instruction extends Instruction
         return this.instructions;
 
     }
-    public int getMaxDegree()
-    {
-        return this.maxDegree;
-    }
 
     public void InitMaxExpansions()
     {
@@ -52,17 +48,3 @@ public abstract class S_Instruction extends Instruction
     }
 
 }
-
-/*
-
-public void foo()
-{
-    this.Instructions = getSingleExpansion();
-    for (Instruction c : this. Instructions)
-    {
-        if (instruction instanceof S_Instruction)
-        {
-            c.foo();
-        }
-    }
-}*/

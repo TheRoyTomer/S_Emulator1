@@ -7,7 +7,7 @@ public class App
     public static void main(String[] args)
     {
         EngineFacade facade = new EngineFacade();
-        menuControl m = new menuControl(facade);
+        MenuControl m = new MenuControl(facade);
         m.runProject();
     }
 }

@@ -12,36 +12,13 @@ public class ExecutionStatistics
     private final long finalYValue;
     private final int totalCycles;
 
-    public ExecutionStatistics(int executeDegree, int executeId, long finalYValue, List<Long> inputsVals, int totalCycles)
+    public ExecutionStatistics( int executeId,int executeDegree, long finalYValue, List<Long> inputsVals, int totalCycles)
     {
         this.executeDegree = executeDegree;
         this.executeId = executeId;
         this.finalYValue = finalYValue;
         this.inputsVals = inputsVals;
         this.totalCycles = totalCycles;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "ExecutionStatistics{" +
-                "executeId=" + executeId +
-                ", executeDegree=" + executeDegree +
-                ", Inputs=" + inputsVals +
-                ", finalYValue=" + finalYValue +
-                ", totalCycles=" + totalCycles +
-                '}';
-    }
-
-    public String GetStatisticRepresentation()
-    {
-        return "ExecutionStatistics{" +
-                "executeId = " + executeId +
-                ", executeDegree = " + executeDegree +
-                ", Inputs = " + inputsVals +
-                ", Y = " + finalYValue +
-                ", totalCycles = " + totalCycles +
-                '}';
     }
 
     public int getExecuteId()

@@ -17,7 +17,7 @@ public record InstructionDTO(
     public String getCommandBodyRepresentation()
     {
         String varRep = var.getVarRepresentation();
-        String argRep = this.arg.map(VariableDTO::getVarRepresentation).orElse("");;
+        String argRep = this.arg.map(VariableDTO::getVarRepresentation).orElse("");
         String constRep = this.constant.map(Object::toString).orElse("");
         String label2JumpRep = this.labelToJump.map(Object::toString).orElse("");
         return switch (this.name)

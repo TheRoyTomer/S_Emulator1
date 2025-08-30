@@ -17,6 +17,6 @@ public enum FixedLabels implements LabelInterface
             return "  ";
         }
 
-    };
+    }
 
 }

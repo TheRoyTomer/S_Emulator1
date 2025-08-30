@@ -16,8 +16,8 @@ import java.util.Optional;
 
 public class Jump_Equal_Variable extends S_Instruction
 {
-    private LabelInterface labelToJump;
-    private Variable arg1;
+    private final LabelInterface labelToJump;
+    private final Variable arg1;
 
     public Jump_Equal_Variable(Context context, S_Instruction holder, Variable var, LabelInterface label, LabelInterface labelToJump, Variable arg1)
     {
@@ -31,19 +31,6 @@ public class Jump_Equal_Variable extends S_Instruction
     {
         this(context, holder, var, FixedLabels.EMPTY, labelToJump, arg1);
     }
-
-
-   /* public String getInstructionRepresentation()
-    {
-        return String.format("#<%d>(S) [%s] IF %s = %s GOTO %s(%d)",
-                this.lineIndex,
-                label.getLabelRepresentation(),
-                var.getVariableRepresentation(),
-                arg1.getVariableRepresentation(),
-                labelToJump.getLabelRepresentation(),
-                instructionData.getCycles());
-
-    }*/
 
     @Override
     public List<Variable> getUsedVariables()
@@ -71,8 +58,8 @@ public class Jump_Equal_Variable extends S_Instruction
 
 
         Variable z_A = context.InsertVariableToEmptySpot(VariableType.WORK);
-        Variable z_B = context.InsertVariableToEmptySpot(VariableType.WORK);;
-        Variable z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);;
+        Variable z_B = context.InsertVariableToEmptySpot(VariableType.WORK);
+        Variable z_FAKE = context.InsertVariableToEmptySpot(VariableType.WORK);
 
         LabelInterface label_A = context.InsertLabelToEmptySpot();
         LabelInterface label_B = context.InsertLabelToEmptySpot();

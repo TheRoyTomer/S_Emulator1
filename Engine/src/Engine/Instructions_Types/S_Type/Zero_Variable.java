@@ -2,7 +2,6 @@ package Engine.Instructions_Types.S_Type;
 
 import Engine.Instructions_Types.B_Type.Decrease;
 import Engine.Instructions_Types.B_Type.JNZ;
-import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
@@ -20,26 +19,12 @@ public class Zero_Variable extends S_Instruction
     public Zero_Variable(Context context, S_Instruction holder, Variable var, LabelInterface label)
     {
         super(InstructionData.ZERO_VARIABLE, context, holder, var, label);
-        //this.instructions = this.getSingleExpansion();
     }
 
     public Zero_Variable(Context context, S_Instruction holder, Variable var)
     {
         this(context, holder, var, FixedLabels.EMPTY);
     }
-
-
-   /* @Override
-    public String getInstructionRepresentation()
-    {
-        return String.format("#<%d>(S) [%s] %s <- 0 (%d)",
-                this.lineIndex,
-                label.getLabelRepresentation(),
-                var.getVariableRepresentation(),
-                instructionData.getCycles());
-
-    }*/
-
 
     @Override
     public LabelInterface execute()
@@ -51,7 +36,6 @@ public class Zero_Variable extends S_Instruction
     @Override
     public void setSingleExpansion()
     {
-        List<Instruction> result = new ArrayList<>();
         LabelInterface labelFirstRow = this.label;
         if (Objects.equals(label.getLabelRepresentation(), FixedLabels.EMPTY.getLabelRepresentation()))
         {

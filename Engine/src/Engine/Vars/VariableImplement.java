@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class VariableImplement implements Variable
 {
-    private VariableType type;
-    private int serial;
+    private final VariableType type;
+    private final int serial;
 
     public VariableImplement(VariableType type, int serial)
     {

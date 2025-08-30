@@ -12,8 +12,8 @@ import java.util.List;
 
 public class Executer
 {
-    private Program program;
-    private Context context;
+    private final Program program;
+    private final Context context;
 
     public Executer(Program program)
     {
@@ -50,7 +50,7 @@ public class Executer
     {
         List<Instruction> instructions = program.getExpandedInstructions();
         int sumCycles = 0;
-        LabelInterface label = null;
+        LabelInterface label;
         Instruction currentInstruction;
         for (long PC = 0; PC < instructions.size(); )
         {

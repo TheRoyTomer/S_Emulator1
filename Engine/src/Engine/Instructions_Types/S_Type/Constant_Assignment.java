@@ -12,7 +12,6 @@ import Engine.Vars.Variable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 public class Constant_Assignment extends S_Instruction
@@ -59,14 +58,14 @@ public class Constant_Assignment extends S_Instruction
 
         result.addAll(LongStream.range(0, constant)
                 .mapToObj(i -> new Increase(context, this, this.var))
-                .collect(Collectors.toList())
+                .toList()
         );
         this.instructions = result;
     }
 
     @Override
-    public Optional<Long> getConstantfExist()
+    public Optional<Long> getConstantIfExist()
     {
-        return Optional.ofNullable(this.constant);
+        return Optional.of(this.constant);
     }
 }
