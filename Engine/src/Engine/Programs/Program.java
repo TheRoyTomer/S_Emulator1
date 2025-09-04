@@ -83,7 +83,7 @@ public class Program
     {
         return instructions.stream()
                 .mapToInt(Instruction::calcMaxDegree)
-                .max()
+                 .max()
                 .orElse(0);
     }
 
