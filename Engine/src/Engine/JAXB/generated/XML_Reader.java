@@ -14,12 +14,12 @@ public class XML_Reader
     private SProgram sProgram;
     private File XMLfile;
 
-    public XML_Reader(String path)
+    public XML_Reader(File file)
     {
 
-        File file = new File(path);
-       checkFileValidity(file);
-
+        //File file = new File(path);
+       //checkFileValidity(file);
+        this.XMLfile = file;
         loadXML();
         checkLabelValidity();
 

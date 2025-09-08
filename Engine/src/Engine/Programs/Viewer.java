@@ -25,7 +25,7 @@ public class Viewer
         List<Instruction> currInstructions = program.getProperListByDegree(degree);
 
 
-        List<VariableDTO> Xlist = context.getAll_X_InList(currInstructions)
+        List<VariableDTO> Varlist = context.getAllVarsInList(currInstructions)
                 .stream()
                 .map(Convertor::VariableToDTO)
                 .toList();
@@ -40,7 +40,7 @@ public class Viewer
         return new ViewResultDTO(
                 program.getName(),
                 Convertor.convertInstructionsListToDTO(currInstructions),
-                Xlist,
+                Varlist,
                 Llist);
     }
 

@@ -7,6 +7,7 @@ import Out.ExecuteResultDTO;
 import Out.LoadResultDTO;
 import Out.ViewResultDTO;
 
+import java.io.File;
 import java.util.List;
 
 public class EngineFacade
@@ -34,11 +35,11 @@ public class EngineFacade
                 .toList();
     }
 
-    public LoadResultDTO loadFromXML(String filePath)
+    public LoadResultDTO loadFromXML(File file)
     {
         try
         {
-           loader.load(filePath);
+           loader.load(file);
         } catch (RuntimeException e) {
             return new LoadResultDTO(false, e.getMessage());
         }

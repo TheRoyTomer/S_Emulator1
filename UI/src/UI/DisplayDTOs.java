@@ -46,7 +46,7 @@ public class DisplayDTOs
         return String.format("%s\n%s\nUsed Input Vars: %s\nUsed Labels: %s\n",
                 result.programName(),
                 DisplayDTOs.getProgramRepresentation(result.instructions()),
-                result.usedInputsVarsByOrder().stream()
+                result.usedVarsByOrder().stream()
                         .map(VariableDTO::getVarRepresentation)
                         .collect(Collectors.joining(" , ")),
                 String.join(" , ", result.usedLabelsByOrder()));

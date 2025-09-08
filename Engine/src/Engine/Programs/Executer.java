@@ -75,7 +75,13 @@ public class Executer
     {
         List<Instruction> currDegreeInstructions = new ArrayList<>(program.getInstructions());
         List<Instruction> nextDegreeInstructions = new ArrayList<>();
-        int lineIndex;
+        int lineIndex = 1;
+        for (Instruction instruction : currDegreeInstructions)
+        {
+            instruction.setLineIndex(lineIndex);
+            lineIndex++;
+        }
+
         while (degree != 0) {
             lineIndex = 1;
             for (Instruction instruction : currDegreeInstructions) {
@@ -90,6 +96,8 @@ public class Executer
             nextDegreeInstructions.clear();
             degree--;
         }
+
+
         program.setExpandedInstructions(currDegreeInstructions);
     }
 

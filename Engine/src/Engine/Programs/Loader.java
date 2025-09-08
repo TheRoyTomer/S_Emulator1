@@ -17,6 +17,7 @@ import Engine.Vars.Variable;
 import Engine.Vars.VariableImplement;
 import Engine.Vars.VariableType;
 
+import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 
@@ -31,9 +32,9 @@ public class Loader
         this.context = destProgram.getContext();
     }
 
-    public void load(String path)
+    public void load(File file)
     {
-        XML_Reader reader = new XML_Reader(path);
+        XML_Reader reader = new XML_Reader(file);
         loadFromReader(reader);
     }
 

@@ -1,5 +1,7 @@
 package EngineObject;
 
+import java.util.Objects;
+
 public record VariableDTO(
         String name,
         long value)
@@ -13,4 +15,6 @@ public record VariableDTO(
     {
         return String.format("%s = %d", this.name, this.value);
     }
+
+
 }
