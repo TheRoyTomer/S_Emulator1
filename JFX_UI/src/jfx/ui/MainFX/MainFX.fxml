@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-
-<BorderPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.MainFX.MainFXController">
+<BorderPane stylesheets="@MainFX_CSS.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.MainFX.MainFXController">
    <top>
-      <fx:include fx:id="headerComp" source="../HeaderComp/HeaderComp.fxml" BorderPane.alignment="TOP_CENTER" />
+      <fx:include fx:id="headerComp" source="../HeaderComp/HeaderComp.fxml" BorderPane.alignment="CENTER" />
    </top>
-   <right>
-      <Label text="COMMING SOON" BorderPane.alignment="CENTER_RIGHT" />
-   </right>
    <center>
       <fx:include fx:id="viewComp" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../ViewComp/ViewComp.fxml" BorderPane.alignment="CENTER" />
    </center>
+   <right>
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" BorderPane.alignment="CENTER">
+        <items>
+            <fx:include fx:id="executionComp" source="../ExecutionComp/ExecutionComp.fxml" />
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label text="COMMING SOON" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </right>
 </BorderPane>

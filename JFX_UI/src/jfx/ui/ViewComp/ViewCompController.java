@@ -1,7 +1,6 @@
 package jfx.ui.ViewComp;
 
 import EngineObject.InstructionDTO;
-import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.IntegerProperty;
@@ -15,6 +14,10 @@ import jfx.ui.InstructionTableView.InstructionsTableController;
 import jfx.ui.MainFX.MainFXController;
 
 import java.util.List;
+import java.util.Objects;
+
+import javafx.collections.ListChangeListener;
+
 
 public class ViewCompController {
 
@@ -56,6 +59,13 @@ public class ViewCompController {
                         countS,
                         Bindings.add(countB, countS)
                 ));
+
+        highlightSelectorCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null || newVal.equals("No selection")) {instructionsTableController.setRowHighlighter("");}
+            else {instructionsTableController.setRowHighlighter(newVal);}
+        });
+
+
     }
 
     public void setMainController(MainFXController mainController)
@@ -78,6 +88,8 @@ public class ViewCompController {
                     if (newValue == null) {instructionHistoryChainTableController.setRows(List.of());}
                     else {instructionHistoryChainTableController.setRows(findChainList(newValue));}
                 });
+
+
     }
 
     public void bindDegrees(IntegerProperty current, IntegerProperty max)
@@ -91,11 +103,26 @@ public class ViewCompController {
     public void showTableInfo(List<InstructionDTO> list)
     {
         instructionsTableController.setRows(list);
+        String v = highlightSelectorCombo.getValue();
     }
 
     public void updateComboBox(ObservableList<String> lst)
     {
+        lst.addFirst("No selection");
         highlightSelectorCombo.setItems(lst);
+
+        highlightSelectorCombo.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.equals("No selection")) {
+                    setText("Highlight selection");
+                } else {
+                    setText(item);
+                }
+            }
+        });
+
     }
 
         @FXML
@@ -118,79 +145,12 @@ public class ViewCompController {
         mainController.onDegreeChange();
     }
 
-   /* @FXML
-    private void handleHighlightSelection(ActionEvent event)
-    {
-        String selected = highlightSelectorCombo.getValue();
-        //ToDo: Do with CSS!!!
-        instructionsTable.setRowFactory(tv -> new TableRow<InstructionDTO>() {
-            @Override
-            protected void updateItem(InstructionDTO item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (item == null || empty) {
-                    setStyle("");
-                } else if (item.isInInstruction(selected))
-                {
-                    setStyle("-fx-background-color: lightblue;");
-                } else {
-                    setStyle("");
-                }
-                instructionsTable.refresh();
-            }
-        });
-    }*/
-
-
-    //ToDO: delete and use CSS!!!
-    @FXML
-    private void handleHighlightSelection(ActionEvent event)
-    {
-        String selected = highlightSelectorCombo.getValue();
-        if (selected == null || selected.isEmpty()) {
-            instructionsTable.setRowFactory(tv -> new TableRow<InstructionDTO>() {
-                @Override protected void updateItem(InstructionDTO item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setStyle("");
-                }
-            });
-            instructionsTable.refresh();
-            return;
-        }
-
-        final String s = selected;
-
-        instructionsTable.setRowFactory(tv -> new TableRow<InstructionDTO>() {
-            @Override
-            protected void updateItem(InstructionDTO item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (empty || item == null) {
-                    setStyle("");
-                    return;
-                }
-
-                boolean highlight = item.isInInstruction(s);
-
-                if (highlight) {
-                    setStyle("-fx-background-color: lightblue;");
-                } else {
-                    setStyle("");
-                }
-            }
-        });
-
-        instructionsTable.refresh();
-    }
-
-
     public ObservableList<InstructionDTO> findChainList(InstructionDTO inst)
     {
         ObservableList<InstructionDTO> list = FXCollections.observableArrayList();
         InstructionDTO holder = inst.holder();
         System.out.println(holder);
-        while (holder != null)
-        {
+        while (holder != null) {
             list.add(holder);
             holder = holder.holder();
         }

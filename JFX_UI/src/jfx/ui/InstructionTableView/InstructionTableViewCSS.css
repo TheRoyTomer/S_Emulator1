@@ -1,0 +1,4 @@
+.table-row-cell.highlight {
+    -fx-background-color: lightblue;
+    -fx-font-weight: bold;
+}

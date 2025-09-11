@@ -10,18 +10,22 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.SplitPane;
+import jfx.ui.ExecutionComp.ExecutionCompController;
 import jfx.ui.HeaderComp.HeaderCompController;
 import jfx.ui.ViewComp.ViewCompController;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public class MainFXController {
 
     @FXML private VBox headerComp;
     @FXML private SplitPane viewComp;
+    @FXML private VBox executionComp;
 
     @FXML private HeaderCompController headerCompController;
     @FXML private ViewCompController viewCompController;
+    @FXML private ExecutionCompController executionCompController;
 
     private EngineFacade facade;
 
@@ -31,10 +35,12 @@ public class MainFXController {
 
     @FXML
     private void initialize() {
-        if (this.headerCompController != null && this.viewCompController != null)
+        if (this.headerCompController != null && this.viewCompController != null
+        && this.executionCompController != null)
         {
             headerCompController.setMainController(this);
             viewCompController.setMainController(this);
+            executionCompController.setMainController(this);
 
             viewCompController.bindDegrees(currentDegreeProperty, maxDegreeProperty);
         }
@@ -43,10 +49,10 @@ public class MainFXController {
     public void setFacade(EngineFacade facade) {
         this.facade = facade;
         if (headerCompController != null) {
-            headerCompController.setFacade(facade); // propagate engine to header
+            headerCompController.setFacade(facade);
         }
         if (viewCompController != null) {
-            // viewCompController.setFacade(facade); // enable when needed
+            // viewCompController.setFacade(facade);
         }
     }
 
@@ -103,4 +109,10 @@ public class MainFXController {
         viewCompController.updateComboBox(combinedList);
 
     }
+
+    public List<VariableDTO> getInputVariables()
+    {
+        return facade.getInputVariablesPreExecute();
+    }
 }
+

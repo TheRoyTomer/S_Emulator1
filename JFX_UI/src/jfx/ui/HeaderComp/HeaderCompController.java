@@ -64,6 +64,7 @@ public class HeaderCompController {
             showError("Failed to load file:\n" + ex.getMessage());
         }
     }
+    //Todo: Move to Utils
 
     private void showError(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
@@ -71,6 +72,7 @@ public class HeaderCompController {
         a.setContentText(msg);
         a.showAndWait();
     }
+    //Todo: Move to Utils
 
     private void showInfo(String msg) {
         Alert a = new Alert(Alert.AlertType.INFORMATION);

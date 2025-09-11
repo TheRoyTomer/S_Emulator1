@@ -7,10 +7,13 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 
 public class InstructionsTableController {
@@ -47,4 +50,27 @@ public class InstructionsTableController {
     {
         instructionsTable.setItems(FXCollections.observableArrayList(list));
     }
+
+    public void setRowHighlighter(String ComboBoxChoise) {
+        instructionsTable.setRowFactory(tv -> new TableRow<InstructionDTO>() {
+            @Override protected void updateItem(InstructionDTO it, boolean empty)
+            {
+                super.updateItem(it, empty);
+                if(ComboBoxChoise.isEmpty()) {return;}
+                if (!empty && it != null && it.isInInstruction(ComboBoxChoise))
+                {
+                    if(!getStyleClass().contains("highlight"))
+                    {
+                        getStyleClass().add("highlight");
+                    }
+                }
+                else
+                {
+                    getStyleClass().remove("highlight");
+                }
+            }
+        });
+        instructionsTable.refresh();
+    }
+
 }
