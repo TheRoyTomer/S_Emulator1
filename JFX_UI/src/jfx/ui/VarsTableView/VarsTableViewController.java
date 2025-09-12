@@ -1,6 +1,5 @@
 package jfx.ui.VarsTableView;
 
-import EngineObject.InstructionDTO;
 import EngineObject.VariableDTO;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -22,6 +21,7 @@ public class VarsTableViewController
     @FXML
     private TableColumn<VariableDTO, Long> valueCol;
 
+    @FXML
     private void initialize()
     {
         nameCol.setCellValueFactory(cd -> new ReadOnlyObjectWrapper<>(cd.getValue().name()));
@@ -34,5 +34,11 @@ public class VarsTableViewController
     {
         varsTableView.setItems(FXCollections.observableArrayList(list));
     }
+
+    public void clearTableView()
+    {
+        varsTableView.getItems().clear();
+    }
+
 
 }

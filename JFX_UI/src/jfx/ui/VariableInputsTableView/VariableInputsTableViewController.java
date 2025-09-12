@@ -33,7 +33,6 @@ public class VariableInputsTableViewController {
 
         valueCol.setCellFactory(TextFieldTableCell.forTableColumn());
         inputVarCol.setCellValueFactory(cd -> new ReadOnlyObjectWrapper<>(cd.getValue().name()));
-        //valueCol.setCellValueFactory(cd -> new ReadOnlyObjectWrapper<>(cd.getValue().getValueAsString()));
         valueCol.setCellValueFactory(cd -> {
             int serial = cd.getValue().getSerial();
             String shownValue = userInputs.get(serial);
@@ -48,9 +47,14 @@ public class VariableInputsTableViewController {
         });
     }
 
-    public void clearInputVarsMap()
+    public void clearTableView()
     {
         variableInputsTableView.getItems().clear();
+    }
+
+    public void clearInputVarMap()
+    {
+        userInputs.clear();
     }
 
     public Long getFromInputVarsMap(int key)
@@ -58,7 +62,7 @@ public class VariableInputsTableViewController {
             if (userInputs.containsKey(key))
             {
                 String value = userInputs.get(key);
-                Long res =  Long.parseLong(value);
+                long res =  Long.parseLong(value);
                 if(res < 0 )
                 {
                     throw new IllegalArgumentException(res + "is a negative number");
@@ -68,6 +72,19 @@ public class VariableInputsTableViewController {
             return 0L;
     }
 
+    public void loadInputValues(List<Long> inputs)
+    {
+        for (VariableDTO var : variableInputsTableView.getItems())
+        {
+            int serial = var.getSerial();
+            if (serial > 0 && serial <= inputs.size())
+            {
+                userInputs.put(serial, String.valueOf(inputs.get(serial - 1)));
+            }
+        }
+
+        variableInputsTableView.refresh();
+    }
 
 
     public void setRows(List<VariableDTO> list)

@@ -1,19 +1,28 @@
 package jfx.ui.ExecutionComp;
 
 import EngineObject.VariableDTO;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import jfx.ui.MainFX.MainFXController;
 import jfx.ui.VarsTableView.VarsTableViewController;
 import jfx.ui.VariableInputsTableView.VariableInputsTableViewController;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import javafx.beans.property.ReadOnlyStringWrapper;
+
 
 public class ExecutionCompController {
 
@@ -52,10 +61,24 @@ public class ExecutionCompController {
     @FXML
     private void onNewRun(ActionEvent e)
     {
-        inputVarsCompController.clearInputVarsMap();
+        inputVarsCompController.clearInputVarMap();
+        inputVarsCompController.clearTableView();
+        varTableCompController.clearTableView();
+        mainController.resetCyclesProperty();
         inputVarsCompController.setRows(mainController.getInputVariables());
         inputVarsComp.setEditable(true);
         inputVarsCompController.setValueColEditable(true);
+
+    }
+
+    public void resetInputFieldsState()
+    {
+        inputVarsComp.setEditable(false);
+        inputVarsCompController.setValueColEditable(false);
+        inputVarsCompController.clearInputVarMap();
+        inputVarsCompController.clearTableView();
+        varTableCompController.clearTableView();
+        mainController.resetCyclesProperty();
     }
 
     //Todo: Move to Utils
@@ -73,22 +96,14 @@ public class ExecutionCompController {
         int counter = 1;
         int newListSize = mainController.getInputVariables().getLast().getSerial();
         ObservableList<VariableDTO> lst = inputVarsComp.getItems();
-        try {
-            while (counter <= newListSize)
-            {
-                res.add(inputVarsCompController.getFromInputVarsMap(counter));
-                counter++;
-            }
-            return res;
-        } catch (NumberFormatException e) {
-            showError(e.getMessage() + " Is not a number");
-            return List.of();
-        }
-        catch (IllegalArgumentException e)
+
+        while (counter <= newListSize)
         {
-            showError(e.getMessage());
-            return List.of();
+            res.add(inputVarsCompController.getFromInputVarsMap(counter));
+            counter++;
         }
+        return res;
+
     }
 
     @FXML
@@ -97,7 +112,18 @@ public class ExecutionCompController {
     @FXML
     private void onExecutePress(ActionEvent e)
     {
-        System.out.println(handleInputs());
+        try {
+            mainController.onExecution(handleInputs());
+            inputVarsComp.setEditable(false);
+
+        } catch (NumberFormatException ex) {
+            showError(ex.getMessage() + " Is not a number");
+        }
+        catch (IllegalArgumentException ex)
+        {
+            showError(ex.getMessage());
+        }
+
     }
 
     @FXML
@@ -108,4 +134,24 @@ public class ExecutionCompController {
 
     @FXML
     private void onStepOver(ActionEvent e) { }
+
+    public void updateVarTable(List<VariableDTO> usedVars)
+    {
+        varTableCompController.setRows(usedVars);
+    }
+
+    public void bindCycles(IntegerProperty cyclesPro)
+    {
+        cyclesLabel.textProperty().bind(
+                Bindings.format("Cycles: %d", cyclesPro)
+        );
+    }
+
+    public void onStatisticsNewRun(List<Long> inputs)
+    {
+        onNewRun(null);
+        inputVarsCompController.loadInputValues(inputs);
+    }
+
+
 }

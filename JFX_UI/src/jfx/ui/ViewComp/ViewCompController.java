@@ -135,14 +135,12 @@ public class ViewCompController {
     private void handleCollapse(ActionEvent event)
     {
         mainController.decrementDegree();
-        mainController.onDegreeChange();
     }
 
     @FXML
     private void handleExpand(ActionEvent event)
     {
         mainController.incrementDegree();
-        mainController.onDegreeChange();
     }
 
     public ObservableList<InstructionDTO> findChainList(InstructionDTO inst)

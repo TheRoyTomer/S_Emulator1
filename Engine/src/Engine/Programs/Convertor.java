@@ -60,6 +60,7 @@ public class Convertor
                 stat.getExecuteId(),
                 stat.getExecuteDegree(),
                 stat.getInputsVals(),
+                stat.getVariablesVals(),
                 stat.getFinalYValue(),
                 stat.getTotalCycles());
 

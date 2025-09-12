@@ -5,10 +5,13 @@ import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
 import Engine.Vars.Variable;
+import EngineObject.VariableDTO;
 import Out.ExecuteResultDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class Executer
 {
@@ -21,6 +24,14 @@ public class Executer
         this.context = program.getContext();
     }
 
+    public List<Long> getInputListForStatistics(TreeSet<Variable> inputList, List<Long> valuesList)
+    {
+        return inputList.stream()
+                .filter(v -> v.getSerial() > 0 && v.getSerial() <= valuesList.size())
+                .map(v -> valuesList.get(v.getSerial() - 1))
+                .collect(Collectors.toList());
+    }
+
     public ExecuteResultDTO execute(int degree, List<Long> inputs)
     {
         context.resetMapsState();
@@ -29,21 +40,25 @@ public class Executer
         context.updateIndexLabels(program.getExpandedInstructions());
         int totalCycles = runProgram();
 
+        List<VariableDTO> allVarsInRun =
+                context.getAllVarsInList(program.getExpandedInstructions())
+                .stream()
+                .map(Convertor::VariableToDTO)
+                .toList();
+
         //Inserts new statistic to the history.
         program.getHistory().addExecutionStatistics(
                 degree,
                 context.getVarValue(Variable.OUTPUT),
-                inputs,
+                getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), inputs),
+                allVarsInRun,
                 totalCycles);
 
         return new ExecuteResultDTO(
                 program.getName(),
                 Convertor.convertInstructionsListToDTO(program.getExpandedInstructions()),
                 context.getVarValue(Variable.OUTPUT),
-                context.getAllVarsInList(program.getExpandedInstructions())
-                        .stream()
-                        .map(Convertor::VariableToDTO)
-                        .toList(),
+                allVarsInRun,
                 totalCycles);
     }
 
@@ -96,8 +111,6 @@ public class Executer
             nextDegreeInstructions.clear();
             degree--;
         }
-
-
         program.setExpandedInstructions(currDegreeInstructions);
     }
 

@@ -1,7 +1,9 @@
 package jfx.ui.MainFX;
 
 import Engine.EngineFacade;
+import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
+import Out.ExecuteResultDTO;
 import Out.ViewResultDTO;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -12,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.SplitPane;
 import jfx.ui.ExecutionComp.ExecutionCompController;
 import jfx.ui.HeaderComp.HeaderCompController;
+import jfx.ui.HistoryComp.HistoryCompController;
 import jfx.ui.ViewComp.ViewCompController;
 
 import java.util.List;
@@ -22,16 +25,20 @@ public class MainFXController {
     @FXML private VBox headerComp;
     @FXML private SplitPane viewComp;
     @FXML private VBox executionComp;
+    @FXML private VBox historyComp;
 
     @FXML private HeaderCompController headerCompController;
     @FXML private ViewCompController viewCompController;
     @FXML private ExecutionCompController executionCompController;
+    @FXML private HistoryCompController historyCompController;
+
 
     private EngineFacade facade;
 
 
     private final IntegerProperty currentDegreeProperty = new SimpleIntegerProperty(0);
     private final IntegerProperty maxDegreeProperty = new SimpleIntegerProperty(0);
+    private final IntegerProperty cyclesProperty = new SimpleIntegerProperty(0);
 
     @FXML
     private void initialize() {
@@ -41,8 +48,14 @@ public class MainFXController {
             headerCompController.setMainController(this);
             viewCompController.setMainController(this);
             executionCompController.setMainController(this);
+            historyCompController.setMainFXController(this);
 
             viewCompController.bindDegrees(currentDegreeProperty, maxDegreeProperty);
+            executionCompController.bindCycles(cyclesProperty);
+
+            currentDegreeProperty.addListener((obs, oldVal, newVal) -> {
+                onDegreeChange();
+            });
         }
     }
 
@@ -67,11 +80,18 @@ public class MainFXController {
         maxDegreeProperty.set(facade.getMaxDegree());
         ViewResultDTO res = facade.viewOriginalProgram();
         InstructionsUpdate(res);
+        historyCompController.resetHistory();
+        executionCompController.resetInputFieldsState();
     }
 
     public IntegerProperty getCurrentDegreeProperty()
     {
         return currentDegreeProperty;
+    }
+
+    public void resetCyclesProperty()
+    {
+        this.cyclesProperty.set(0);
     }
 
     public IntegerProperty getMaxDegreeProperty()
@@ -95,6 +115,12 @@ public class MainFXController {
         InstructionsUpdate(res);
     }
 
+    public void handleReRun(StatisticDTO dto)
+    {
+        executionCompController.onStatisticsNewRun(dto.inputs());
+        currentDegreeProperty.set(dto.degree());
+    }
+
     public void InstructionsUpdate(ViewResultDTO resDTO)
     {
         viewCompController.showTableInfo(resDTO.instructions());
@@ -113,6 +139,16 @@ public class MainFXController {
     public List<VariableDTO> getInputVariables()
     {
         return facade.getInputVariablesPreExecute();
+    }
+
+    public void onExecution(List<Long> inputs)
+    {
+        ExecuteResultDTO res = facade.executeProgram(currentDegreeProperty.getValue(), inputs);
+        cyclesProperty.setValue(res.cycles());
+        executionCompController.updateVarTable(res.usedVarsByOrder());
+        historyCompController.updateHistoryTree(facade.getHistory());
+
+
     }
 }
 

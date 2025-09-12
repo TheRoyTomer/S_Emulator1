@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane stylesheets="@MainFX_CSS.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.MainFX.MainFXController">
-   <top>
-      <fx:include fx:id="headerComp" source="../HeaderComp/HeaderComp.fxml" BorderPane.alignment="CENTER" />
-   </top>
-   <center>
-      <fx:include fx:id="viewComp" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../ViewComp/ViewComp.fxml" BorderPane.alignment="CENTER" />
-   </center>
-   <right>
-      <SplitPane dividerPositions="0.5" orientation="VERTICAL" BorderPane.alignment="CENTER">
-        <items>
-            <fx:include fx:id="executionComp" source="../ExecutionComp/ExecutionComp.fxml" />
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-               <children>
-                  <Label text="COMMING SOON" />
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
-   </right>
+
+<BorderPane maxHeight="600.0" maxWidth="1000.0" minHeight="400.0" minWidth="700.0" prefHeight="500.0" prefWidth="850.0" stylesheets="@MainFX_CSS.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.MainFX.MainFXController">
+    <top>
+        <fx:include fx:id="headerComp" source="../HeaderComp/HeaderComp.fxml" BorderPane.alignment="CENTER" />
+    </top>
+    <center>
+        <fx:include fx:id="viewComp" source="../ViewComp/ViewComp.fxml" BorderPane.alignment="CENTER" />
+    </center>
+    <right>
+        <SplitPane dividerPositions="0.6" orientation="VERTICAL" prefWidth="300.0" BorderPane.alignment="CENTER">
+            <items>
+                <fx:include fx:id="executionComp" source="../ExecutionComp/ExecutionComp.fxml" />
+                <fx:include fx:id="historyComp" source="../HistoryComp/HistoryComp.fxml" />
+            </items>
+        </SplitPane>
+    </right>
 </BorderPane>

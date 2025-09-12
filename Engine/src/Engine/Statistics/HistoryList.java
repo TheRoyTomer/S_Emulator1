@@ -2,6 +2,7 @@ package Engine.Statistics;
 
 import Engine.Programs.Convertor;
 import EngineObject.StatisticDTO;
+import EngineObject.VariableDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +22,10 @@ public class HistoryList
 
     public void reset() { historyList.clear();}
 
-    public void addExecutionStatistics(int executeDegree, long finalYValue, List<Long> inputsVals, int totalCycles)
+    public void addExecutionStatistics(int executeDegree, long finalYValue, List<Long> inputsVals, List<VariableDTO> variablesVals, int totalCycles)
     {
         int newExecuteID = historyList.size() + 1;
-        historyList.add(new ExecutionStatistics(newExecuteID, executeDegree, finalYValue, inputsVals, totalCycles));
+        historyList.add(new ExecutionStatistics(newExecuteID, executeDegree, finalYValue, inputsVals, variablesVals, totalCycles));
     }
 
     public List<StatisticDTO> getListAsDTOs() {
