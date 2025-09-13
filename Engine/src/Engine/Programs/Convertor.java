@@ -39,6 +39,11 @@ public class Convertor
                 inst.getLabelToJumpIfExist().map(LabelInterface::getLabelRepresentation));
     }
 
+    public static List<VariableDTO> varsToDTOList(List<Variable> vars)
+    {
+        return vars.stream().map(Convertor::VariableToDTO).toList();
+    }
+
     public static VariableDTO VariableToDTO(Variable v)
     {
         return new VariableDTO(

@@ -29,6 +29,12 @@ public class Constant_Assignment extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY, constant);
     }
 
+    public List<Variable> getChangedVariables()
+    {
+        if (context.getVarValue(var) != constant) {return List.of(var);}
+        return List.of();
+    }
+
 
     @Override
     /*public String getInstructionRepresentation()

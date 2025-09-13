@@ -75,6 +75,8 @@ public abstract class Instruction implements Calculable
         this.lineIndex = lineIndex;
     }
 
+    public List<Variable> getChangedVariables() {return List.of();}
+
     //For the DTO
     public Optional<Variable> getArgIfExist()
     {

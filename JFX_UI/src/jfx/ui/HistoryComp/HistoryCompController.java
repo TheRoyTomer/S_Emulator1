@@ -57,6 +57,7 @@ public class HistoryCompController {
     public void setMainFXController(MainFXController mainFXController)
     {
         this.mainFXController = mainFXController;
+        reRunButton.disableProperty().bind(mainFXController.getDebugModeProperty());
     }
 
     public void updateHistoryTree(List<StatisticDTO> statistics)

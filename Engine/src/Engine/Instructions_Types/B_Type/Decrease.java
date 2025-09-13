@@ -8,6 +8,8 @@ import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
 import Engine.Vars.Variable;
 
+import java.util.List;
+
 
 public class Decrease extends B_Instruction
 {
@@ -21,6 +23,12 @@ public class Decrease extends B_Instruction
     public Decrease(Context context, S_Instruction holder, Variable var)
     {
         this(context, holder, var, FixedLabels.EMPTY);
+    }
+
+    public List<Variable> getChangedVariables()
+    {
+        if (context.getVarValue(var) != 0) {return List.of(var);}
+        return List.of();
     }
 
     @Override

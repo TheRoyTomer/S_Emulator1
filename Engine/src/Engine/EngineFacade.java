@@ -5,6 +5,7 @@ import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
 import Out.ExecuteResultDTO;
 import Out.LoadResultDTO;
+import Out.StepOverResult;
 import Out.ViewResultDTO;
 
 import java.io.File;
@@ -66,6 +67,10 @@ public class EngineFacade
     {
         return program.getHistory().getListAsDTOs();
     }
+
+    public StepOverResult stepOver(long PC) {return executer.stepOver(PC);}
+
+    public List<VariableDTO> preDebug(int degree, List<Long> inputsVal) {return executer.preDebug(degree, inputsVal);}
 
 
 

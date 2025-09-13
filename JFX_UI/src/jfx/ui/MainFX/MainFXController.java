@@ -4,9 +4,9 @@ import Engine.EngineFacade;
 import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
 import Out.ExecuteResultDTO;
+import Out.StepOverResult;
 import Out.ViewResultDTO;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,6 +18,7 @@ import jfx.ui.HistoryComp.HistoryCompController;
 import jfx.ui.ViewComp.ViewCompController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MainFXController {
@@ -35,10 +36,16 @@ public class MainFXController {
 
     private EngineFacade facade;
 
+    private final BooleanProperty fileLoadedProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty newRunStartedProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty debugModeProperty = new SimpleBooleanProperty(false);
 
     private final IntegerProperty currentDegreeProperty = new SimpleIntegerProperty(0);
     private final IntegerProperty maxDegreeProperty = new SimpleIntegerProperty(0);
     private final IntegerProperty cyclesProperty = new SimpleIntegerProperty(0);
+    private final LongProperty currPC_Property = new SimpleLongProperty(-1);
+    private long nextPC = 0;
+
 
     @FXML
     private void initialize() {
@@ -56,17 +63,34 @@ public class MainFXController {
             currentDegreeProperty.addListener((obs, oldVal, newVal) -> {
                 onDegreeChange();
             });
+
+            newRunStartedProperty.addListener((obs, oldVal, newVal) ->
+            { cyclesProperty.set(0);});
+
+
         }
     }
 
+
+    public BooleanProperty getFileLoadedProperty() { return fileLoadedProperty; }
+    public BooleanProperty getNewRunStartedProperty() { return newRunStartedProperty; }
+    public BooleanProperty getDebugModeProperty() { return debugModeProperty; }
+
+    public void setNewRunStarted(boolean value) { newRunStartedProperty.set(value); }
+    public void setDebugMode(boolean value) { debugModeProperty.set(value); }
+
     public void setFacade(EngineFacade facade) {
         this.facade = facade;
-        if (headerCompController != null) {
+        if (headerCompController != null)
+        {
             headerCompController.setFacade(facade);
         }
-        if (viewCompController != null) {
-            // viewCompController.setFacade(facade);
-        }
+    }
+
+    public void resetCurrAndNextPC()
+    {
+        currPC_Property.set(-1);
+        this.nextPC = 0;
     }
 
     public EngineFacade getFacade()
@@ -76,6 +100,7 @@ public class MainFXController {
 
     public void onProgramLoaded()
     {
+        fileLoadedProperty.set(true);
         currentDegreeProperty.set(0);
         maxDegreeProperty.set(facade.getMaxDegree());
         ViewResultDTO res = facade.viewOriginalProgram();
@@ -98,6 +123,8 @@ public class MainFXController {
     {
         return maxDegreeProperty;
     }
+
+    public LongProperty getCurrPC_Property() {return currPC_Property;}
 
     public void incrementDegree()
     {
@@ -141,13 +168,52 @@ public class MainFXController {
         return facade.getInputVariablesPreExecute();
     }
 
+    public void onDebug(List<Long> inputs)
+    {
+
+        List<VariableDTO> usedVars = facade.preDebug(currentDegreeProperty.getValue(), inputs);
+        executionCompController.updateVarTable(usedVars);
+
+    }
+
     public void onExecution(List<Long> inputs)
     {
         ExecuteResultDTO res = facade.executeProgram(currentDegreeProperty.getValue(), inputs);
         cyclesProperty.setValue(res.cycles());
         executionCompController.updateVarTable(res.usedVarsByOrder());
         historyCompController.updateHistoryTree(facade.getHistory());
+        newRunStartedProperty.set(false);
+    }
 
+    public void handleStepOver()
+    {
+        currPC_Property.set(this.nextPC);
+        if (currPC_Property.get() < viewCompController.getInstructionTableSize())
+        {
+            StepOverResult res = facade.stepOver(currPC_Property.get());
+            cyclesProperty.setValue(cyclesProperty.get() + res.cycles());
+            this.nextPC = res.nextPC();
+            executionCompController.updateChangedVariables(res.changedVars());
+        }
+        else
+        {
+            resetCurrAndNextPC();
+            debugModeProperty.set(false);
+            newRunStartedProperty.set(false);
+            historyCompController.updateHistoryTree(facade.getHistory());
+        }
+        viewCompController.refreshInstructionsTable();
+
+
+    }
+
+    public void handleStop()
+    {
+        resetCurrAndNextPC();
+        setDebugMode(false);
+        setNewRunStarted(false);
+        resetCyclesProperty();
+        viewCompController.refreshInstructionsTable();
 
     }
 }

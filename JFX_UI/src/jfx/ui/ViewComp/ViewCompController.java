@@ -60,12 +60,12 @@ public class ViewCompController {
                         Bindings.add(countB, countS)
                 ));
 
+
+        if (instructionsTableController != null) {instructionsTableController.setViewController(this);}
+
         highlightSelectorCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal == null || newVal.equals("No selection")) {instructionsTableController.setRowHighlighter("");}
-            else {instructionsTableController.setRowHighlighter(newVal);}
+            instructionsTableController.refreshTable();
         });
-
-
     }
 
     public void setMainController(MainFXController mainController)
@@ -74,12 +74,23 @@ public class ViewCompController {
 
         collapseButton.disableProperty().bind(
                 mainController.getCurrentDegreeProperty().isEqualTo(0)
+                        .or(mainController.getFileLoadedProperty().not())
+                        .or(mainController.getDebugModeProperty())
         );
 
         expandButton.disableProperty().bind(
                 mainController.getCurrentDegreeProperty()
                         .isEqualTo(mainController.getMaxDegreeProperty())
+                        .or(mainController.getFileLoadedProperty().not())
+                        .or(mainController.getDebugModeProperty())
         );
+
+        programSelectorButton.disableProperty().bind(mainController.getFileLoadedProperty().not()
+                .or(mainController.getDebugModeProperty()));
+
+        highlightSelectorCombo.disableProperty().bind(mainController.getFileLoadedProperty().not()
+                .or(mainController.getDebugModeProperty()));
+
 
         instructionsTableController
                 .selectedItemProperty()
@@ -90,6 +101,11 @@ public class ViewCompController {
                 });
 
 
+    }
+
+    public MainFXController getMainController()
+    {
+        return mainController;
     }
 
     public void bindDegrees(IntegerProperty current, IntegerProperty max)
@@ -153,5 +169,20 @@ public class ViewCompController {
             holder = holder.holder();
         }
         return list;
+    }
+
+    public String getHighlightSelection()
+    {
+        return highlightSelectorCombo.getValue();
+    }
+
+    public void refreshInstructionsTable()
+    {
+        instructionsTableController.refreshTable();
+    }
+
+    public int getInstructionTableSize()
+    {
+        return instructionsTableController.getInstructionTableSize();
     }
 }

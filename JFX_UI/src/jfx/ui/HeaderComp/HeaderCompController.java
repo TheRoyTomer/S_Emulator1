@@ -29,6 +29,7 @@ public class HeaderCompController {
     public void setMainController(MainFXController mainController)
     {
         this.mainController = mainController;
+        loadButton.disableProperty().bind(mainController.getDebugModeProperty());
     }
 
     @FXML

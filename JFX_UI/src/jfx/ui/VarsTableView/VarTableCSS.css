@@ -1,0 +1,4 @@
+.table-row-cell.justChangedVar {
+    -fx-background-color: lightgreen;
+    -fx-font-weight: bold;
+}

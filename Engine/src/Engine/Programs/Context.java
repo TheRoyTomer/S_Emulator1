@@ -158,7 +158,6 @@ public class  Context
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
-
     public List<LabelInterface> getAll_L_InList(List<Instruction> instructions)
     {
         boolean isExitExist = false;

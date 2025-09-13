@@ -8,6 +8,8 @@ import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
 import Engine.Vars.Variable;
 
+import java.util.List;
+
 public class Increase extends B_Instruction
 {
 
@@ -20,6 +22,9 @@ public class Increase extends B_Instruction
     {
         this(context, holder , var, FixedLabels.EMPTY);
     }
+
+    public List<Variable> getChangedVariables() {return List.of(var);}
+
 
     @Override
     public LabelInterface execute()

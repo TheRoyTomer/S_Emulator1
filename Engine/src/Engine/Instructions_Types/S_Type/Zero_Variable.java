@@ -26,6 +26,12 @@ public class Zero_Variable extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY);
     }
 
+    public List<Variable> getChangedVariables()
+    {
+        if (context.getVarValue(var) != 0) {return List.of(var);}
+        return List.of();
+    }
+
     @Override
     public LabelInterface execute()
     {

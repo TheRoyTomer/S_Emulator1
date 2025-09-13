@@ -2,6 +2,7 @@ package jfx.ui.ExecutionComp;
 
 import EngineObject.VariableDTO;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -56,11 +57,24 @@ public class ExecutionCompController {
     public void setMainController(MainFXController mainController)
     {
         this.mainController = mainController;
+        newRunButton.disableProperty().bind(mainController.getFileLoadedProperty().not()
+                .or(mainController.getDebugModeProperty()));
+
+        executeButton.disableProperty().bind(mainController.getNewRunStartedProperty().not()
+                .or(mainController.getDebugModeProperty()));
+
+        debugButton.disableProperty().bind(mainController.getNewRunStartedProperty().not()
+                .or(mainController.getDebugModeProperty()));
+
+        stepOverButton.disableProperty().bind(mainController.getDebugModeProperty().not());
+        resumeButton.disableProperty().bind(mainController.getDebugModeProperty().not());
+        stopButton.disableProperty().bind(mainController.getDebugModeProperty().not());
     }
 
     @FXML
     private void onNewRun(ActionEvent e)
     {
+        mainController.setNewRunStarted(true);
         inputVarsCompController.clearInputVarMap();
         inputVarsCompController.clearTableView();
         varTableCompController.clearTableView();
@@ -107,7 +121,22 @@ public class ExecutionCompController {
     }
 
     @FXML
-    private void onDebugPress(ActionEvent e) { }
+    private void onDebugPress(ActionEvent e)
+    {
+        try {
+            mainController.onDebug(handleInputs());
+            inputVarsComp.setEditable(false);
+            mainController.setDebugMode(true);
+
+        } catch (NumberFormatException ex) {
+            showError(ex.getMessage() + " Is not a number");
+        }
+        catch (IllegalArgumentException ex)
+        {
+            showError(ex.getMessage());
+        }
+
+    }
 
     @FXML
     private void onExecutePress(ActionEvent e)
@@ -130,10 +159,22 @@ public class ExecutionCompController {
     private void onResume(ActionEvent e) { }
 
     @FXML
-    private void onStop(ActionEvent e) { }
+    private void onStop(ActionEvent e)
+    {
+        mainController.handleStop();
+        inputVarsCompController.clearInputVarMap();
+        inputVarsCompController.clearTableView();
+        varTableCompController.clearTableView();
+        varTableCompController.clearMap();
+
+
+    }
 
     @FXML
-    private void onStepOver(ActionEvent e) { }
+    private void onStepOver(ActionEvent e)
+    {
+        mainController.handleStepOver();
+    }
 
     public void updateVarTable(List<VariableDTO> usedVars)
     {
@@ -151,6 +192,16 @@ public class ExecutionCompController {
     {
         onNewRun(null);
         inputVarsCompController.loadInputValues(inputs);
+    }
+
+    public void updateChangedVariables(List<VariableDTO> changedVars)
+    {
+        varTableCompController.updateWithChangedVariables(changedVars);
+    }
+
+    public void bindButtonStates(BooleanProperty fileLoaded, BooleanProperty newRunStarted, BooleanProperty debugMode)
+    {
+
     }
 
 

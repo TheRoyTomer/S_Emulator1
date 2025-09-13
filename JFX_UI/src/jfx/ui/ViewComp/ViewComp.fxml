@@ -14,11 +14,11 @@
             <children>
                 <HBox spacing="5.0">
                     <children>
-                        <Button id="selectorFuncCombo" fx:id="programSelectorButton" mnemonicParsing="false" onAction="#handleProgramSelector" prefWidth="120.0" text="Program\function selector">
+                        <Button id="selectorFuncCombo" fx:id="programSelectorButton" mnemonicParsing="false" onAction="#handleProgramSelector" prefWidth="200.0" text="Program\function selector">
                             <font>
                                 <Font size="12.0" />
                             </font></Button>
-                        <Button fx:id="collapseButton" mnemonicParsing="false" onAction="#handleCollapse" prefWidth="70.0" text="Collapse">
+                        <Button fx:id="collapseButton" mnemonicParsing="false" onAction="#handleCollapse" prefWidth="90.0" text="Collapse">
                             <font>
                                 <Font size="12.0" />
                             </font></Button>
@@ -26,7 +26,7 @@
                             <font>
                                 <Font size="12.0" />
                             </font></Label>
-                        <Button fx:id="expandButton" mnemonicParsing="false" onAction="#handleExpand" prefWidth="70.0" text="Expand">
+                        <Button fx:id="expandButton" mnemonicParsing="false" onAction="#handleExpand" prefWidth="90.0" text="Expand">
                             <font>
                                 <Font size="12.0" />
                             </font></Button>

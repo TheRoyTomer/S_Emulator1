@@ -2,3 +2,9 @@
     -fx-background-color: lightblue;
     -fx-font-weight: bold;
 }
+
+.table-row-cell.highlightRowDebug {
+    -fx-background-color: pink;
+    -fx-font-weight: bold;
+}
+

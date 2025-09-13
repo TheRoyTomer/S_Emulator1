@@ -39,6 +39,12 @@ public class Assignment extends S_Instruction
         return List.of(var,  arg1);
     }
 
+    public List<Variable> getChangedVariables()
+    {
+        if (context.getVarValue(var) != context.getVarValue(arg1)) {return List.of(var);}
+        return List.of();
+    }
+
 
     @Override
     public LabelInterface execute()
@@ -46,6 +52,8 @@ public class Assignment extends S_Instruction
         context.setVarValue(var, context.getVarValue(arg1));
         return FixedLabels.EMPTY;
     }
+
+
 
     @Override
     public void setSingleExpansion()
