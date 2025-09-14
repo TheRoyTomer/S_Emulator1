@@ -163,7 +163,6 @@ public class ViewCompController {
     {
         ObservableList<InstructionDTO> list = FXCollections.observableArrayList();
         InstructionDTO holder = inst.holder();
-        System.out.println(holder);
         while (holder != null) {
             list.add(holder);
             holder = holder.holder();

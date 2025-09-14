@@ -72,6 +72,8 @@ public class EngineFacade
 
     public List<VariableDTO> preDebug(int degree, List<Long> inputsVal) {return executer.preDebug(degree, inputsVal);}
 
+    public ExecuteResultDTO resumeDebug(int PC) {return executer.resume(PC);}
+
 
 
 }

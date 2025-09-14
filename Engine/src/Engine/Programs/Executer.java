@@ -42,10 +42,7 @@ public class Executer
         expand(degree);
         context.updateIndexLabels(program.getExpandedInstructions());
 
-        return context.getAllVarsInList(program.getExpandedInstructions())
-             .stream()
-             .map(Convertor::VariableToDTO)
-             .toList();
+        return getAllVarsInRun();
     }
 
     public ExecuteResultDTO execute(int degree, List<Long> inputs)
@@ -54,35 +51,52 @@ public class Executer
         context.insertInputsToMap(inputs);
         expand(degree);
         context.updateIndexLabels(program.getExpandedInstructions());
-        int totalCycles = runProgram();
-
-        List<VariableDTO> allVarsInRun =
-                context.getAllVarsInList(program.getExpandedInstructions())
-                .stream()
-                .map(Convertor::VariableToDTO)
-                .toList();
-
+        int totalCycles = runProgram(0);
         //Inserts new statistic to the history.
+        List<VariableDTO> varsInList = getAllVarsInRun();
         program.getHistory().addExecutionStatistics(
                 degree,
                 context.getVarValue(Variable.OUTPUT),
                 getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), inputs),
-                allVarsInRun,
+                varsInList,
                 totalCycles);
 
         return new ExecuteResultDTO(
                 program.getName(),
                 Convertor.convertInstructionsListToDTO(program.getExpandedInstructions()),
                 context.getVarValue(Variable.OUTPUT),
-                allVarsInRun,
+                varsInList,
                 totalCycles);
     }
 
-    public int runProgram()
+    public ExecuteResultDTO resume(long PCVal)
+    {
+        int cycles = runProgram(PCVal) + statePreDebug.getCycle();
+
+        List<VariableDTO> varsInList = getAllVarsInRun();
+        //Inserts new statistic to the history.
+        program.getHistory().addExecutionStatistics(
+                statePreDebug.getDegree(),
+                context.getVarValue(Variable.OUTPUT),
+                getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), statePreDebug.getInputs()),
+                varsInList,
+                cycles);
+
+
+        return new ExecuteResultDTO(
+                program.getName(),
+                Convertor.convertInstructionsListToDTO(program.getExpandedInstructions()),
+                context.getVarValue(Variable.OUTPUT),
+                varsInList,
+                cycles
+        );
+    }
+
+    public int runProgram(long PCVal)
     {
         List<Instruction> instructions = program.getExpandedInstructions();
         int sumCycles = 0;
-        for (long PC = 0; PC < instructions.size(); )
+        for (long PC = PCVal; PC < instructions.size(); )
         {
             sumCycles += instructions.get((int) PC).getCycles();
             PC = this.SingleStepRun(PC);
@@ -115,18 +129,11 @@ public class Executer
         statePreDebug.increaseCyclesByNumber(currentInstruction.getCycles());
         if (nextPC >= program.getExpandedInstructions().size())
         {
-            List<VariableDTO> allVarsInRun =
-                    context.getAllVarsInList(program.getExpandedInstructions())
-                            .stream()
-                            .map(Convertor::VariableToDTO)
-                            .toList();
-
-            //Inserts new statistic to the history.
             program.getHistory().addExecutionStatistics(
                     statePreDebug.getDegree(),
                     context.getVarValue(Variable.OUTPUT),
                     getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), statePreDebug.getInputs()),
-                    allVarsInRun,
+                    getAllVarsInRun(),
                     statePreDebug.getCycle());
         }
         return new StepOverResult(
@@ -135,7 +142,13 @@ public class Executer
                 nextPC);
     }
 
-
+    private List<VariableDTO> getAllVarsInRun()
+    {
+        return context.getAllVarsInList(program.getExpandedInstructions())
+                .stream()
+                .map(Convertor::VariableToDTO)
+                .toList();
+    }
 
 
     public void expand(int degree)

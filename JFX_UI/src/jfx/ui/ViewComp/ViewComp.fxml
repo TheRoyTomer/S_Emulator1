@@ -30,7 +30,7 @@
                             <font>
                                 <Font size="12.0" />
                             </font></Button>
-                        <ComboBox id="HightlightCombo" fx:id="highlightSelectorCombo" prefWidth="150.0" promptText="Highlight selection" HBox.hgrow="ALWAYS" />
+                        <ComboBox id="HightlightCombo" fx:id="highlightSelectorCombo" prefWidth="150.0" promptText="Highlight" HBox.hgrow="ALWAYS" />
                     </children>
                 </HBox>
                 <fx:include fx:id="instructionsTable" source="../InstructionTableView/instructionsTable.fxml" VBox.vgrow="ALWAYS" />

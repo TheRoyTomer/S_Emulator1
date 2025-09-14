@@ -18,7 +18,6 @@ import jfx.ui.HistoryComp.HistoryCompController;
 import jfx.ui.ViewComp.ViewCompController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MainFXController {
@@ -65,9 +64,11 @@ public class MainFXController {
             });
 
             newRunStartedProperty.addListener((obs, oldVal, newVal) ->
-            { cyclesProperty.set(0);});
-
-
+            {
+                if (newVal) {
+                    cyclesProperty.set(0);
+                }
+            });
         }
     }
 
@@ -179,10 +180,25 @@ public class MainFXController {
     public void onExecution(List<Long> inputs)
     {
         ExecuteResultDTO res = facade.executeProgram(currentDegreeProperty.getValue(), inputs);
+        handleExecuteRes(res);
+    }
+
+    private void handleExecuteRes(ExecuteResultDTO res)
+    {
         cyclesProperty.setValue(res.cycles());
         executionCompController.updateVarTable(res.usedVarsByOrder());
         historyCompController.updateHistoryTree(facade.getHistory());
         newRunStartedProperty.set(false);
+        debugModeProperty.set(false);
+    }
+
+    public void handleResume()
+    {
+        ExecuteResultDTO res = facade.resumeDebug((int)nextPC);
+        handleExecuteRes(res);
+        resetCurrAndNextPC();
+        viewCompController.refreshInstructionsTable();
+        executionCompController.refreshAndClear();
     }
 
     public void handleStepOver()
@@ -216,5 +232,7 @@ public class MainFXController {
         viewCompController.refreshInstructionsTable();
 
     }
+
+
 }
 

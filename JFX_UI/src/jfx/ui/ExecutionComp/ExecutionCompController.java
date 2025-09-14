@@ -156,7 +156,8 @@ public class ExecutionCompController {
     }
 
     @FXML
-    private void onResume(ActionEvent e) { }
+    private void onResume(ActionEvent e)
+    {mainController.handleResume();}
 
     @FXML
     private void onStop(ActionEvent e)
@@ -199,10 +200,14 @@ public class ExecutionCompController {
         varTableCompController.updateWithChangedVariables(changedVars);
     }
 
-    public void bindButtonStates(BooleanProperty fileLoaded, BooleanProperty newRunStarted, BooleanProperty debugMode)
-    {
+    public void refreshVarsTable() {varTableComp.refresh();}
 
+    public void refreshAndClear()
+    {
+        varTableComp.refresh();
+        varTableCompController.clearMap();
     }
+
 
 
 }
