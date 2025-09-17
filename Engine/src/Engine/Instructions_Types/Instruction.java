@@ -1,10 +1,12 @@
 package Engine.Instructions_Types;
 
 import Engine.Labels.LabelInterface;
+import Engine.Labels.Label_Implement;
 import Engine.Programs.Context;
 import Engine.Vars.Variable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class Instruction implements Calculable
@@ -94,6 +96,22 @@ public abstract class Instruction implements Calculable
     {
         return Optional.empty();
     }
+
+    //For the DTO
+    public Optional<String> getFuncUserInputIfExist()
+    {
+        return Optional.empty();
+    }
+
+    //For the DTO
+    public Optional<String> getFuncArgsIfExist()
+    {
+        return Optional.empty();
+    }
+
+    public abstract Instruction createCopy(Context context, S_Instruction holder,
+                                              Map<Variable, Variable> varChanges,
+                                              Map<LabelInterface, Label_Implement> labelChanges);
 
 
 }

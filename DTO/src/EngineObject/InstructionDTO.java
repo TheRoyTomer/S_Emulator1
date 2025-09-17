@@ -12,7 +12,9 @@ public record InstructionDTO(
         int cycles,
         Optional<VariableDTO> arg,
         Optional<Long> constant,
-        Optional<String> labelToJump)
+        Optional<String> labelToJump,
+        Optional<String> funcName,
+        Optional<String> funcArgs)
 {
 
 
@@ -22,6 +24,8 @@ public record InstructionDTO(
         String argRep = this.arg.map(VariableDTO::getVarRepresentation).orElse("");
         String constRep = this.constant.map(Object::toString).orElse("");
         String label2JumpRep = this.labelToJump.map(Object::toString).orElse("");
+        String funcUserStringRep = this.funcName.map(Object::toString).orElse("");
+        String funcArgsRep = this.funcArgs.map(Object::toString).orElse("");
         //Gets command representation from Instruction Name
         return switch (this.name)
         {
@@ -37,6 +41,7 @@ public record InstructionDTO(
             case "JUMP_EQUAL_CONSTANT"-> String.format("IF %s = %s GOTO %s ", varRep, constRep, label2JumpRep);
             case "JUMP_EQUAL_VARIABLE"-> String.format("IF %s = %s GOTO %s ", varRep, argRep, label2JumpRep);
             case "ZERO_VARIABLE"-> String.format(" %s <- %d ", varRep, 0);
+            case "QUOTE" -> String.format(" %s <- (%s,%s) ", varRep, funcUserStringRep, funcArgsRep);
             default ->"";
         };
     }

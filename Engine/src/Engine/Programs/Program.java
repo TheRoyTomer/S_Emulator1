@@ -5,6 +5,7 @@ import Engine.Instructions_Types.S_Instruction;
 import Engine.Statistics.HistoryList;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Program
 {
@@ -13,13 +14,13 @@ public class Program
     private int maxDegree;
     private List<Instruction> instructions;
     private List<Instruction> ExpandedInstructions;
+    private List<Function> functions;
     private final HistoryList history = new HistoryList();
-    Convertor convertor;
+    private static final Map<String, Function> nameToFuncMap = new HashMap<>();
 
     public Program()
     {
         this.context = new Context();
-        convertor = new Convertor(context);
     }
 
 
@@ -46,6 +47,29 @@ public class Program
         this.name = name;
     }
 
+    public void setFunctions(List<Function> functions)
+    {
+        this.functions = functions;
+    }
+
+    public List<Function> getFunctions()
+    {
+        return functions;
+    }
+
+    public int getMaxDegree()
+    {
+        return maxDegree;
+    }
+
+    public List<String> getFunctionsUserString()
+    {
+        List<String> list = new ArrayList<>();
+        list.add(name);
+        list.addAll(functions.stream().map(Function::getUserString).toList());
+        return list;
+    }
+
     public void InitInstructionsExpensions()
     {
         instructions.stream()
@@ -66,6 +90,15 @@ public class Program
         }
     }
 
+    public Function getFunctionByName(String name)
+    {
+        return nameToFuncMap.get(name);
+    }
+
+    public void setFunctionInMap(Function function)
+    {
+        nameToFuncMap.put(function.getName(), function);
+    }
 
     //Init program after file Loaded successfully.
     public void initProgram()

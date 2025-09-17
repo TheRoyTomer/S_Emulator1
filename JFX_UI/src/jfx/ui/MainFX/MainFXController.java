@@ -99,7 +99,7 @@ public class MainFXController {
         return facade;
     }
 
-    public void onProgramLoaded()
+    public void onProgramLoaded(List<String> funcInputStrings)
     {
         fileLoadedProperty.set(true);
         currentDegreeProperty.set(0);
@@ -108,6 +108,7 @@ public class MainFXController {
         InstructionsUpdate(res);
         historyCompController.resetHistory();
         executionCompController.resetInputFieldsState();
+        viewCompController.updateProgramSelectorCombo(funcInputStrings);
     }
 
     public IntegerProperty getCurrentDegreeProperty()
@@ -217,6 +218,7 @@ public class MainFXController {
             debugModeProperty.set(false);
             newRunStartedProperty.set(false);
             historyCompController.updateHistoryTree(facade.getHistory());
+            executionCompController.refreshAndClear();
         }
         viewCompController.refreshInstructionsTable();
 
@@ -230,7 +232,6 @@ public class MainFXController {
         setNewRunStarted(false);
         resetCyclesProperty();
         viewCompController.refreshInstructionsTable();
-
     }
 
 

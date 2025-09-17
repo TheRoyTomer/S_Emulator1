@@ -57,7 +57,7 @@ public class HeaderCompController {
             if (res.isLoaded())
             {
                 filePathLabel.setText(path);
-                mainController.onProgramLoaded();
+                mainController.onProgramLoaded(res.funcNames());
             }
             showInfo(res.message());
 

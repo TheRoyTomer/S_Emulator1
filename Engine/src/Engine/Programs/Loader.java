@@ -7,9 +7,7 @@ import Engine.Instructions_Types.B_Type.Neutral;
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Type.*;
-import Engine.JAXB.generated.SInstruction;
-import Engine.JAXB.generated.SInstructionArgument;
-import Engine.JAXB.generated.XML_Reader;
+import Engine.JAXB.generated.*;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
@@ -19,7 +17,8 @@ import Engine.Vars.VariableType;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Function;
+import java.util.stream.Collectors;
+//import java.util.function.Function;
 
 public class Loader
 {
@@ -36,21 +35,22 @@ public class Loader
     {
         XML_Reader reader = new XML_Reader(file);
         loadFromReader(reader);
+
     }
 
     public void loadFromReader(XML_Reader reader)
     {
         context.clearMaps();
-
         destProgram.setName(reader.getName());
+        destProgram.setFunctions(convertToFunctionsList(reader.getFunctions()));
         List<SInstruction> newInstructions = reader.getSInstructionList();
-        destProgram.setInstructions(convertToInstructionList(newInstructions));
+        destProgram.setInstructions(convertToInstructionList(newInstructions, context));
         destProgram.initProgram();
     }
 
-    public List<Instruction> convertToInstructionList(List<SInstruction> fromJAXB)
+    public List<Instruction> convertToInstructionList(List<SInstruction> fromJAXB, Context myContext)
     {
-        return fromJAXB.stream().map(this::convertToInstruction).toList();
+        return fromJAXB.stream().map(inst -> convertToInstruction(inst, myContext)).toList();
     }
 
 
@@ -112,7 +112,7 @@ public class Loader
     }
 
     private <T> T requireArg(SInstruction ins, String key,
-                             Function<String, T> mapper, String opName)
+                             java.util.function.Function<String, T> mapper, String opName)
     {
         return Optional.ofNullable(getArg(ins, key))
                 .map(String::trim)
@@ -122,7 +122,13 @@ public class Loader
                         "Missing argument '" + key + "' for " + opName));
     }
 
-    public Instruction convertToInstruction(SInstruction Instruction)
+    public List<String> argumentsToStringList(String text) {
+        return Arrays.stream(text.split(","))
+                .map(s -> s.replaceAll("^[()]+|[()]+$", ""))
+                .collect(Collectors.toList());
+    }
+
+    public Instruction convertToInstruction(SInstruction Instruction, Context myContext)
     {
         Variable var = convertToVariable(Instruction.getSVariable());
         LabelInterface label = convertToLabelInterface(Instruction.getSLabel());
@@ -130,54 +136,84 @@ public class Loader
         InstructionData type = InstructionData.valueOf(name);
         LabelInterface labelToJump;
         Variable arg;
+        String funcName;
+        List<String> functionArguments;
         long constant;
         return switch (type) {
-                case INCREASE: yield new Increase(context, null , var, label);
-                case InstructionData.DECREASE: yield new Decrease(context, null, var, label);
+                case INCREASE: yield new Increase(myContext, null , var, label);
+                case InstructionData.DECREASE: yield new Decrease(myContext, null, var, label);
 
                 case JUMP_NOT_ZERO:
                     labelToJump = requireArg(Instruction, "JNZLabel",
                             this::convertToLabelInterface, "JUMP_NOT_ZERO");
-                    yield new JNZ(context, null, var, label, labelToJump);
+                    yield new JNZ(myContext, null, var, label, labelToJump);
 
-                case NEUTRAL: yield new Neutral(context, null, var, label);
+                case NEUTRAL: yield new Neutral(myContext, null, var, label);
 
-                case ZERO_VARIABLE: yield new Zero_Variable(context, null, var, label);
+                case ZERO_VARIABLE: yield new Zero_Variable(myContext, null, var, label);
 
                 case ASSIGNMENT:
                     arg = requireArg(Instruction, "assignedVariable",
                             this::convertToVariable, "ASSIGNMENT");
-                    yield new Assignment(context, null, var, arg, label);
+                    yield new Assignment(myContext, null, var, arg, label);
 
                 case CONSTANT_ASSIGNMENT:
                     constant = requireArg(Instruction, "constantValue",
                             Long::parseLong, "CONSTANT_ASSIGNMENT");
-                    yield new Constant_Assignment(context, null, var, label, constant);
+                    yield new Constant_Assignment(myContext, null, var, label, constant);
 
                 case GOTO_LABEL:
                     labelToJump = requireArg(Instruction, "gotoLabel",
                             this::convertToLabelInterface, "GOTO_LABEL");
-                    yield new Goto_Label(context, null, var, label, labelToJump);
+                    yield new Goto_Label(myContext, null, var, label, labelToJump);
 
                 case JUMP_ZERO:
                     labelToJump = requireArg(Instruction, "JZLabel",
                             this::convertToLabelInterface, "JUMP_ZERO");
-                    yield new Jump_Zero(context, null, var, label, labelToJump);
+                    yield new Jump_Zero(myContext, null, var, label, labelToJump);
 
                 case JUMP_EQUAL_CONSTANT:
                     labelToJump = requireArg(Instruction, "JEConstantLabel",
                             this::convertToLabelInterface, "JUMP_EQUAL_CONSTANT");
                     constant = requireArg(Instruction, "constantValue",
                             Long::parseLong, "JUMP_EQUAL_CONSTANT");
-                    yield new Jump_Equal_Constant(context, null, var, label, labelToJump, constant);
+                    yield new Jump_Equal_Constant(myContext, null, var, label, labelToJump, constant);
 
                 case JUMP_EQUAL_VARIABLE:
                     labelToJump = requireArg(Instruction, "JEVariableLabel",
                             this::convertToLabelInterface, "JUMP_EQUAL_VARIABLE");
                     arg = requireArg(Instruction, "variableName",
                             this::convertToVariable, "JUMP_EQUAL_VARIABLE");
-                    yield new Jump_Equal_Variable(context, null, var, label, labelToJump, arg);
-            };
+                    yield new Jump_Equal_Variable(myContext, null, var, label, labelToJump, arg);
+
+            case QUOTE:
+                funcName = requireArg(Instruction, "functionName", String::toString, "QUOTE");
+                functionArguments = requireArg(Instruction, "functionArguments", this::argumentsToStringList, "QUOTE");
+                yield new Quote(myContext, null, var, functionArguments, destProgram.getFunctionByName(funcName), label);
+
+        };
+    }
+
+    public List<Function> convertToFunctionsList(List<SFunction> functions)
+    {
+        List<Function> res = functions.stream().map(this::ConverToFunction).toList();
+        functions.forEach(this::setOneFunctionInstructions);
+        return res;
+    }
+
+    public Function ConverToFunction(SFunction  sFunction)
+    {
+        Function res = new Function(sFunction.getUserString());
+        res.setName(sFunction.getName());
+        destProgram.setFunctionInMap(res);
+        return res;
+    }
+
+    public void setOneFunctionInstructions(SFunction sFunction)
+    {
+        Function func = destProgram.getFunctionByName(sFunction.getName());
+        List<SInstruction> newInstructions = sFunction.getSInstructions().getSInstruction();
+        func.setInstructions(convertToInstructionList(newInstructions, func.getContext()));
     }
 
 }

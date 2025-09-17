@@ -5,10 +5,12 @@ import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
+import Engine.Labels.Label_Implement;
 import Engine.Programs.Context;
 import Engine.Vars.Variable;
 
 import java.util.List;
+import java.util.Map;
 
 public class Increase extends B_Instruction
 {
@@ -33,5 +35,18 @@ public class Increase extends B_Instruction
         value++;
         context.setVarValue(var, value);
         return FixedLabels.EMPTY;
+    }
+
+    @Override
+    public Increase createCopy(Context context, S_Instruction holder, Map<Variable,
+            Variable> varChanges, Map<LabelInterface, Label_Implement> labelChanges)
+    {
+        LabelInterface newLabel;
+        if (label == FixedLabels.EMPTY) {
+            newLabel = FixedLabels.EMPTY;
+        } else {
+            newLabel = labelChanges.get(label);
+        }
+        return new Increase(context, holder, varChanges.get(var), newLabel);
     }
 }

@@ -9,6 +9,7 @@ import Out.StepOverResult;
 import Out.ViewResultDTO;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 public class EngineFacade
@@ -32,7 +33,7 @@ public class EngineFacade
     {
         return program.getContext().getAll_X_InList(program.getInstructions())
                 .stream()
-                .map(Convertor::VariableToDTO)
+                .map(var ->Convertor.VariableToDTO(var, program.getContext()))
                 .toList();
     }
 
@@ -42,9 +43,9 @@ public class EngineFacade
         {
            loader.load(file);
         } catch (RuntimeException e) {
-            return new LoadResultDTO(false, e.getMessage());
+            return new LoadResultDTO(false, List.of(), e.getMessage());
         }
-        return LoadResultDTO.SUCCESS;
+        return new LoadResultDTO(true, this.program.getFunctionsUserString(), "File is loaded!");
     }
 
     public ViewResultDTO viewOriginalProgram()
@@ -74,6 +75,10 @@ public class EngineFacade
 
     public ExecuteResultDTO resumeDebug(int PC) {return executer.resume(PC);}
 
+    public List<String> getFunctionsUserInput()
+    {
+        return program.getFunctionsUserString();
+    }
 
 
 }

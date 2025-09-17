@@ -8,12 +8,14 @@ import Engine.Instructions_Types.InstructionData;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
+import Engine.Labels.Label_Implement;
 import Engine.Programs.Context;
 import Engine.Vars.Variable;
 import Engine.Vars.VariableType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class Assignment extends S_Instruction
@@ -36,6 +38,10 @@ public class Assignment extends S_Instruction
     @Override
     public List<Variable> getUsedVariables()
     {
+        //Todo: Delete
+        if (var == null || arg1 == null) {
+            throw new IllegalStateException("Variable is null! var=" + var + ", arg1=" + arg1);
+        }
         return List.of(var,  arg1);
     }
 
@@ -83,5 +89,15 @@ public class Assignment extends S_Instruction
     public Optional<Variable> getArgIfExist()
     {
         return Optional.ofNullable(this.arg1);
+    }
+
+    @Override
+    public Assignment createCopy(Context context, S_Instruction holder, Map<Variable,
+            Variable> varChanges, Map<LabelInterface, Label_Implement> labelChanges)
+    {
+        LabelInterface newLabel;
+        if(label == FixedLabels.EMPTY) {newLabel = FixedLabels.EMPTY;}
+        else {newLabel = labelChanges.get(label);}
+        return new Assignment(context, holder, varChanges.get(var), varChanges.get(arg1),newLabel);
     }
 }

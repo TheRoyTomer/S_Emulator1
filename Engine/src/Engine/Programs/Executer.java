@@ -63,7 +63,7 @@ public class Executer
 
         return new ExecuteResultDTO(
                 program.getName(),
-                Convertor.convertInstructionsListToDTO(program.getExpandedInstructions()),
+                Convertor.convertInstructionsListToDTO(program.getExpandedInstructions(), context),
                 context.getVarValue(Variable.OUTPUT),
                 varsInList,
                 totalCycles);
@@ -85,7 +85,7 @@ public class Executer
 
         return new ExecuteResultDTO(
                 program.getName(),
-                Convertor.convertInstructionsListToDTO(program.getExpandedInstructions()),
+                Convertor.convertInstructionsListToDTO(program.getExpandedInstructions(), context),
                 context.getVarValue(Variable.OUTPUT),
                 varsInList,
                 cycles
@@ -138,15 +138,17 @@ public class Executer
         }
         return new StepOverResult(
                 currentInstruction.getCycles(),
-                Convertor.varsToDTOList(temp),
+                Convertor.varsToDTOList(temp, context),
                 nextPC);
     }
 
     private List<VariableDTO> getAllVarsInRun()
     {
+        //System.out.println("in: getAllVarsInRun");
+        context.printAllMaps();
         return context.getAllVarsInList(program.getExpandedInstructions())
                 .stream()
-                .map(Convertor::VariableToDTO)
+                .map(var -> Convertor.VariableToDTO(var, context))
                 .toList();
     }
 

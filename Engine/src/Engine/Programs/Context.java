@@ -34,6 +34,21 @@ public class  Context
         }
     }
 
+    public boolean isVariableExistInMap(Variable var)
+    {
+        return switch (var.getVariableType()){
+            case OUTPUT -> true;
+            case INPUT -> MapForX.containsKey(var);
+            case WORK -> MapForZ.containsKey(var);
+        };
+    }
+
+    public boolean isLabelExistInMap(Label_Implement label)
+    {
+        return MapForL.containsKey(label);
+    }
+
+
     public long getFromMapL(Label_Implement label)
     {
         return MapForL.computeIfAbsent(label, k -> 0L);
@@ -179,5 +194,15 @@ public class  Context
 
         return res;
     }
+
+    //Todo: delete!! just for debugging
+    public void printAllMaps()
+    {
+        System.out.println("X-MAP: " + MapForX + "\n");
+        System.out.println("Z-MAP: " + MapForZ + "\n");
+        System.out.println("L-MAP: " + MapForL + "\n");
+        System.out.println("Y: " + Y + "\n");
+    }
+
 
 }

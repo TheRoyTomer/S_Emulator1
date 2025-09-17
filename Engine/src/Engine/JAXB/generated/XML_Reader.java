@@ -6,6 +6,7 @@ import jakarta.xml.bind.Unmarshaller;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class XML_Reader
@@ -17,11 +18,10 @@ public class XML_Reader
     public XML_Reader(File file)
     {
 
-        //File file = new File(path);
-       //checkFileValidity(file);
         this.XMLfile = file;
         loadXML();
         checkLabelValidity();
+
 
     }
 
@@ -48,19 +48,12 @@ public class XML_Reader
         return this.sProgram.getSInstructions().getSInstruction();
     }
 
-    //Checks that the file is in the path and is a XML file
-    public void checkFileValidity(File file)
+
+    public List<SFunction> getFunctions()
     {
-        this.XMLfile = Objects.requireNonNull(file, "XML file is null");
-
-        if (!XMLfile.exists() || !XMLfile.isFile()) {
-            throw new IllegalArgumentException("XML file not found: " + XMLfile.getAbsolutePath());
-        }
-
-        String name = XMLfile.getName().toLowerCase(Locale.ROOT);
-        if (!name.endsWith(".xml")) {
-            throw new IllegalArgumentException("File must end with .xml: " + XMLfile.getAbsolutePath());
-        }
+        return (sProgram.getSFunctions() != null)
+                ? sProgram.getSFunctions().sFunction
+                : new ArrayList<>();
     }
 
 

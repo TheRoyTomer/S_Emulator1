@@ -24,7 +24,7 @@ public class ViewCompController {
     private MainFXController mainController;
 
 
-    @FXML private Button programSelectorButton;
+    @FXML private ComboBox<String> programSelectorComboBox;
     @FXML private Button collapseButton;
     @FXML private Label currMaxDegreeLabel;
     @FXML private Button expandButton;
@@ -85,7 +85,7 @@ public class ViewCompController {
                         .or(mainController.getDebugModeProperty())
         );
 
-        programSelectorButton.disableProperty().bind(mainController.getFileLoadedProperty().not()
+        programSelectorComboBox.disableProperty().bind(mainController.getFileLoadedProperty().not()
                 .or(mainController.getDebugModeProperty()));
 
         highlightSelectorCombo.disableProperty().bind(mainController.getFileLoadedProperty().not()
@@ -168,6 +168,23 @@ public class ViewCompController {
             holder = holder.holder();
         }
         return list;
+    }
+
+    public void updateProgramSelectorCombo(List<String> funcInputStrings)
+    {
+        programSelectorComboBox.setItems( FXCollections.observableList(funcInputStrings));
+
+        programSelectorComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.equals(programSelectorComboBox.getItems().getFirst())) {
+                    setText("Function selector");
+                } else {
+                    setText(item);
+                }
+            }
+        });
     }
 
     public String getHighlightSelection()

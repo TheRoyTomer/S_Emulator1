@@ -14,10 +14,7 @@
             <children>
                 <HBox spacing="5.0">
                     <children>
-                        <Button id="selectorFuncCombo" fx:id="programSelectorButton" mnemonicParsing="false" onAction="#handleProgramSelector" prefWidth="200.0" text="Program\function selector">
-                            <font>
-                                <Font size="12.0" />
-                            </font></Button>
+                  <ComboBox fx:id="programSelectorComboBox" onAction="#handleProgramSelector" prefWidth="150.0" promptText="Function selector" />
                         <Button fx:id="collapseButton" mnemonicParsing="false" onAction="#handleCollapse" prefWidth="90.0" text="Collapse">
                             <font>
                                 <Font size="12.0" />

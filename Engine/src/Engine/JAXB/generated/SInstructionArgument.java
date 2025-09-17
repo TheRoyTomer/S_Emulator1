@@ -42,7 +42,6 @@ public class SInstructionArgument {
     @XmlAttribute(name = "name", required = true)
     protected String name;
 
-
     /**
      * Gets the value of the value property.
      * 
