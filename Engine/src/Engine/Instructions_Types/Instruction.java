@@ -54,6 +54,8 @@ public abstract class Instruction implements Calculable
 
     public S_Instruction getHolder() {return this.holder;}
 
+    public InstructionData getInstructionData() {return instructionData;}
+
     public Variable getVar() {return this.var;}
 
     @Override

@@ -80,6 +80,22 @@ public class Jump_Equal_Variable extends S_Instruction
         ));
     }
 
+    //For debug
+    @Override
+    public String toString()
+    {
+        String _label = label != null ? label.getLabelRepresentation() : "Null";
+        String _var = var != null ? var.getVariableRepresentation() : "Null";
+        String _arg = arg1 != null ? arg1.getVariableRepresentation() : "Null";
+        String _labelJump = labelToJump != null ? labelToJump.getLabelRepresentation() : "Null";
+        return String.format("#<%d> (S) [%s] IF %s != %s GOTO %s ",
+                this.lineIndex,
+                _label,
+                _var,
+                _arg,
+                _labelJump);
+    }
+
     @Override
     public Optional<LabelInterface> getLabelToJumpIfExist()
     {

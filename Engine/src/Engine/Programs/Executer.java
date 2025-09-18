@@ -166,10 +166,12 @@ public class Executer
 
         while (degree != 0) {
             lineIndex = 1;
-            for (Instruction instruction : currDegreeInstructions) {
+            for (Instruction instruction : currDegreeInstructions)
+            {
                 nextDegreeInstructions.addAll(instruction.getOneExpand());
             }
-            for (Instruction instruction : nextDegreeInstructions) {
+            for (Instruction instruction : nextDegreeInstructions)
+            {
                 instruction.setLineIndex(lineIndex);
                 lineIndex++;
             }

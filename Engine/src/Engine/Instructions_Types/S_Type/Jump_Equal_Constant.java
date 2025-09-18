@@ -36,6 +36,21 @@ public class Jump_Equal_Constant extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY, labelToJump, constant);
     }
 
+    //For debug
+    @Override
+    public String toString()
+    {
+        String _label = label != null ? label.getLabelRepresentation() : "Null";
+        String _var = var != null ? var.getVariableRepresentation() : "Null";
+        String _labelJump = labelToJump != null ? labelToJump.getLabelRepresentation() : "Null";
+        return String.format("#<%d> (S) [%s] IF %s != %d GOTO %s ",
+                this.lineIndex,
+                _label,
+                _var,
+                this.constant,
+                _labelJump);
+    }
+
     @Override
     public List<LabelInterface> getUsedLabels()
     {

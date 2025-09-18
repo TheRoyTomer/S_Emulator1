@@ -27,6 +27,18 @@ public class Decrease extends B_Instruction
         this(context, holder, var, FixedLabels.EMPTY);
     }
 
+    //For debug
+    @Override
+    public String toString()
+    {
+        String _label = label != null ? label.getLabelRepresentation() : "Null";
+        String _var = var != null ? var.getVariableRepresentation() : "Null";
+        return String.format("#<%d> (B) [%s] %s <- %s - 1",
+                this.lineIndex,
+                _label,
+                _var, _var);
+    }
+
     public List<Variable> getChangedVariables()
     {
         if (context.getVarValue(var) != 0) {return List.of(var);}

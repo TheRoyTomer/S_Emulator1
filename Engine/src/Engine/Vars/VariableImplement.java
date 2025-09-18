@@ -69,4 +69,11 @@ public class VariableImplement implements Variable
     {
         return type;
     }
+
+    @Override
+    public String toString()
+    {
+        return type.getVariableRepresentation(serial);
+
+    }
 }

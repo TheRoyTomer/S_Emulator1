@@ -28,6 +28,18 @@ public class Zero_Variable extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY);
     }
 
+    //For debug
+    @Override
+    public String toString()
+    {
+        String _label = label != null ? label.getLabelRepresentation() : "Null";
+        String _var = var != null ? var.getVariableRepresentation() : "Null";
+        return String.format("#<%d> (S) [%s] %s <- 0 ",
+                this.lineIndex,
+                _label,
+                _var);
+    }
+
     public List<Variable> getChangedVariables()
     {
         if (context.getVarValue(var) != 0) {return List.of(var);}

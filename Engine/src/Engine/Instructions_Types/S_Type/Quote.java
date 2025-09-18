@@ -1,5 +1,8 @@
 package Engine.Instructions_Types.S_Type;
 
+import Engine.Instructions_Types.B_Type.Decrease;
+import Engine.Instructions_Types.B_Type.Increase;
+import Engine.Instructions_Types.B_Type.JNZ;
 import Engine.Instructions_Types.B_Type.Neutral;
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.InstructionData;
@@ -13,6 +16,7 @@ import Engine.Programs.Function;
 import Engine.Vars.Variable;
 import Engine.Vars.VariableType;
 
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.List;
 
@@ -36,6 +40,20 @@ public class Quote extends S_Instruction
         this(context, holder, var, functionArguments, function, FixedLabels.EMPTY);
     }
 
+    //For debug
+    @Override
+    public String toString()
+    {
+        String _label = label != null ? label.getLabelRepresentation() : "Null";
+        String _var = var != null ? var.getVariableRepresentation() : "Null";
+        return String.format("#<%d> (S) [%s] %s <- (%s,%s) ",
+                this.lineIndex,
+                _label,
+                _var,
+                function.getUserString(),
+                functionArguments.toString());
+    }
+
     public List<Long> getInputs()
     {
         return this.functionArguments.stream().map(this::convertInputToLong).toList();
@@ -49,7 +67,11 @@ public class Quote extends S_Instruction
     @Override
     public List<Variable> getUsedVariables()
     {
-        return function.getContext().getAllVarsInList(function.getInstructions()).stream().toList();
+        //return List.of(var); Todo: whats right?
+        List<Variable> res = new ArrayList<>();
+        res.add(this.var);
+        res.addAll(function.getContext().getAllVarsInList(function.getInstructions()).stream().toList());
+        return res;
     }
 
     //Todo: Implement
@@ -94,58 +116,34 @@ public class Quote extends S_Instruction
         Map<Variable, Variable> variableChanges = new HashMap<>();
         Map<LabelInterface, Label_Implement> labelChanges = new HashMap<>();
         List<Instruction> funcInstructions = function.getInstructions();
-        TreeSet<Variable> variables = context.getAllVarsInList(funcInstructions);
+        TreeSet<Variable> variables = function.getContext().getAllVarsInList(funcInstructions);
         List<LabelInterface> labels = context.getAll_L_InList(funcInstructions);
         this.instructions = new ArrayList<>();
+        this.instructions.add(new Neutral(context, this, Variable.OUTPUT, this.label));
+
+
         Iterator<String> iterator = functionArguments.iterator();
         for (Variable variable : variables)
         {
             Variable changedVar;
             if (variable.getVariableType() == VariableType.INPUT && iterator.hasNext())
             {
-                changedVar = Convertor.convertStringToVar(iterator.next());
-                this.instructions.add(new Assignment(context, this, changedVar, variable));
-            }
-            else if(!context.isVariableExistInMap(variable))
-            {
-                changedVar = variable;
-            }
-            else
-            {
+                Variable newVariable = Convertor.convertStringToVar(iterator.next());
                 changedVar = context.InsertVariableToEmptySpot(VariableType.WORK);
-            }
+                this.instructions.add(new Assignment(context, this, changedVar, newVariable));
 
+            }
+            else if(!context.isVariableExistInMap(variable)) { changedVar = variable;}
+            else { changedVar = context.InsertVariableToEmptySpot(VariableType.WORK);}
             variableChanges.put(variable, changedVar);
-            /*if (!context.isVariableExistInMap(variable))
-            {
-                variableChanges.put(variable, variable);
-            }
-            else
-            {
-                variableChanges.put(variable, context.InsertVariableToEmptySpot(VariableType.WORK));
-            }*/
         }
-
-        /*TreeSet<Variable> xList = context.getAll_X_InList(funcInstructions);
-        Iterator<Variable> xLstIter = xList.iterator();
-
-        for(String arg :functionArguments)
-        {
-            Variable argVar =
-            Variable xVar = xLstIter.next();
-            variableChanges.put(xVar, argVar);
-            this.instructions.add(new Assignment(context, this, variableChanges.get(xVar), argVar));//???
-        }*/
 
         boolean isExitExists = false;
         for (LabelInterface label : labels)
         {
             if (label instanceof FixedLabels)
             {
-                if (label == FixedLabels.EXIT)
-                {
-                    isExitExists = true;
-                }
+                if (label == FixedLabels.EXIT) { isExitExists = true; }
             }
             else if (!context.isLabelExistInMap((Label_Implement) label))
             {
@@ -163,17 +161,14 @@ public class Quote extends S_Instruction
         {
             this.instructions.add(inst.createCopy(context, this, variableChanges, labelChanges));
         }
-        Variable outputVar = variableChanges.get(Variable.OUTPUT);
-        if (outputVar == null) System.out.println("no output");
-        System.out.println("Output variable mapping: " + outputVar.getVariableRepresentation());
-        Variable newVar = variableChanges.get(Variable.OUTPUT);
-        this.instructions.add(new Assignment(context, this, this.var,newVar));
 
-
+        LabelInterface labelEnd = FixedLabels.EMPTY;
         if (isExitExists)
         {
-            this.instructions.add(new Neutral(context, this, Variable.OUTPUT, labelChanges.get(FixedLabels.EXIT)));
+            labelEnd = labelChanges.get(FixedLabels.EXIT);
         }
+        this.instructions.add(new Assignment(context, this, this.var,variableChanges.get(Variable.OUTPUT), labelEnd));
+
     }
 
     //For the DTO

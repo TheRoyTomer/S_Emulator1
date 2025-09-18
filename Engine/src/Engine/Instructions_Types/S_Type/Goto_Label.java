@@ -29,7 +29,19 @@ public class Goto_Label extends S_Instruction
     public Goto_Label(Context context, S_Instruction holder, Variable var, LabelInterface labelToJump)
     {
        this(context, holder, var, FixedLabels.EMPTY, labelToJump);
+    }
 
+    //For debug
+    @Override
+    public String toString()
+    {
+        String _label = label != null ? label.getLabelRepresentation() : "Null";
+        String _var = var != null ? var.getVariableRepresentation() : "Null";
+        String _labelJump = labelToJump != null ? labelToJump.getLabelRepresentation() : "Null";
+        return String.format("#<%d> (S) [%s] Goto %s (var is %s)",
+                this.lineIndex,
+                _label,
+                _labelJump, _var);
     }
 
     @Override

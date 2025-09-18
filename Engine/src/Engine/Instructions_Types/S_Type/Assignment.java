@@ -34,14 +34,29 @@ public class Assignment extends S_Instruction
         this(context, holder, var, arg1, FixedLabels.EMPTY);
     }
 
+    //For debug
+    @Override
+    public String toString()
+    {
+        String _label = label != null ? label.getLabelRepresentation() : "Null";
+        String _var = var != null ? var.getVariableRepresentation() : "Null";
+        String _arg = arg1 != null ? arg1.getVariableRepresentation() : "Null";
+        return String.format("#<%d> (S) [%s] %s <- %s",
+                this.lineIndex,
+                _label,
+                _var, _arg);
+    }
+
+
 
     @Override
     public List<Variable> getUsedVariables()
     {
         //Todo: Delete
         if (var == null || arg1 == null) {
-            throw new IllegalStateException("Variable is null! var=" + var + ", arg1=" + arg1);
+            throw new IllegalStateException("Variable is null! var=" + var + ", arg1=" + arg1 + ", holder" + holder.getName() + holder.getLineIndex());
         }
+        System.out.println(var.getVariableRepresentation() +"  "+ arg1.getVariableRepresentation()); //Todo: delete
         return List.of(var,  arg1);
     }
 

@@ -24,6 +24,18 @@ public class Neutral extends B_Instruction
         this(context, holder, var, FixedLabels.EMPTY);
     }
 
+    //For debug
+    @Override
+    public String toString()
+    {
+        String _label = label != null ? label.getLabelRepresentation() : "Null";
+        String _var = var != null ? var.getVariableRepresentation() : "Null";
+        return String.format("#<%d> (B) [%s] %s <- %s ",
+                this.lineIndex,
+                _label,
+                _var, _var);
+    }
+
     @Override
     public LabelInterface execute()
     {

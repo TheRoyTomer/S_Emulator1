@@ -31,6 +31,19 @@ public class Constant_Assignment extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY, constant);
     }
 
+    //For debug
+    @Override
+    public String toString()
+    {
+        String _label = label != null ? label.getLabelRepresentation() : "Null";
+        String _var = var != null ? var.getVariableRepresentation() : "Null";
+        return String.format("#<%d> (S) [%s] %s <- %d",
+                this.lineIndex,
+                _label,
+                _var, this.constant);
+    }
+
+
     public List<Variable> getChangedVariables()
     {
         if (context.getVarValue(var) != constant) {return List.of(var);}
@@ -38,17 +51,6 @@ public class Constant_Assignment extends S_Instruction
     }
 
 
-    @Override
-    /*public String getInstructionRepresentation()
-    {
-        return String.format("#<%d>(S) [%s] %s <- %d (%d)",
-                this.lineIndex,
-                label.getLabelRepresentation(),
-                var.getVariableRepresentation(),
-                constant,
-                instructionData.getCycles());
-
-    }*/
 
 
     public LabelInterface execute()

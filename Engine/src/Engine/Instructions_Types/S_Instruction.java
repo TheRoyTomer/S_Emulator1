@@ -36,7 +36,6 @@ public abstract class S_Instruction extends Instruction
     public List<Instruction> getOneExpand()
     {
         return this.instructions;
-
     }
 
     //Helps at the initialization of the program to prepare all the extensions.

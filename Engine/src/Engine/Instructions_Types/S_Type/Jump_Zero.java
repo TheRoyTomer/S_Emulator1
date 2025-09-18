@@ -31,6 +31,20 @@ public class Jump_Zero extends S_Instruction
         this(context, holder, var, FixedLabels.EMPTY, labelToJump);
     }
 
+    //For debug
+    @Override
+    public String toString()
+    {
+        String _label = label != null ? label.getLabelRepresentation() : "Null";
+        String _var = var != null ? var.getVariableRepresentation() : "Null";
+        String _labelJump = labelToJump != null ? labelToJump.getLabelRepresentation() : "Null";
+        return String.format("#<%d> (S) [%s] IF %s = 0 GOTO %s ",
+                this.lineIndex,
+                _label,
+                _var,
+                _labelJump);
+    }
+
     @Override
     public List<LabelInterface> getUsedLabels()
     {
