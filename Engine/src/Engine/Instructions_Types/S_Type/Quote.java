@@ -74,7 +74,6 @@ public class Quote extends S_Instruction
         return res;
     }
 
-    //Todo: Implement
     @Override
     public LabelInterface execute()
     {
