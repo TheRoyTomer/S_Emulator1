@@ -11,6 +11,7 @@ import EngineObject.InstructionDTO;
 import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //Convert from engine Objects to their related DTOs.
@@ -87,5 +88,67 @@ public class Convertor
         return new VariableImplement(type, Integer.parseInt(str.substring(1)));
 
     }
+
+
+    public static List<String> argsToStringList(String arg)
+    {
+        String temp = String.valueOf(arg);
+        List<String> res = new ArrayList<>();
+        while (!temp.isEmpty())
+        {
+            temp = temp.replaceFirst("^[(),]+", "");
+            if (!temp.isEmpty())
+            {
+                res.add(findOneArg(temp));
+                temp = temp.replace(res.getLast(), "");
+            }
+        }
+        return res;
+    }
+
+    private static String findOneArg(String subArg)
+    {
+        int ind = subArg.indexOf(",");
+        if (ind == -1) {return subArg;}
+        String check = subArg.substring(0, ind);
+        if (isFirstArgVar(check)) { return check; }
+
+        int parenthesesCounter = 1;
+        int index = 0;
+        while (parenthesesCounter != 0)
+        {
+            if (subArg.charAt(index) == '(') parenthesesCounter++;
+            else if (subArg.charAt(index) == ')')
+            {parenthesesCounter--;}
+            index++;
+        }
+        return subArg.substring(0, index - 1);
+
+    }
+
+    private static boolean isFirstArgVar(String subArg)
+    {
+        char c = Character.toUpperCase(subArg.charAt(0));
+        if (c != 'X' && c != 'Y' && c != 'Z')
+        {
+            return false;
+        }
+        if (subArg.length() == 1 && c == 'Y')
+        {
+            return true;
+        }
+
+        try
+        {
+            String temp = subArg.substring(1);
+            int serial = Integer.parseInt(temp);
+            return true;
+        }
+        catch (NumberFormatException | StringIndexOutOfBoundsException  e)
+        {
+            return false;
+        }
+    }
+
 
 }

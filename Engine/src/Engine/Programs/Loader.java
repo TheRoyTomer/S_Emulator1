@@ -122,11 +122,6 @@ public class Loader
                         "Missing argument '" + key + "' for " + opName));
     }
 
-    public List<String> argumentsToStringList(String text) {
-        return Arrays.stream(text.split(","))
-                .map(s -> s.replaceAll("^[()]+|[()]+$", ""))
-                .collect(Collectors.toList());
-    }
 
     public Instruction convertToInstruction(SInstruction Instruction, Context myContext)
     {
@@ -188,7 +183,7 @@ public class Loader
 
             case QUOTE:
                 funcName = requireArg(Instruction, "functionName", String::toString, "QUOTE");
-                functionArguments = requireArg(Instruction, "functionArguments", this::argumentsToStringList, "QUOTE");
+                functionArguments = requireArg(Instruction, "functionArguments", Convertor::argsToStringList, "QUOTE");
                 yield new Quote(myContext, null, var, functionArguments, destProgram.getFunctionByName(funcName), label);
 
         };

@@ -56,7 +56,6 @@ public class Assignment extends S_Instruction
         if (var == null || arg1 == null) {
             throw new IllegalStateException("Variable is null! var=" + var + ", arg1=" + arg1 + ", holder" + holder.getName() + holder.getLineIndex());
         }
-        System.out.println(var.getVariableRepresentation() +"  "+ arg1.getVariableRepresentation()); //Todo: delete
         return List.of(var,  arg1);
     }
 

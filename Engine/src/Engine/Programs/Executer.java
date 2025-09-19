@@ -144,8 +144,6 @@ public class Executer
 
     private List<VariableDTO> getAllVarsInRun()
     {
-        //System.out.println("in: getAllVarsInRun");
-        context.printAllMaps();
         return context.getAllVarsInList(program.getExpandedInstructions())
                 .stream()
                 .map(var -> Convertor.VariableToDTO(var, context))
