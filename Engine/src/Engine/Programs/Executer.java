@@ -95,6 +95,7 @@ public class Executer
     public int runProgram(long PCVal)
     {
         List<Instruction> instructions = program.getExpandedInstructions();
+        program.getExpandedInstructions().forEach(System.out::println);
         int sumCycles = 0;
         for (long PC = PCVal; PC < instructions.size(); )
         {

@@ -12,7 +12,9 @@ import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //Convert from engine Objects to their related DTOs.
 public class Convertor
@@ -99,8 +101,10 @@ public class Convertor
             temp = temp.replaceFirst("^[(),]+", "");
             if (!temp.isEmpty())
             {
-                res.add(findOneArg(temp));
-                temp = temp.replace(res.getLast(), "");
+                String str = findOneArg(temp);
+                res.add(str);
+                temp = temp.replace(str, "");
+
             }
         }
         return res;
@@ -109,7 +113,7 @@ public class Convertor
     private static String findOneArg(String subArg)
     {
         int ind = subArg.indexOf(",");
-        if (ind == -1) {return subArg;}
+        if (ind == -1) {return subArg.replaceAll("\\)", "");}
         String check = subArg.substring(0, ind);
         if (isFirstArgVar(check)) { return check; }
 
@@ -126,7 +130,7 @@ public class Convertor
 
     }
 
-    private static boolean isFirstArgVar(String subArg)
+    public static boolean isFirstArgVar(String subArg)
     {
         char c = Character.toUpperCase(subArg.charAt(0));
         if (c != 'X' && c != 'Y' && c != 'Z')
@@ -148,6 +152,14 @@ public class Convertor
         {
             return false;
         }
+    }
+
+    public static List<String> extractVariables(String text)
+    {
+        return Arrays.stream(text.split("[^a-zA-Z0-9]+"))
+                .filter(part -> part.matches("[xXyYzZ]\\d+"))
+                .distinct()
+                .collect(Collectors.toList());
     }
 
 

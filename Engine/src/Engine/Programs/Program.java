@@ -95,6 +95,11 @@ public class Program
         return nameToFuncMap.get(name);
     }
 
+    public boolean isNameFuncExistInMap(String name)
+    {
+        return nameToFuncMap.containsKey(name);
+    }
+
     public void setFunctionInMap(Function function)
     {
         nameToFuncMap.put(function.getName(), function);

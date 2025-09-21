@@ -42,10 +42,12 @@ public abstract class S_Instruction extends Instruction
     public void InitMaxExpansions()
     {
         this.setSingleExpansion();
+        //this.instructions.forEach(System.out::println);
         instructions.stream()
                 .filter(S_Instruction.class::isInstance)
                 .map(S_Instruction.class::cast)
                 .forEach(S_Instruction::InitMaxExpansions);
+
     }
 
 }
