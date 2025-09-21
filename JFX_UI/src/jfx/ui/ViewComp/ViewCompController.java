@@ -23,6 +23,7 @@ public class ViewCompController {
 
     private MainFXController mainController;
 
+    private boolean isUpdatingDegreeSelector = false;
 
     @FXML private ComboBox<String> programSelectorComboBox;
     @FXML private Button collapseButton;
@@ -34,6 +35,8 @@ public class ViewCompController {
     @FXML private InstructionsTableController instructionsTableController;
     @FXML private InstructionsTableController instructionHistoryChainTableController;
     @FXML private Label summeryLineLabel;
+
+    @FXML private ComboBox<Integer> DegreeSelectorComboBox;
 
     @FXML
     private void initialize()
@@ -66,6 +69,12 @@ public class ViewCompController {
         highlightSelectorCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
             instructionsTableController.refreshTable();
         });
+
+        DegreeSelectorComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isUpdatingDegreeSelector && newVal != null && mainController != null) {
+                mainController.setCurrentDegree(newVal);
+            }
+        });
     }
 
     public void setMainController(MainFXController mainController)
@@ -90,6 +99,18 @@ public class ViewCompController {
 
         highlightSelectorCombo.disableProperty().bind(mainController.getFileLoadedProperty().not()
                 .or(mainController.getDebugModeProperty()));
+
+        DegreeSelectorComboBox.disableProperty().bind(
+                mainController.getFileLoadedProperty().not()
+                        .or(mainController.getDebugModeProperty()));
+
+        mainController.getMaxDegreeProperty().addListener((obs, oldVal, newVal) -> {
+            updateDegreeComboBoxItems(newVal.intValue());});
+
+        mainController.getCurrentDegreeProperty().addListener((obs, oldVal, newVal) -> {
+            isUpdatingDegreeSelector = true;
+            DegreeSelectorComboBox.setValue(newVal.intValue());
+            isUpdatingDegreeSelector = false;});
 
 
         instructionsTableController
@@ -158,6 +179,8 @@ public class ViewCompController {
     {
         mainController.incrementDegree();
     }
+    @FXML
+    private void OnDegreeSelection(ActionEvent event){}
 
     public ObservableList<InstructionDTO> findChainList(InstructionDTO inst)
     {
@@ -200,5 +223,23 @@ public class ViewCompController {
     public int getInstructionTableSize()
     {
         return instructionsTableController.getInstructionTableSize();
+    }
+
+
+    private void updateDegreeComboBoxItems(int maxDegree)
+    {
+        ObservableList<Integer> degrees = FXCollections.observableArrayList();
+        for (int i = 0; i <= maxDegree; i++) {degrees.add(i);}
+
+        isUpdatingDegreeSelector = true;
+        DegreeSelectorComboBox.setItems(degrees);
+        if (mainController != null)
+        {
+            int currentDegree = mainController.getCurrentDegreeProperty().get();
+            if (currentDegree <= maxDegree) {
+                DegreeSelectorComboBox.setValue(currentDegree);
+            }
+        }
+        isUpdatingDegreeSelector = false;
     }
 }

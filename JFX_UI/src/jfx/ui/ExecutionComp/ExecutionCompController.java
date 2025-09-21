@@ -11,7 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-
+import jfx.ui.UTILS;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
+
 
 
 public class ExecutionCompController {
@@ -95,15 +96,6 @@ public class ExecutionCompController {
         mainController.resetCyclesProperty();
     }
 
-    //Todo: Move to Utils
-    private void showError(String msg)
-    {
-        Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setHeaderText("Load Error");
-        a.setContentText(msg);
-        a.showAndWait();
-    }
-
     public List<Long> handleInputs()
     {
         List<Long> res = new ArrayList<>();
@@ -129,11 +121,11 @@ public class ExecutionCompController {
             mainController.setDebugMode(true);
 
         } catch (NumberFormatException ex) {
-            showError(ex.getMessage() + " Is not a number");
+            UTILS.showError(ex.getMessage() + " Is not a number");
         }
         catch (IllegalArgumentException ex)
         {
-            showError(ex.getMessage());
+            UTILS.showError(ex.getMessage());
         }
 
     }
@@ -146,11 +138,11 @@ public class ExecutionCompController {
             inputVarsComp.setEditable(false);
 
         } catch (NumberFormatException ex) {
-            showError(ex.getMessage() + " Is not a number");
+            UTILS.showError(ex.getMessage() + " Is not a number");
         }
         catch (IllegalArgumentException ex)
         {
-            showError(ex.getMessage());
+            UTILS.showError(ex.getMessage());
         }
 
     }

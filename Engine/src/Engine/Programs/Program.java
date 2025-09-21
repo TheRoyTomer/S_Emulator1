@@ -95,6 +95,11 @@ public class Program
         return nameToFuncMap.get(name);
     }
 
+    public static String getUseStringByName(String name)
+    {
+        return nameToFuncMap.get(name).getUserString();
+    }
+
     public boolean isNameFuncExistInMap(String name)
     {
         return nameToFuncMap.containsKey(name);

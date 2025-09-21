@@ -106,7 +106,7 @@ public abstract class Instruction implements Calculable
     }
 
     //For the DTO
-    public Optional<String> getFuncArgsIfExist()
+    public Optional<String> getFuncArgsToDisplayIfExist()
     {
         return Optional.empty();
     }

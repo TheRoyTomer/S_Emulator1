@@ -138,6 +138,14 @@ public class MainFXController {
         currentDegreeProperty.set(currentDegreeProperty.get() - 1);
     }
 
+    public void setCurrentDegree(int degree)
+    {
+        if (degree >= 0 && degree <= maxDegreeProperty.get())
+        {
+            currentDegreeProperty.set(degree);
+        }
+    }
+
     public void onDegreeChange()
     {
         ViewResultDTO res = facade.viewExpandedProgram(currentDegreeProperty.get());

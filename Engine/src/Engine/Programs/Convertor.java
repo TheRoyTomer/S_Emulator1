@@ -2,6 +2,7 @@ package Engine.Programs;
 
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.S_Instruction;
+import Engine.Instructions_Types.S_Type.Quote;
 import Engine.Labels.LabelInterface;
 import Engine.Statistics.ExecutionStatistics;
 import Engine.Vars.Variable;
@@ -14,6 +15,7 @@ import EngineObject.VariableDTO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 //Convert from engine Objects to their related DTOs.
@@ -29,7 +31,6 @@ public class Convertor
     public static InstructionDTO InstructionToDTO(Instruction inst, Context myContext)
     {
         if (inst == null) {return null;}
-
         return new InstructionDTO(
                 inst.getLineIndex(),
                 inst instanceof S_Instruction,
@@ -42,7 +43,7 @@ public class Convertor
                 inst.getConstantIfExist(),
                 inst.getLabelToJumpIfExist().map(LabelInterface::getLabelRepresentation),
                 inst.getFuncUserInputIfExist(),
-                inst.getFuncArgsIfExist());
+                inst.getFuncArgsToDisplayIfExist());
     }
 
     public static List<VariableDTO> varsToDTOList(List<Variable> vars, Context myContext)

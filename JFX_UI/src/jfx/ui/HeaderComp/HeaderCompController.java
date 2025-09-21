@@ -2,14 +2,17 @@ package jfx.ui.HeaderComp;
 
 import Engine.EngineFacade;
 import Out.LoadResultDTO;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import jfx.ui.MainFX.MainFXController;
+import jfx.ui.UTILS;
 
 import java.io.File;
 
@@ -26,6 +29,12 @@ public class HeaderCompController {
     @FXML
     private Label titleLabel;
 
+    @FXML
+    private ProgressBar progressBar;
+
+    @FXML
+    private Label progressLabel;
+
     public void setMainController(MainFXController mainController)
     {
         this.mainController = mainController;
@@ -35,7 +44,7 @@ public class HeaderCompController {
     @FXML
     void handleLoadButton(ActionEvent event) {
         if (facade == null) {
-            showError("Engine is not initialized.");
+            UTILS.showError("Engine is not initialized.");
             return;
         }
 
@@ -50,38 +59,83 @@ public class HeaderCompController {
         if (selected == null) return; // user cancelled
 
         String path = selected.getAbsolutePath();
+        loadFileWithProgress(selected, path);
+    }
 
-        try {
+    private void loadFileWithProgress(File file, String path) {
+        Task<LoadResultDTO> loadTask = new Task<LoadResultDTO>() {
+            @Override
+            protected LoadResultDTO call() throws Exception {
 
-            LoadResultDTO res = facade.loadFromXML(selected);
-            if (res.isLoaded())
-            {
-                filePathLabel.setText(path);
-                mainController.onProgramLoaded(res.funcNames());
+                for (int i = 10; i <= 30; i += 5) {
+                    updateProgress(i, 100);
+                    Thread.sleep(150);
+                }
+
+                updateProgress(40, 100);
+                LoadResultDTO result = facade.loadFromXML(file);
+                updateProgress(70, 100);
+
+                for (int i = 75; i <= 95; i += 5) {
+                    updateProgress(i, 100);
+                    Thread.sleep(100);
+                }
+
+                updateProgress(100, 100);
+                Thread.sleep(200);
+
+                return result;
             }
-            showInfo(res.message());
+            @Override
+            protected void succeeded() {
+                LoadResultDTO result = getValue();
+                hideProgress();
 
-        } catch (Exception ex) {
-            showError("Failed to load file:\n" + ex.getMessage());
-        }
+                if (result.isLoaded()) {
+                    filePathLabel.setText(path);
+                    mainController.onProgramLoaded(result.funcNames());
+                }
+                UTILS.showInfo(result.message());
+            }
+
+            @Override
+            protected void failed() {
+                hideProgress();
+                UTILS.showError("Failed to load file:\n" + getException().getMessage());
+            }
+        };
+
+        progressBar.progressProperty().bind(loadTask.progressProperty());
+
+        loadTask.progressProperty().addListener((obs, oldVal, newVal) -> {
+            int percent = (int)(newVal.doubleValue() * 100);
+            progressLabel.setText(percent + "%");
+        });
+
+        showProgress();
+
+        Thread loadThread = new Thread(loadTask);
+        loadThread.setDaemon(true);
+        loadThread.start();
     }
-    //Todo: Move to Utils
 
-    private void showError(String msg) {
-        Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setHeaderText("Load Error");
-        a.setContentText(msg);
-        a.showAndWait();
-    }
-    //Todo: Move to Utils
-
-    private void showInfo(String msg) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setHeaderText(null);
-        a.setContentText(msg);
-        a.showAndWait();
+    private void showProgress() {
+        javafx.application.Platform.runLater(() -> {
+            progressBar.setVisible(true);
+            progressLabel.setVisible(true);
+            loadButton.setDisable(true);
+        });
     }
 
+    private void hideProgress() {
+        javafx.application.Platform.runLater(() -> {
+            progressBar.setVisible(false);
+            progressLabel.setVisible(false);
+            progressBar.progressProperty().unbind();
+            progressLabel.setText("");
+            loadButton.setDisable(false);
+        });
+    }
     public void setFacade(EngineFacade facade)
     {
         this.facade = facade;

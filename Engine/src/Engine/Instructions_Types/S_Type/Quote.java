@@ -192,18 +192,6 @@ public class Quote extends S_Instruction
     @Override
     public LabelInterface execute()
     {
-
-        //tODO: dELETE
-        boolean containsConst0 = functionArguments.stream()
-                .anyMatch(str -> str.contains("CONST0"));
-        if (containsConst0)
-        {
-            int num = 8;
-        }
-        System.out.println(function.getName() + ": " + functionArguments);
-
-
-
         function.getContext().resetMapsState();
         function.getContext().insertInputsToMap(this.getInputs());
 
@@ -322,11 +310,35 @@ public class Quote extends S_Instruction
         return Optional.of(this.function.getUserString());
     }
 
-
     //For the DTO
     @Override
-    public Optional<String> getFuncArgsIfExist() {return Optional.of(String.join( ",", this.functionArguments));}
+    public Optional<String> getFuncArgsToDisplayIfExist()
+    {
+        String argsCombined = this.functionArguments.stream()
+                .map(arg -> "(" + arg + ")")
+                .collect(Collectors.joining(","));
+        return Optional.of(this.changeFuncArgsToPrint(argsCombined));
 
+    }
+
+
+    //For getFuncArgsToDisplayIfExist()
+    public String changeFuncArgsToPrint(String args) {
+        String res = String.valueOf(args);
+        String removepara = args.replace("(", "").replace(")", "");
+        List<String> simpleArg = Arrays.stream(removepara.split(",")).toList();
+
+        List<String> sortedByLength = simpleArg.stream()
+                .sorted((a, b) -> Integer.compare(b.length(), a.length()))
+                .toList();
+
+        for (String a : sortedByLength) {
+            if (function.isNameFuncExistInMap(a)) {
+                res = res.replace(a,function.getFunctionByName(a).getUserString());
+            }
+        }
+        return res;
+    }
     @Override
     public Instruction createCopy(Context context, S_Instruction holder, Map<Variable, Variable> varChanges, Map<LabelInterface, Label_Implement> labelChanges)
     {

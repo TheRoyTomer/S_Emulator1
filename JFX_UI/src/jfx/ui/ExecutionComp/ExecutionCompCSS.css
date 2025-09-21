@@ -1,0 +1,130 @@
+/* Execution Component specific styling */
+
+/* Button groups styling */
+.hbox .button {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 4px 8px;
+}
+
+/* New Run button */
+#newRunButton {
+    -fx-background-color: #28a745;
+}
+
+#newRunButton:hover {
+    -fx-background-color: #218838;
+}
+
+#newRunButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #6c757d;
+}
+
+/* Execute button */
+#executeButton {
+    -fx-background-color: #007bff;
+}
+
+#executeButton:hover {
+    -fx-background-color: #0056b3;
+}
+
+#executeButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #6c757d;
+}
+
+/* Debug button */
+#debugButton {
+    -fx-background-color: #6f42c1;
+    -fx-text-fill: white;
+}
+
+#debugButton:hover {
+    -fx-background-color: #5a32a3;
+}
+
+#debugButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #6c757d;
+}
+
+/* Resume button */
+#resumeButton {
+    -fx-background-color: #17a2b8;
+}
+
+#resumeButton:hover {
+    -fx-background-color: #138496;
+}
+
+#resumeButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #6c757d;
+}
+
+/* Stop button */
+#stopButton {
+    -fx-background-color: #dc3545;
+}
+
+#stopButton:hover {
+    -fx-background-color: #c82333;
+}
+
+#stopButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #6c757d;
+}
+
+/* Step Over button */
+#stepOverButton {
+    -fx-background-color: #6f42c1;
+}
+
+#stepOverButton:hover {
+    -fx-background-color: #5a32a3;
+}
+
+#stepOverButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #6c757d;
+}
+
+/* Cycles label styling */
+#cyclesLabel {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #495057;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-padding: 6px 12px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px 0 0 0;
+    -fx-alignment: center;
+}
+
+/* Input tables styling */
+.table-view.editable {
+    -fx-border-color: #28a745;
+    -fx-border-width: 2px;
+}
+
+.table-view.editable .column-header {
+    -fx-background-color: #d4edda;
+    -fx-text-fill: #155724;
+}
+
+/* VBox containers */
+.execution-vbox {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px;
+}
