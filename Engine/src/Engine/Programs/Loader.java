@@ -40,11 +40,13 @@ public class Loader
 
     public void loadFromReader(XML_Reader reader)
     {
+        Program.clearNameToFuncMap();
         context.clearMaps();
         destProgram.setName(reader.getName());
         destProgram.setFunctions(convertToFunctionsList(reader.getFunctions()));
         List<SInstruction> newInstructions = reader.getSInstructionList();
         destProgram.setInstructions(convertToInstructionList(newInstructions, context));
+        //destProgram.setProgramAlreadyDoneMaxExpensions(false);
         destProgram.initProgram();
     }
 

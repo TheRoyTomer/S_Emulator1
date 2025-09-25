@@ -1,8 +1,5 @@
 package Engine.Instructions_Types.S_Type;
 
-import Engine.Instructions_Types.B_Type.Decrease;
-import Engine.Instructions_Types.B_Type.Increase;
-import Engine.Instructions_Types.B_Type.JNZ;
 import Engine.Instructions_Types.B_Type.Neutral;
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.InstructionData;
@@ -12,11 +9,8 @@ import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
 import Engine.Programs.*;
 import Engine.Vars.Variable;
-import Engine.Vars.VariableImplement;
 import Engine.Vars.VariableType;
-import com.sun.jdi.Value;
 
-import java.sql.SQLOutput;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -110,7 +104,7 @@ public class Quote extends S_Instruction
         System.out.println("Input: " + input);
         System.out.println("mainContextWrapper: " + (this.mainContextWrapper != null ? "exists" : "null"));
 
-        if (Convertor.isFirstArgVar(input))
+        if (Convertor.isArgVar(input))
         {
             System.out.println("Branch: First arg is variable");
             if (this.mainContextWrapper != null) {
@@ -233,42 +227,44 @@ public class Quote extends S_Instruction
         this.instructions = new ArrayList<>();
         this.instructions.add(new Neutral(context, this, Variable.OUTPUT, this.label));
 
-
         Iterator<String> iterator = functionArguments.iterator();
 
-        for (Variable variable : variables)
-        {
-            Variable changedVar;
-            if (variable.getVariableType() == VariableType.INPUT && iterator.hasNext())
+            for (Variable variable : variables)
             {
-                changedVar = context.InsertVariableToEmptySpot(VariableType.WORK);
-                String argument = iterator.next();
-                String tempArg;
-                int indexComma = argument.indexOf(',');
-                if (indexComma == -1)
+                Variable changedVar;
+                if (variable.getVariableType() == VariableType.INPUT && iterator.hasNext())
                 {
-                    tempArg = String.valueOf(argument);
-                }
-                else {tempArg = argument.substring(0, indexComma);}
-                if (function.isNameFuncExistInMap(tempArg))
+                    changedVar = context.InsertVariableToEmptySpot(VariableType.WORK);
+                    String argument = iterator.next();
+                    String tempArg;
+                    int indexComma = argument.indexOf(',');
+                    if (indexComma == -1) {tempArg = String.valueOf(argument);}
+                    else {tempArg = argument.substring(0, indexComma);}
+
+                    if (function.isNameFuncExistInMap(tempArg))
+                    {
+                        String newFuncArgs = tempArg.length() == argument.length()
+                                ? ""
+                                : argument.substring(indexComma + 1);
+                        List<String> res = Convertor.argsToStringList(newFuncArgs);
+                        this.instructions.add(new Quote(context, this, changedVar, res, function.getFunctionByName(tempArg)));
+                    }
+                    else
+                    {
+                        Variable newVariable = Convertor.convertStringToVar(argument);
+                        this.instructions.add(new Assignment(context, this, changedVar, newVariable));
+                    }
+
+                } else if (!context.isVariableExistInMap(variable))
                 {
-                    String newFuncArgs = tempArg.length() == argument.length()
-                            ? ""
-                            : argument.substring(indexComma + 1);
-                    List<String> res = Convertor.argsToStringList(newFuncArgs);
-                    this.instructions.add(new Quote(context, this,changedVar,res, function.getFunctionByName(tempArg)));
+                    changedVar = variable;
                 }
                 else
                 {
-                    Variable newVariable = Convertor.convertStringToVar(argument);
-                    this.instructions.add(new Assignment(context, this, changedVar, newVariable));
+                    changedVar = context.InsertVariableToEmptySpot(VariableType.WORK);
                 }
-
+                variableChanges.put(variable, changedVar);
             }
-            else if(!context.isVariableExistInMap(variable)) { changedVar = variable;}
-            else { changedVar = context.InsertVariableToEmptySpot(VariableType.WORK);}
-            variableChanges.put(variable, changedVar);
-        }
 
         boolean isExitExists = false;
         for (LabelInterface label : labels)

@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Viewer
 {
-    private final Program program;
-    private final Context context;
+    private Program program;
+    private  Context context;
 
     public Viewer(Program program)
     {
@@ -17,6 +17,11 @@ public class Viewer
         this.context = program.getContext();
     }
 
+    public void setProgramAndContext(Program newProgram)
+    {
+        this.program = newProgram;
+        this.context = this.program.getContext();
+    }
 
 
     public ViewResultDTO viewProgram(int degree)

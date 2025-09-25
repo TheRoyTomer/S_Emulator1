@@ -16,14 +16,20 @@ import java.util.stream.Collectors;
 
 public class Executer
 {
-    private final Program program;
-    private final Context context;
+    private Program program;
+    private  Context context;
     //Holds information on debug until process has ended and we can insert new statistics
     private  saveStatePreDebug statePreDebug = new saveStatePreDebug();
     public Executer(Program program)
     {
         this.program = program;
         this.context = program.getContext();
+    }
+
+    public void setProgramAndContext(Program newProgram)
+    {
+        this.program = newProgram;
+        this.context = this.program.getContext();
     }
 
     public List<Long> getInputListForStatistics(TreeSet<Variable> inputSet, List<Long> valuesList)

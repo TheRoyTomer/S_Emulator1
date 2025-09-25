@@ -3,6 +3,8 @@ package Engine.Programs;
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.S_Instruction;
 import Engine.Statistics.HistoryList;
+import Engine.Vars.Variable;
+import Out.FunctionSelectorChoiseDTO;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,11 +20,17 @@ public class Program
     private final HistoryList history = new HistoryList();
     private static final Map<String, Function> nameToFuncMap = new HashMap<>();
 
+    //protected boolean isProgramAlreadyDoneMaxExpensions = false;
+
+    //private static Program selectedProgram;
+
     public Program()
     {
         this.context = new Context();
+        //Program.selectedProgram = this;
     }
 
+    public static void clearNameToFuncMap() {nameToFuncMap.clear();}
 
     public void setExpandedInstructions(List<Instruction> expandedInstructions)
     {
@@ -62,11 +70,27 @@ public class Program
         return maxDegree;
     }
 
-    public List<String> getFunctionsUserString()
+/*
+    public boolean isProgramAlreadyDoneMaxExpensions()
     {
-        List<String> list = new ArrayList<>();
-        list.add(name);
-        list.addAll(functions.stream().map(Function::getUserString).toList());
+        return isProgramAlreadyDoneMaxExpensions;
+    }
+
+    public void setProgramAlreadyDoneMaxExpensions(boolean programAlreadyDoneMaxExpensions)
+    {
+        isProgramAlreadyDoneMaxExpensions = programAlreadyDoneMaxExpensions;
+    }
+*/
+
+    public List<FunctionSelectorChoiseDTO> getFunctionsUserStringAndNames()
+    {
+
+        List<FunctionSelectorChoiseDTO> list = new ArrayList<>();
+        list.add(new FunctionSelectorChoiseDTO(this.name, this.name));
+        for (Function function : functions)
+        {
+            list.add(new FunctionSelectorChoiseDTO(function.getName(), function.getUserString()));
+        }
         return list;
     }
 
@@ -113,9 +137,15 @@ public class Program
     //Init program after file Loaded successfully.
     public void initProgram()
     {
-        history.reset();
-        InitInstructionsExpensions();
-        this.maxDegree = this.calcMaxDegree();
+/*        if (!isProgramAlreadyDoneMaxExpensions)
+        {*/
+            history.reset();
+            InitInstructionsExpensions();
+            //this.isProgramAlreadyDoneMaxExpensions = true;
+            this.maxDegree = this.calcMaxDegree();
+            if (this.functions != null) {this.functions.forEach(Program::initProgram);}
+        //}
+        //System.out.printf("%s: %d: Functions empty: %s%n", this.name, this.maxDegree, this.functions == null ? "Yes" : "No");//Todo: Delete
     }
 
     public void setInstructions(List<Instruction> instructions)
@@ -124,6 +154,7 @@ public class Program
     }
     public int calcMaxDegree()
     {
+
         return instructions.stream()
                 .mapToInt(Instruction::calcMaxDegree)
                  .max()
@@ -136,24 +167,7 @@ public class Program
                 ? this.instructions
                 : this.ExpandedInstructions;
     }
-
-
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
 
 
 

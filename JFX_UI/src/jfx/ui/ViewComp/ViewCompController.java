@@ -1,6 +1,7 @@
 package jfx.ui.ViewComp;
 
 import EngineObject.InstructionDTO;
+import Out.FunctionSelectorChoiseDTO;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.IntegerProperty;
@@ -25,7 +26,7 @@ public class ViewCompController {
 
     private boolean isUpdatingDegreeSelector = false;
 
-    @FXML private ComboBox<String> programSelectorComboBox;
+    @FXML private ComboBox<FunctionSelectorChoiseDTO> programSelectorComboBox;
     @FXML private Button collapseButton;
     @FXML private Label currMaxDegreeLabel;
     @FXML private Button expandButton;
@@ -165,7 +166,11 @@ public class ViewCompController {
         @FXML
     private void handleProgramSelector(ActionEvent event)
     {
-
+        FunctionSelectorChoiseDTO selectedItem = this.programSelectorComboBox.getValue();
+        if (selectedItem != null)
+        {
+            mainController.changeViewedProgram(selectedItem.name());
+        }
     }
 
     @FXML
@@ -180,7 +185,7 @@ public class ViewCompController {
         mainController.incrementDegree();
     }
     @FXML
-    private void OnDegreeSelection(ActionEvent event){}
+    private void OnDegreeSelection(ActionEvent event){/*mainController.changeDegree(this.DegreeSelectorComboBox.getValue());*/}
 
     public ObservableList<InstructionDTO> findChainList(InstructionDTO inst)
     {
@@ -193,22 +198,23 @@ public class ViewCompController {
         return list;
     }
 
-    public void updateProgramSelectorCombo(List<String> funcInputStrings)
+    public void updateProgramSelectorCombo(List<FunctionSelectorChoiseDTO> funcInputStrings)
     {
-        programSelectorComboBox.setItems( FXCollections.observableList(funcInputStrings));
+        programSelectorComboBox.setItems(FXCollections.observableList(funcInputStrings));
 
-        programSelectorComboBox.setButtonCell(new ListCell<>() {
+        programSelectorComboBox.setButtonCell(new ListCell<FunctionSelectorChoiseDTO>() {
             @Override
-            protected void updateItem(String item, boolean empty) {
+            protected void updateItem(FunctionSelectorChoiseDTO item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null || item.equals(programSelectorComboBox.getItems().getFirst())) {
+                if (empty || item == null) {
                     setText("Function selector");
                 } else {
-                    setText(item);
+                    setText(item.userInput());
                 }
             }
         });
     }
+
 
     public String getHighlightSelection()
     {

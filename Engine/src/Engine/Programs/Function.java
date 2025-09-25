@@ -8,6 +8,7 @@ public class Function extends Program
     {
         super();
         this.userString = userString;
+        //this.isProgramAlreadyDoneMaxExpensions = false;
     }
 
     public String getUserString()

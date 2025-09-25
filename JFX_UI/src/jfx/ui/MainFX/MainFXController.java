@@ -4,6 +4,7 @@ import Engine.EngineFacade;
 import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
 import Out.ExecuteResultDTO;
+import Out.FunctionSelectorChoiseDTO;
 import Out.StepOverResult;
 import Out.ViewResultDTO;
 import javafx.beans.property.*;
@@ -99,17 +100,29 @@ public class MainFXController {
         return facade;
     }
 
-    public void onProgramLoaded(List<String> funcInputStrings)
+    public void onProgramLoaded(List<FunctionSelectorChoiseDTO> funcInputStringsAndNames)
     {
         fileLoadedProperty.set(true);
         currentDegreeProperty.set(0);
-        maxDegreeProperty.set(facade.getMaxDegree());
         ViewResultDTO res = facade.viewOriginalProgram();
+        maxDegreeProperty.set(facade.getMaxDegree());
         InstructionsUpdate(res);
         historyCompController.resetHistory();
         executionCompController.resetInputFieldsState();
-        viewCompController.updateProgramSelectorCombo(funcInputStrings);
+        viewCompController.updateProgramSelectorCombo(funcInputStringsAndNames);
     }
+
+    public void changeViewedProgram(String viewedProgramName)
+    {
+        fileLoadedProperty.set(true);
+        currentDegreeProperty.set(0);
+        ViewResultDTO res = facade.changeSelectedProgram(viewedProgramName);
+        maxDegreeProperty.set(facade.getMaxDegree());
+        InstructionsUpdate(res);
+        historyCompController.updateHistoryTree(facade.getHistory());
+        executionCompController.resetInputFieldsState();
+    }
+
 
     public IntegerProperty getCurrentDegreeProperty()
     {
@@ -137,6 +150,8 @@ public class MainFXController {
     {
         currentDegreeProperty.set(currentDegreeProperty.get() - 1);
     }
+
+    public void changeDegree(int newDegree) {currentDegreeProperty.set(newDegree);}
 
     public void setCurrentDegree(int degree)
     {
@@ -168,6 +183,7 @@ public class MainFXController {
                         resDTO.usedLabelsByOrder().stream())
                         .toList()
         );
+        //viewCompController.refreshInstructionsTable();
 
         viewCompController.updateComboBox(combinedList);
 

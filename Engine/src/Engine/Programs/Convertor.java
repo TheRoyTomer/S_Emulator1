@@ -2,7 +2,6 @@ package Engine.Programs;
 
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.S_Instruction;
-import Engine.Instructions_Types.S_Type.Quote;
 import Engine.Labels.LabelInterface;
 import Engine.Statistics.ExecutionStatistics;
 import Engine.Vars.Variable;
@@ -15,7 +14,6 @@ import EngineObject.VariableDTO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 //Convert from engine Objects to their related DTOs.
@@ -116,7 +114,7 @@ public class Convertor
         int ind = subArg.indexOf(",");
         if (ind == -1) {return subArg.replaceAll("\\)", "");}
         String check = subArg.substring(0, ind);
-        if (isFirstArgVar(check)) { return check; }
+        if (isArgVar(check)) { return check; }
 
         int parenthesesCounter = 1;
         int index = 0;
@@ -131,7 +129,7 @@ public class Convertor
 
     }
 
-    public static boolean isFirstArgVar(String subArg)
+    public static boolean isArgVar(String subArg)
     {
         char c = Character.toUpperCase(subArg.charAt(0));
         if (c != 'X' && c != 'Y' && c != 'Z')
@@ -162,6 +160,8 @@ public class Convertor
                 .distinct()
                 .collect(Collectors.toList());
     }
+
+
 
 
 }

@@ -1,5 +1,6 @@
 package Engine.JAXB.generated;
 
+import Engine.Programs.Convertor;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -20,7 +21,20 @@ public class XML_Reader
 
         this.XMLfile = file;
         loadXML();
-        checkLabelValidity();
+        Set<String> availableFunctions = new HashSet<>();
+        availableFunctions.add(getName());
+        for (SFunction func : getFunctions())
+        {
+            availableFunctions.add(func.getName());
+        }
+
+        validateLabels(getSInstructionList(), getName());
+        validateFunctionReferences(getSInstructionList(), getName(), availableFunctions);
+
+        for (SFunction func : getFunctions()) {
+            validateLabels(func.getSInstructions().getSInstruction(), func.getName());
+            validateFunctionReferences(func.getSInstructions().getSInstruction(), func.getName(), availableFunctions);
+        }
 
 
     }
@@ -58,28 +72,60 @@ public class XML_Reader
 
 
 
-    public void checkLabelValidity()
+    private void validateLabels(List<SInstruction> instructions, String funcName)
     {
-        List<SInstruction> list = getSInstructionList();
+        Set<String> defined = instructions.stream()
+                .map(SInstruction::getSLabel)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        defined.add("EXIT");
 
-        Set<String> defined = list.stream()
-                .map(SInstruction::getSLabel)      // extract the label of each instruction
-                .filter(Objects::nonNull)          // skip null labels
-                .collect(Collectors.toSet());      // put into a Set for fast lookup
-        defined.add("EXIT"); //Adding EXIT because it is the only LABEL that doesn't appear but can be referenced
-
-        List<String> allArgs = list.stream()
-                .map(SInstruction::getSInstructionArguments)             // get the arguments block
-                .filter(Objects::nonNull)                                // skip if no arguments
-                .flatMap(args -> args.getSInstructionArgument().stream())// flatten the list of arguments
-                .map(SInstructionArgument::getValue)                     // extract the string value of each argument
-                .filter(Objects::nonNull)                                // skip null values
-                .toList();                           // gather into a list
-
+        List<String> allArgs = instructions.stream()
+                .map(SInstruction::getSInstructionArguments)
+                .filter(Objects::nonNull)
+                .flatMap(args -> args.getSInstructionArgument().stream())
+                .map(SInstructionArgument::getValue)
+                .filter(Objects::nonNull)
+                .toList();
 
         allArgs.stream()
                 .filter(val -> val.startsWith("L") && !defined.contains(val))
                 .findFirst()
-                .ifPresent(lbl -> { throw new IllegalArgumentException("Undefined label: " + lbl); });
+                .ifPresent(lbl -> {
+                    throw new RuntimeException("Undefined label " + lbl + " in " + funcName + "!");
+                });
+    }
+    private void validateFunctionReferences(List<SInstruction> instructions, String funcName, Set<String> availableFunctions)
+    {
+        Set<String> usedFunctions = new HashSet<>();
+        for (SInstruction inst : instructions)
+        {
+            String funcArgs = getFunctionArguments(inst);
+            if (!funcArgs.isEmpty())
+            {
+                List<String> strBetweenCommas = Arrays.stream(funcArgs.replace("(", "")
+                        .replace(")", "")
+                        .split(",")).toList();
+                for (String str : strBetweenCommas)
+                {
+                    if (!Convertor.isArgVar(str) && !availableFunctions.contains(str))
+                    {
+                        throw new RuntimeException(funcName + " has reference to " + str + " that doesnt exist!");
+                    }
+                }
+            }
+
+        }
+    }
+
+    private String getFunctionArguments(SInstruction instruction)
+    {
+        if (instruction.getSInstructionArguments() == null) {return "";}
+
+        return instruction.getSInstructionArguments().getSInstructionArgument().stream()
+                .filter(arg -> "functionArguments".equals(arg.getName()))
+                .map(SInstructionArgument::getValue)
+                .findFirst()
+                .orElse("");
     }
 }

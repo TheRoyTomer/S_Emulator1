@@ -62,10 +62,13 @@ public class HeaderCompController {
         loadFileWithProgress(selected, path);
     }
 
-    private void loadFileWithProgress(File file, String path) {
-        Task<LoadResultDTO> loadTask = new Task<LoadResultDTO>() {
+    private void loadFileWithProgress(File file, String path)
+    {
+        Task<LoadResultDTO> loadTask = new Task<LoadResultDTO>()
+        {
             @Override
-            protected LoadResultDTO call() throws Exception {
+            protected LoadResultDTO call() throws Exception
+            {
 
                 for (int i = 10; i <= 30; i += 5) {
                     updateProgress(i, 100);
@@ -91,7 +94,8 @@ public class HeaderCompController {
                 LoadResultDTO result = getValue();
                 hideProgress();
 
-                if (result.isLoaded()) {
+                if (result.isLoaded())
+                {
                     filePathLabel.setText(path);
                     mainController.onProgramLoaded(result.funcNames());
                 }
@@ -123,7 +127,8 @@ public class HeaderCompController {
         javafx.application.Platform.runLater(() -> {
             progressBar.setVisible(true);
             progressLabel.setVisible(true);
-            loadButton.setDisable(true);
+            //Todo: Chat said to remove, does it works without?
+            //loadButton.setDisable(true);
         });
     }
 
@@ -133,7 +138,8 @@ public class HeaderCompController {
             progressLabel.setVisible(false);
             progressBar.progressProperty().unbind();
             progressLabel.setText("");
-            loadButton.setDisable(false);
+            //Todo: Chat said to remove, does it works without?
+            //loadButton.setDisable(false);
         });
     }
     public void setFacade(EngineFacade facade)
