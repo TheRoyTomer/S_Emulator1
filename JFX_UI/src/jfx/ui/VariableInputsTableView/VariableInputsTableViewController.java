@@ -5,7 +5,9 @@ import EngineObject.VariableDTO;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -33,6 +35,19 @@ public class VariableInputsTableViewController {
 
         valueCol.setCellFactory(TextFieldTableCell.forTableColumn());
         inputVarCol.setCellValueFactory(cd -> new ReadOnlyObjectWrapper<>(cd.getValue().name()));
+        inputVarCol.setCellFactory(column -> {
+
+            return new TableCell<VariableDTO, String>() {
+                {
+                    setOnMousePressed(Event::consume);
+                }
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item);
+                }
+            };
+        });
         valueCol.setCellValueFactory(cd -> {
             int serial = cd.getValue().getSerial();
             String shownValue = userInputs.get(serial);
@@ -45,6 +60,8 @@ public class VariableInputsTableViewController {
             String newVal = event.getNewValue();
             userInputs.put(serial, newVal);
         });
+
+
     }
 
     public void clearTableView()

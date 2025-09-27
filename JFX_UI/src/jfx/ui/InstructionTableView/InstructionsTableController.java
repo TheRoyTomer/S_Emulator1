@@ -62,6 +62,7 @@ public class InstructionsTableController {
         bsCol.setCellValueFactory(cd -> new ReadOnlyStringWrapper(cd.getValue().computeSynthetic()));
         commandCol.setCellValueFactory(cd -> new ReadOnlyStringWrapper(cd.getValue().commandBody()));
 
+
     }
 
 
@@ -109,6 +110,11 @@ public class InstructionsTableController {
     public int getInstructionTableSize()
     {
         return instructionsTable.getItems().size();
+    }
+
+    public void disableSelection()
+    {
+        instructionsTable.setSelectionModel(null);
     }
 
 }

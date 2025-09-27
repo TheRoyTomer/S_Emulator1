@@ -17,7 +17,6 @@ import Engine.Vars.VariableType;
 
 import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
 //import java.util.function.Function;
 
 public class Loader
@@ -113,7 +112,8 @@ public class Loader
                 .orElse(null);
     }
 
-    private <T> T requireArg(SInstruction ins, String key,
+    //Todo: If new func implement is Working, remove this
+    /*private <T> T requireArg(SInstruction ins, String key,
                              java.util.function.Function<String, T> mapper, String opName)
     {
         return Optional.ofNullable(getArg(ins, key))
@@ -122,8 +122,16 @@ public class Loader
                 .map(mapper)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Missing argument '" + key + "' for " + opName));
+    }*/
+    private <T> T requireArg(SInstruction ins, String key,
+                             java.util.function.Function<String, T> mapper, String opName)
+    {
+        String value = getArg(ins, key);
+        if (value == null) {
+            throw new IllegalArgumentException("Missing argument '" + key + "' for " + opName);
+        }
+        return mapper.apply(value.trim());
     }
-
 
     public Instruction convertToInstruction(SInstruction Instruction, Context myContext)
     {
@@ -188,17 +196,24 @@ public class Loader
                 functionArguments = requireArg(Instruction, "functionArguments", Convertor::argsToStringList, "QUOTE");
                 yield new Quote(myContext, null, var, functionArguments, destProgram.getFunctionByName(funcName), label);
 
+            case JUMP_EQUAL_FUNCTION:
+                funcName = requireArg(Instruction, "functionName", String::toString, "JUMP_EQUAL_FUNCTION");
+
+                labelToJump = requireArg(Instruction, "JEFunctionLabel", this::convertToLabelInterface, "JUMP_EQUAL_FUNCTION");
+                System.out.println("functionArguments: '" + getArg(Instruction, "functionArguments") + "'");
+                functionArguments = requireArg(Instruction, "functionArguments", Convertor::argsToStringList, "JUMP_EQUAL_FUNCTION");
+                yield new JumpEqualFunction(myContext, null, var, functionArguments, destProgram.getFunctionByName(funcName), label, labelToJump);
         };
     }
 
     public List<Function> convertToFunctionsList(List<SFunction> functions)
     {
-        List<Function> res = functions.stream().map(this::ConverToFunction).toList();
+        List<Function> res = functions.stream().map(this::ConvertToFunction).toList();
         functions.forEach(this::setOneFunctionInstructions);
         return res;
     }
 
-    public Function ConverToFunction(SFunction  sFunction)
+    public Function ConvertToFunction(SFunction  sFunction)
     {
         Function res = new Function(sFunction.getUserString());
         res.setName(sFunction.getName());

@@ -26,7 +26,6 @@ public class Jump_Equal_Variable extends S_Instruction
         super(InstructionData.JUMP_EQUAL_VARIABLE, context, holder, var, label);
         this.labelToJump = labelToJump;
         this.arg1 = arg1;
-        //this.instructions = this.getSingleExpansion();
     }
 
     public Jump_Equal_Variable(Context context, S_Instruction holder, Variable var, LabelInterface labelToJump, Variable arg1)

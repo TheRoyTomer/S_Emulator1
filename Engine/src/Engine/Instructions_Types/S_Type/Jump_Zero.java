@@ -67,7 +67,7 @@ public class Jump_Zero extends S_Instruction
         LabelInterface label_A = context.InsertLabelToEmptySpot();
 
         this.instructions =  new ArrayList<>(List.of(
-        new JNZ(context, this, this.var, label_A, this.label),
+        new JNZ(context, this, this.var,this.label, label_A),
         new Goto_Label(context, this, z_FAKE, this.labelToJump),
         new Neutral(context, this, Variable.OUTPUT, label_A)
         ));

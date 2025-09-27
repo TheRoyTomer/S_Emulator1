@@ -122,6 +122,13 @@ public class ViewCompController {
                     else {instructionHistoryChainTableController.setRows(findChainList(newValue));}
                 });
 
+        if (instructionHistoryChainTableController != null)
+        {
+            instructionHistoryChainTableController.setViewController(this);
+            instructionHistoryChainTableController.disableSelection();
+
+        }
+
 
     }
 

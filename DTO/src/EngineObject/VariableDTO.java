@@ -1,6 +1,5 @@
 package EngineObject;
 
-import java.util.Objects;
 
 public record VariableDTO(
         String name,
@@ -14,11 +13,6 @@ public record VariableDTO(
     public String getVarAndValueRepresentation()
     {
         return String.format("%s = %d", this.name, this.value);
-    }
-
-    public String getValueAsString()
-    {
-        return String.valueOf(this.value);
     }
 
     public int getSerial()

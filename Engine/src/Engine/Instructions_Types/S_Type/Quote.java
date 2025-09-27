@@ -64,7 +64,7 @@ public class Quote extends S_Instruction
     /*public long convertInputToLong(String input)
     {
         //return context.getVarValue(Convertor.convertStringToVar(input));
-        if (Convertor.isFirstArgVar(input))
+        if (Convertor.isArgVar(input))
         {
             if (this.mainContextWrapper != null) {
                 return this.mainContextWrapper.getVarValueFromMainContext(Convertor.convertStringToVar(input));
@@ -172,7 +172,6 @@ public class Quote extends S_Instruction
     {
         List<Variable> res = new ArrayList<>();
         res.add(this.var);
-        List<String> varNames = new ArrayList<>();
         res.addAll(functionArguments.stream()
                 .flatMap(arg -> Convertor.extractVariables(arg).stream())
                 .distinct()
@@ -225,7 +224,8 @@ public class Quote extends S_Instruction
         TreeSet<Variable> variables = function.getContext().getAllVarsInList(funcInstructions);
         List<LabelInterface> labels = context.getAll_L_InList(funcInstructions);
         this.instructions = new ArrayList<>();
-        this.instructions.add(new Neutral(context, this, Variable.OUTPUT, this.label));
+        if (this.label != FixedLabels.EMPTY)
+        {this.instructions.add(new Neutral(context, this, Variable.OUTPUT, this.label));}
 
         Iterator<String> iterator = functionArguments.iterator();
 
@@ -238,7 +238,7 @@ public class Quote extends S_Instruction
                     String argument = iterator.next();
                     String tempArg;
                     int indexComma = argument.indexOf(',');
-                    if (indexComma == -1) {tempArg = String.valueOf(argument);}
+                    if (indexComma == -1) {tempArg = argument;}
                     else {tempArg = argument.substring(0, indexComma);}
 
                     if (function.isNameFuncExistInMap(tempArg))
@@ -306,35 +306,18 @@ public class Quote extends S_Instruction
         return Optional.of(this.function.getUserString());
     }
 
+
     //For the DTO
     @Override
     public Optional<String> getFuncArgsToDisplayIfExist()
     {
         String argsCombined = this.functionArguments.stream()
-                .map(arg -> "(" + arg + ")")
+                .map(arg -> Convertor.isArgVar(arg) ? arg : "(" + arg + ")")
                 .collect(Collectors.joining(","));
-        return Optional.of(this.changeFuncArgsToPrint(argsCombined));
-
+        return Optional.of(function.changeFuncArgsToPrint(argsCombined));
     }
 
 
-    //For getFuncArgsToDisplayIfExist()
-    public String changeFuncArgsToPrint(String args) {
-        String res = String.valueOf(args);
-        String removepara = args.replace("(", "").replace(")", "");
-        List<String> simpleArg = Arrays.stream(removepara.split(",")).toList();
-
-        List<String> sortedByLength = simpleArg.stream()
-                .sorted((a, b) -> Integer.compare(b.length(), a.length()))
-                .toList();
-
-        for (String a : sortedByLength) {
-            if (function.isNameFuncExistInMap(a)) {
-                res = res.replace(a,function.getFunctionByName(a).getUserString());
-            }
-        }
-        return res;
-    }
     @Override
     public Instruction createCopy(Context context, S_Instruction holder, Map<Variable, Variable> varChanges, Map<LabelInterface, Label_Implement> labelChanges)
     {
@@ -344,26 +327,13 @@ public class Quote extends S_Instruction
         List<String> newFuncArgs = new ArrayList<>();
         for (String arg : this.functionArguments)
         {
-            newFuncArgs.add(changeOneArgNames(arg, varChanges));
+            newFuncArgs.add(function.changeOneArgNames(arg, varChanges));
         }
 
         return new Quote(context, holder, varChanges.get(this.var), newFuncArgs, function, newLabel);
     }
 
-    public String changeOneArgNames(String str, Map<Variable, Variable> varChanges)
-    {
-        String newStr = String.valueOf(str);
-        List<String> vars = Convertor.extractVariables(newStr);
-        for(String var : vars)
-        {
-            Variable varToCheck = Convertor.convertStringToVar(var);
-            if (varChanges.containsKey(varToCheck))
-            {
-                newStr = newStr.replaceAll(var, varChanges.get(varToCheck).getVariableRepresentation());
-            }
-        }
-        return newStr;
-    }
+
 
     public List<Variable> getChangedVariables() {return List.of(var);}
 }

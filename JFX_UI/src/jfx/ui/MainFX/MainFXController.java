@@ -1,6 +1,7 @@
 package jfx.ui.MainFX;
 
 import Engine.EngineFacade;
+import EngineObject.InstructionDTO;
 import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
 import Out.ExecuteResultDTO;
@@ -175,6 +176,13 @@ public class MainFXController {
 
     public void InstructionsUpdate(ViewResultDTO resDTO)
     {
+        //Todo: delete!
+      /*  List<String> rrr = resDTO.instructions().stream().map(InstructionDTO::getInstructionRepresentation).toList();
+        rrr.stream().forEach(rr -> {
+            System.out.println(rr + "\n");
+        });*/
+
+
         viewCompController.showTableInfo(resDTO.instructions());
         ObservableList<String> combinedList = FXCollections.observableArrayList(
                 Stream.concat(

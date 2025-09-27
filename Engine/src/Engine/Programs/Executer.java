@@ -105,6 +105,7 @@ public class Executer
         int sumCycles = 0;
         for (long PC = PCVal; PC < instructions.size(); )
         {
+            if (PC >= 16)System.out.println(instructions.get((int) PC)); //Todo: delete
             sumCycles += instructions.get((int) PC).getCycles();
             PC = this.SingleStepRun(PC);
         }
