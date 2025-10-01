@@ -11,6 +11,8 @@ public interface Calculable
     LabelInterface execute();
     List<Variable> getUsedVariables();
 
+    int getCycles();
+
 
     List<Instruction> getOneExpand();
 }

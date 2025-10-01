@@ -214,6 +214,8 @@ public class MainFXController {
     {
         ExecuteResultDTO res = facade.executeProgram(currentDegreeProperty.getValue(), inputs);
         handleExecuteRes(res);
+
+
     }
 
     private void handleExecuteRes(ExecuteResultDTO res)
@@ -223,6 +225,9 @@ public class MainFXController {
         historyCompController.updateHistoryTree(facade.getHistory());
         newRunStartedProperty.set(false);
         debugModeProperty.set(false);
+
+        ViewResultDTO updatedView = facade.viewExpandedProgram(currentDegreeProperty.getValue());
+        InstructionsUpdate(updatedView);
     }
 
     public void handleResume()
@@ -252,7 +257,10 @@ public class MainFXController {
             historyCompController.updateHistoryTree(facade.getHistory());
             executionCompController.refreshAndClear();
         }
-        viewCompController.refreshInstructionsTable();
+        //viewCompController.refreshInstructionsTable();
+
+        ViewResultDTO updatedView = facade.viewExpandedProgram(currentDegreeProperty.getValue());
+        InstructionsUpdate(updatedView);
 
 
     }

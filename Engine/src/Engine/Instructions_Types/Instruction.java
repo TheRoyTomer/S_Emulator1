@@ -42,6 +42,7 @@ public abstract class Instruction implements Calculable
         return this.label;
     }
 
+    @Override
     public int getCycles()
     {
         return this.instructionData.getCycles();

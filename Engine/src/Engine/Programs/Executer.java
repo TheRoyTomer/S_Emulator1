@@ -96,6 +96,7 @@ public class Executer
                 varsInList,
                 cycles
         );
+
     }
 
     public int runProgram(long PCVal)
@@ -105,9 +106,10 @@ public class Executer
         int sumCycles = 0;
         for (long PC = PCVal; PC < instructions.size(); )
         {
-            if (PC >= 16)System.out.println(instructions.get((int) PC)); //Todo: delete
-            sumCycles += instructions.get((int) PC).getCycles();
+            long prevPC = PC;
+            //sumCycles += instructions.get((int) PC).getCycles();
             PC = this.SingleStepRun(PC);
+            sumCycles += instructions.get((int) prevPC).getCycles();
         }
         return sumCycles;
     }
@@ -126,6 +128,8 @@ public class Executer
             return context.getFromMapL((Label_Implement) label);
         }
     }
+
+
 
 
     public StepOverResult stepOver(long PC)

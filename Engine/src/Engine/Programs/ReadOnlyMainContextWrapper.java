@@ -2,7 +2,7 @@ package Engine.Programs;
 
 import Engine.Vars.Variable;
 
-public class ReadOnlyMainContextWrapper
+public class  ReadOnlyMainContextWrapper
 {
     Context mainContext;
 

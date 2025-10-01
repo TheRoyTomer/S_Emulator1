@@ -208,6 +208,18 @@ public class ViewCompController {
     public void updateProgramSelectorCombo(List<FunctionSelectorChoiseDTO> funcInputStrings)
     {
         programSelectorComboBox.setItems(FXCollections.observableList(funcInputStrings));
+        
+        programSelectorComboBox.setCellFactory(param -> new ListCell<FunctionSelectorChoiseDTO>() {
+            @Override
+            protected void updateItem(FunctionSelectorChoiseDTO item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.userInput());
+                }
+            }
+        });
 
         programSelectorComboBox.setButtonCell(new ListCell<FunctionSelectorChoiseDTO>() {
             @Override

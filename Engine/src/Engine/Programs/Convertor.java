@@ -2,6 +2,7 @@ package Engine.Programs;
 
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.S_Instruction;
+import Engine.Instructions_Types.S_Type.Quote;
 import Engine.Labels.LabelInterface;
 import Engine.Statistics.ExecutionStatistics;
 import Engine.Vars.Variable;
@@ -28,6 +29,7 @@ public class Convertor
 
     public static InstructionDTO InstructionToDTO(Instruction inst, Context myContext)
     {
+
         if (inst == null) {return null;}
         return new InstructionDTO(
                 inst.getLineIndex(),

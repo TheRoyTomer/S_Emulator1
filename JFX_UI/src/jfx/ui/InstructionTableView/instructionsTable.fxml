@@ -4,14 +4,14 @@
 <?import javafx.scene.control.TableView?>
 
 <TableView fx:id="instructionsTable" stylesheets="@InstructionTableViewCSS.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.InstructionTableView.InstructionsTableController">
-  <columns>
-    <TableColumn id="IndexCol" fx:id="indexCol" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" sortable="false" text="Index" />
-    <TableColumn id="BsCol" fx:id="bsCol" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" sortable="false" text="B\S" />
-      <TableColumn id="LabelCol" fx:id="labelCol" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" sortable="false" text="Label" />
-      <TableColumn id="CommandCol" fx:id="commandCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="250.0" prefWidth="300.0" sortable="false" text="Command" />
-      <TableColumn id="CyclesCol" fx:id="cyclesCol" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" sortable="false" text="Cycles" />
-  </columns>
-   <columnResizePolicy>
-      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-   </columnResizePolicy>
+    <columns>
+        <TableColumn id="IndexCol" fx:id="indexCol" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" sortable="false" text="Index" />
+        <TableColumn id="BsCol" fx:id="bsCol" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" sortable="false" text="B\S" />
+        <TableColumn id="LabelCol" fx:id="labelCol" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" sortable="false" text="Label" />
+        <TableColumn id="CommandCol" fx:id="commandCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="300.0" sortable="false" text="Command" />
+        <TableColumn id="CyclesCol" fx:id="cyclesCol" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" sortable="false" text="Cycles" />
+    </columns>
+    <columnResizePolicy>
+        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+    </columnResizePolicy>
 </TableView>

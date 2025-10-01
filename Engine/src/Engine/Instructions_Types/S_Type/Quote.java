@@ -22,6 +22,7 @@ public class Quote extends S_Instruction
     private int cycles;
 
     private ReadOnlyMainContextWrapper mainContextWrapper;
+    private int argumentsCycles;
 
     public Quote(Context context, S_Instruction holder, Variable var, List<String> functionArguments, Function function, LabelInterface label)
     {
@@ -29,7 +30,7 @@ public class Quote extends S_Instruction
         super(InstructionData.QUOTE, context, holder, var, label);
         this.functionArguments = functionArguments;
         this.function = function;
-        this.cycles = 0;
+        this.cycles = 5;
     }
 
     public Quote(Context context, S_Instruction holder, Variable var, List<String> functionArguments, Function function)
@@ -61,72 +62,22 @@ public class Quote extends S_Instruction
         this.mainContextWrapper = mainContextWrapper;
     }
 
-    /*public long convertInputToLong(String input)
-    {
-        //return context.getVarValue(Convertor.convertStringToVar(input));
-        if (Convertor.isArgVar(input))
-        {
-            if (this.mainContextWrapper != null) {
-                return this.mainContextWrapper.getVarValueFromMainContext(Convertor.convertStringToVar(input));
-            }
-            return context.getVarValue(Convertor.convertStringToVar(input));
-        }
-        else
-        {
-            String relatedArgs;
-            String relatedFuncName;
-            Context tempContext = new Context();
-            int ind = input.indexOf(',');
-            if (ind == -1) {relatedArgs = ""; relatedFuncName = input;}
-            else {relatedArgs = input.substring(ind + 1); relatedFuncName = input.substring(0, ind);}
-            Quote instruction = new Quote(tempContext, null,
-                    Variable.OUTPUT, Convertor.argsToStringList(relatedArgs),
-                    function.getFunctionByName(relatedFuncName));
-
-            if (this.mainContextWrapper != null)
-            {
-                instruction.setMainContextWrapper(mainContextWrapper);
-            }
-            else
-            {
-                instruction.setMainContextWrapper(new ReadOnlyMainContextWrapper(this.context));
-            }
-
-            instruction.execute();
-            return tempContext.getVarValue(Variable.OUTPUT);
-
-        }
-    }*/
-
     public long convertInputToLong(String input)
     {
-        System.out.println("=== convertInputToLong START ===");
-        System.out.println("Input: " + input);
-        System.out.println("mainContextWrapper: " + (this.mainContextWrapper != null ? "exists" : "null"));
 
         if (Convertor.isArgVar(input))
         {
-            System.out.println("Branch: First arg is variable");
             if (this.mainContextWrapper != null) {
-                System.out.println("Using mainContextWrapper");
                 Variable var = Convertor.convertStringToVar(input);
-                System.out.println("Converted to variable: " + var);
                 long result = this.mainContextWrapper.getVarValueFromMainContext(var);
-                System.out.println("Got value from mainContextWrapper: " + result);
-                System.out.println("=== convertInputToLong END (wrapper) ===");
                 return result;
             }
-            System.out.println("Using local context");
             Variable var = Convertor.convertStringToVar(input);
-            System.out.println("Converted to variable: " + var);
             long result = context.getVarValue(var);
-            System.out.println("Got value from context: " + result);
-            System.out.println("=== convertInputToLong END (context) ===");
             return result;
         }
         else
         {
-            System.out.println("Branch: Input is function call");
             String relatedArgs;
             String relatedFuncName;
             Context tempContext = new Context();
@@ -134,37 +85,26 @@ public class Quote extends S_Instruction
             if (ind == -1) {relatedArgs = ""; relatedFuncName = input;}
             else {relatedArgs = input.substring(ind + 1); relatedFuncName = input.substring(0, ind);}
 
-            System.out.println("Function name: " + relatedFuncName);
-            System.out.println("Function args: " + relatedArgs);
-            System.out.println("About to get function by name...");
 
             Function func = function.getFunctionByName(relatedFuncName);
-            System.out.println("Got function: " + (func != null ? "exists" : "null"));
 
             Quote instruction = new Quote(tempContext, null,
                     Variable.OUTPUT, Convertor.argsToStringList(relatedArgs), func);
 
-            System.out.println("Created Quote instruction");
 
             if (this.mainContextWrapper != null)
             {
-                System.out.println("Setting existing mainContextWrapper");
                 instruction.setMainContextWrapper(mainContextWrapper);
             }
             else
             {
-                System.out.println("Creating new ReadOnlyMainContextWrapper");
                 instruction.setMainContextWrapper(new ReadOnlyMainContextWrapper(this.context));
             }
 
-            System.out.println("About to execute instruction...");
             instruction.execute();
-            System.out.println("Instruction executed successfully");
+            this.argumentsCycles += instruction.getCycles() - 5;
 
-            long result = tempContext.getVarValue(Variable.OUTPUT);
-            System.out.println("Got result from tempContext: " + result);
-            System.out.println("=== convertInputToLong END (function) ===");
-            return result;
+            return tempContext.getVarValue(Variable.OUTPUT);
         }
     }
     @Override
@@ -185,13 +125,15 @@ public class Quote extends S_Instruction
     @Override
     public LabelInterface execute()
     {
+        resetCycles();
         function.getContext().resetMapsState();
         function.getContext().insertInputsToMap(this.getInputs());
 
         List<Instruction> instructions = function.getInstructions();
         function.getContext().updateIndexLabels(instructions);
 
-        int sumCycles = 0;
+        int sumCycles = 5 + this.argumentsCycles;
+
         for (long PC = 0; PC < instructions.size();)
         {
             Instruction currentInstruction = instructions.get((int) PC);
@@ -333,7 +275,19 @@ public class Quote extends S_Instruction
         return new Quote(context, holder, varChanges.get(this.var), newFuncArgs, function, newLabel);
     }
 
+    public void resetCycles()
+    {
+        this.cycles = 5;
+        this.argumentsCycles = 0;
+    }
+
 
 
     public List<Variable> getChangedVariables() {return List.of(var);}
+
+    @Override
+    public int getCycles() {
+        return cycles;
+    }
+
 }

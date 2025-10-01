@@ -111,6 +111,15 @@ public record InstructionDTO(
         return isVarInInstruction(stringToCompare);
     }
 
+    public String toStringCyclesByFuncName()
+    {
+        String result = String.valueOf(cycles());
+        if (this.name.equals("QUOTE")) {
+            if (result.equals("5")) result = result + " + X";
+        }
+        return result;
+    }
+
 
 }
 
