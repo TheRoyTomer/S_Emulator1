@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: jaxb-impl.jar jakarta.xml.bind-api.jar jaxb-core.jar angus-a
+ ctivation.jar jakarta.activation-api.jar
+
