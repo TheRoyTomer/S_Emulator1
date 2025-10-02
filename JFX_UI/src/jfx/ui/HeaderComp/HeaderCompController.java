@@ -60,6 +60,7 @@ public class HeaderCompController {
 
         String path = selected.getAbsolutePath();
         loadFileWithProgress(selected, path);
+        mainController.handleLoad();
     }
 
     private void loadFileWithProgress(File file, String path)

@@ -2,9 +2,7 @@ package jfx.ui.ExecutionComp;
 
 import EngineObject.VariableDTO;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,15 +20,12 @@ import jfx.ui.VariableInputsTableView.VariableInputsTableViewController;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.beans.property.ReadOnlyStringWrapper;
-
-
 
 public class ExecutionCompController {
 
     private MainFXController mainController;
 
-
+    @FXML private Button breakpointButton;
     @FXML private Button newRunButton;
     @FXML private Button executeButton;
     @FXML private Button debugButton;
@@ -46,6 +41,9 @@ public class ExecutionCompController {
 
     @FXML private VarsTableViewController varTableCompController;
     @FXML private VariableInputsTableViewController inputVarsCompController;
+
+    private final BooleanProperty stepOverStartedProperty = new SimpleBooleanProperty(false);
+
 
 
 
@@ -67,9 +65,20 @@ public class ExecutionCompController {
         debugButton.disableProperty().bind(mainController.getNewRunStartedProperty().not()
                 .or(mainController.getDebugModeProperty()));
 
+        breakpointButton.disableProperty().bind(mainController.getDebugModeProperty().not()
+                .or(getStepOverStartedProperty()));
+
         stepOverButton.disableProperty().bind(mainController.getDebugModeProperty().not());
         resumeButton.disableProperty().bind(mainController.getDebugModeProperty().not());
         stopButton.disableProperty().bind(mainController.getDebugModeProperty().not());
+    }
+
+    public BooleanProperty getStepOverStartedProperty() {
+        return stepOverStartedProperty;
+    }
+
+    public void setStepOverStarted(boolean value) {
+        stepOverStartedProperty.set(value);
     }
 
     @FXML
@@ -83,6 +92,7 @@ public class ExecutionCompController {
         inputVarsCompController.setRows(mainController.getInputVariables());
         inputVarsComp.setEditable(true);
         inputVarsCompController.setValueColEditable(true);
+        setStepOverStarted(false);
 
     }
 
@@ -94,6 +104,14 @@ public class ExecutionCompController {
         inputVarsCompController.clearTableView();
         varTableCompController.clearTableView();
         mainController.resetCyclesProperty();
+    }
+
+    @FXML
+    private void onBreakpointPress(ActionEvent e)
+    {
+        mainController.addBreakpointFromSelectedRow();
+        mainController.handleBreakPoint();
+
     }
 
     public List<Long> handleInputs()
@@ -149,12 +167,16 @@ public class ExecutionCompController {
 
     @FXML
     private void onResume(ActionEvent e)
-    {mainController.handleResume();}
+    {
+        mainController.handleResume();
+        setStepOverStarted(false);
+    }
 
     @FXML
     private void onStop(ActionEvent e)
     {
         mainController.handleStop();
+        setStepOverStarted(false);
         inputVarsCompController.clearInputVarMap();
         inputVarsCompController.clearTableView();
         varTableCompController.clearTableView();
@@ -167,6 +189,7 @@ public class ExecutionCompController {
     private void onStepOver(ActionEvent e)
     {
         mainController.handleStepOver();
+        setStepOverStarted(true);
     }
 
     public void updateVarTable(List<VariableDTO> usedVars)

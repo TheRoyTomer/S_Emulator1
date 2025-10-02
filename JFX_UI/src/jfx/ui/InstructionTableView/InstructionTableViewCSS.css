@@ -1,10 +1,40 @@
+
+/* Highlight selection - רקע כחול בהיר */
 .table-row-cell.highlight {
     -fx-background-color: lightblue;
     -fx-font-weight: bold;
 }
 
+/* Debug PC position - רקע ורוד (רק במצב debug) */
 .table-row-cell.highlightRowDebug {
     -fx-background-color: pink;
     -fx-font-weight: bold;
 }
 
+/* Breakpoint - רק קו אדום בצד */
+.table-row-cell.breakpoint {
+    -fx-border-color: transparent transparent transparent red !important;
+    -fx-border-width: 0 0 0 7px !important;
+    -fx-padding: 0 0 0 2px;
+}
+
+/* Breakpoint כשהשורה נבחרת - שמירה על הקו האדום */
+.table-row-cell.breakpoint:selected {
+    -fx-border-color: transparent transparent transparent red !important;
+    -fx-border-width: 0 0 0 4px !important;
+}
+
+/* Breakpoint עם focused table */
+.table-view:focused .table-row-cell.breakpoint:selected {
+    -fx-border-color: transparent transparent transparent red !important;
+    -fx-border-width: 0 0 0 4px !important;
+}
+
+/* שמירה על רקע כשיש שילובים */
+.table-row-cell.breakpoint.highlight {
+    -fx-background-color: lightblue;
+}
+
+.table-row-cell.breakpoint.highlightRowDebug {
+    -fx-background-color: pink;
+}

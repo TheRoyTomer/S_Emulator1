@@ -77,7 +77,9 @@ public class Executer
 
     public ExecuteResultDTO resume(long PCVal)
     {
+        System.out.println(PCVal);
         int cycles = runProgram(PCVal) + statePreDebug.getCycle();
+        System.out.println(cycles);
 
         List<VariableDTO> varsInList = getAllVarsInRun();
         //Inserts new statistic to the history.
@@ -129,8 +131,34 @@ public class Executer
         }
     }
 
+    public StepOverResult breakPoint(long PC)
+    {
+        long nextPC = 0;
+        StepOverResult res = null;
+        int sumCycles = 0;
 
+        while ((nextPC != PC) && (nextPC != program.getExpandedInstructions().size()))
+        {
+            res = stepOver(nextPC);
+            nextPC = res.nextPC();
+            sumCycles += res.cycles();
 
+        }
+        if (nextPC >= program.getExpandedInstructions().size())
+        {
+            program.getHistory().addExecutionStatistics(
+                    statePreDebug.getDegree(),
+                    context.getVarValue(Variable.OUTPUT),
+                    getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), statePreDebug.getInputs()),
+                    getAllVarsInRun(),
+                    statePreDebug.getCycle());
+        }
+        StepOverResult res2 = new StepOverResult(
+                sumCycles,
+                res.changedVars(),
+                res.nextPC());
+        return res2;
+    }
 
     public StepOverResult stepOver(long PC)
     {
@@ -147,6 +175,7 @@ public class Executer
                     getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), statePreDebug.getInputs()),
                     getAllVarsInRun(),
                     statePreDebug.getCycle());
+            System.out.println("im here");
         }
         return new StepOverResult(
                 currentInstruction.getCycles(),

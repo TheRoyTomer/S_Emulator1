@@ -73,12 +73,6 @@ public class MenuControl
     public List<Long> getAndValidateInputs()
     {
 
-        System.out.println("The program requires the following input variables:");
-        System.out.println(facade.getInputVariablesPreExecute().stream()
-                .map(VariableDTO::getVarRepresentation)
-                .collect(Collectors.joining(" , ")));
-        System.out.println("Please enter non-negative values for these variables,");
-        System.out.println("all in one line, separated by commas.");
         List<Long> res =  new ArrayList<>();
         String input = scanner.nextLine();
         if (input.isEmpty()) {return Collections.emptyList();}

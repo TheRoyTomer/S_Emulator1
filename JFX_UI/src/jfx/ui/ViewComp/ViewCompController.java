@@ -177,6 +177,7 @@ public class ViewCompController {
         if (selectedItem != null)
         {
             mainController.changeViewedProgram(selectedItem.name());
+
         }
     }
 
@@ -243,6 +244,11 @@ public class ViewCompController {
     public void refreshInstructionsTable()
     {
         instructionsTableController.refreshTable();
+    }
+
+    public InstructionDTO getSelectedInstruction()
+    {
+        return instructionsTableController.selectedItemProperty().get();
     }
 
     public int getInstructionTableSize()

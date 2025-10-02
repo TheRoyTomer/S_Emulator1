@@ -126,3 +126,25 @@
     -fx-background-radius: 6px;
     -fx-padding: 8px;
 }
+
+#breakpointButton {
+    -fx-background-color: #fd7e14;
+}
+
+#breakpointButton:hover {
+    -fx-background-color: #e96b00;
+}
+
+#breakpointButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #6c757d;
+}
+
+/* When breakpoint mode is active */
+#breakpointButton.active {
+    -fx-background-color: #28a745;
+}
+
+#breakpointButton.active:hover {
+    -fx-background-color: #218838;
+}

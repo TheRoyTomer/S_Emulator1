@@ -200,7 +200,7 @@ public class Loader
                 funcName = requireArg(Instruction, "functionName", String::toString, "JUMP_EQUAL_FUNCTION");
 
                 labelToJump = requireArg(Instruction, "JEFunctionLabel", this::convertToLabelInterface, "JUMP_EQUAL_FUNCTION");
-                System.out.println("functionArguments: '" + getArg(Instruction, "functionArguments") + "'");
+                //System.out.println("functionArguments: '" + getArg(Instruction, "functionArguments") + "'");
                 functionArguments = requireArg(Instruction, "functionArguments", Convertor::argsToStringList, "JUMP_EQUAL_FUNCTION");
                 yield new JumpEqualFunction(myContext, null, var, functionArguments, destProgram.getFunctionByName(funcName), label, labelToJump);
         };

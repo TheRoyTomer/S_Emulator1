@@ -78,6 +78,7 @@ public class EngineFacade
     }
 
     public StepOverResult stepOver(long PC) {return executer.stepOver(PC);}
+    public StepOverResult breakPoint(long PC) {return executer.breakPoint(PC);}
 
     public List<VariableDTO> preDebug(int degree, List<Long> inputsVal) {return executer.preDebug(degree, inputsVal);}
 

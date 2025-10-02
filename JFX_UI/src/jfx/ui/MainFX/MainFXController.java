@@ -17,6 +17,7 @@ import javafx.scene.control.SplitPane;
 import jfx.ui.ExecutionComp.ExecutionCompController;
 import jfx.ui.HeaderComp.HeaderCompController;
 import jfx.ui.HistoryComp.HistoryCompController;
+import jfx.ui.UTILS;
 import jfx.ui.ViewComp.ViewCompController;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public class MainFXController {
     private final IntegerProperty cyclesProperty = new SimpleIntegerProperty(0);
     private final LongProperty currPC_Property = new SimpleLongProperty(-1);
     private long nextPC = 0;
+    private Integer currentBreakpoint = null;
 
 
     @FXML
@@ -73,6 +75,8 @@ public class MainFXController {
             });
         }
     }
+
+    public void handleLoad() {currentBreakpoint = null; }
 
 
     public BooleanProperty getFileLoadedProperty() { return fileLoadedProperty; }
@@ -122,6 +126,7 @@ public class MainFXController {
         InstructionsUpdate(res);
         historyCompController.updateHistoryTree(facade.getHistory());
         executionCompController.resetInputFieldsState();
+        currentBreakpoint = null;
     }
 
 
@@ -166,6 +171,7 @@ public class MainFXController {
     {
         ViewResultDTO res = facade.viewExpandedProgram(currentDegreeProperty.get());
         InstructionsUpdate(res);
+        currentBreakpoint = null;
     }
 
     public void handleReRun(StatisticDTO dto)
@@ -176,12 +182,6 @@ public class MainFXController {
 
     public void InstructionsUpdate(ViewResultDTO resDTO)
     {
-        //Todo: delete!
-      /*  List<String> rrr = resDTO.instructions().stream().map(InstructionDTO::getInstructionRepresentation).toList();
-        rrr.stream().forEach(rr -> {
-            System.out.println(rr + "\n");
-        });*/
-
 
         viewCompController.showTableInfo(resDTO.instructions());
         ObservableList<String> combinedList = FXCollections.observableArrayList(
@@ -191,8 +191,6 @@ public class MainFXController {
                         resDTO.usedLabelsByOrder().stream())
                         .toList()
         );
-        //viewCompController.refreshInstructionsTable();
-
         viewCompController.updateComboBox(combinedList);
 
     }
@@ -257,7 +255,7 @@ public class MainFXController {
             historyCompController.updateHistoryTree(facade.getHistory());
             executionCompController.refreshAndClear();
         }
-        //viewCompController.refreshInstructionsTable();
+        viewCompController.refreshInstructionsTable();
 
         ViewResultDTO updatedView = facade.viewExpandedProgram(currentDegreeProperty.getValue());
         InstructionsUpdate(updatedView);
@@ -274,6 +272,59 @@ public class MainFXController {
         viewCompController.refreshInstructionsTable();
     }
 
+    public void toggleBreakpointAtLine(int lineIndex)
+    {
+        if (currentBreakpoint != null && currentBreakpoint == lineIndex) {
+            currentBreakpoint = null;
+            UTILS.showInfo("Breakpoint removed from line " + lineIndex);
+        } else {
+            currentBreakpoint = lineIndex;
+            UTILS.showInfo("Breakpoint set at line " + lineIndex);
+        }
 
+        viewCompController.refreshInstructionsTable();
+    }
+
+    public void addBreakpointFromSelectedRow()
+    {
+        if (currentBreakpoint == null) {
+            UTILS.showError("Please select an instruction row first!");
+        }
+    }
+
+    public boolean hasBreakpoint(int lineIndex) {
+        return currentBreakpoint != null && currentBreakpoint == lineIndex;
+    }
+
+    public void clearBreakpoint() {
+        currentBreakpoint = null;
+        viewCompController.refreshInstructionsTable();
+    }
+
+    public void handleBreakPoint()
+    {
+        StepOverResult res = facade.breakPoint((long)currentBreakpoint);
+
+        if (res.nextPC() < viewCompController.getInstructionTableSize())
+        {
+            currPC_Property.set(res.nextPC() - 1);
+            this.nextPC = res.nextPC();
+        }
+        else
+        {
+            resetCurrAndNextPC();
+            debugModeProperty.set(false);
+            newRunStartedProperty.set(false);
+            historyCompController.updateHistoryTree(facade.getHistory());
+            executionCompController.refreshAndClear();
+        }
+
+        cyclesProperty.setValue(cyclesProperty.get() + res.cycles());
+        executionCompController.updateChangedVariables(res.changedVars());
+
+        viewCompController.refreshInstructionsTable();
+        ViewResultDTO updatedView = facade.viewExpandedProgram(currentDegreeProperty.getValue());
+        InstructionsUpdate(updatedView);
+    }
 }
 

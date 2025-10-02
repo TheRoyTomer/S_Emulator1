@@ -33,28 +33,28 @@ public class Action_Impl
         int degree = menuControl.getAndValidateDegree();
         List<Long> input = menuControl.getAndValidateInputs();
         ExecuteResultDTO res = facade.executeProgram(degree, input);
-        System.out.println(DisplayDTOs.getExecuteDTORepresentation(res));
+        //System.out.println(DisplayDTOs.getExecuteDTORepresentation(res));
     }
 
     public void viewOriginalProgram()
     {
         ViewResultDTO res = facade.viewOriginalProgram();
-        System.out.println(DisplayDTOs.getViewDTORepresentation(res));
+        //System.out.println(DisplayDTOs.getViewDTORepresentation(res));
     }
 
     public void Expand()
     {
         int degree = menuControl.getAndValidateDegree();
         ViewResultDTO res = facade.viewExpandedProgram(degree);
-        System.out.println(DisplayDTOs.getViewDTORepresentation(res));
+        //System.out.println(DisplayDTOs.getViewDTORepresentation(res));
     }
 
     public boolean loadProgram()
     {
-        System.out.println("Enter XML file path: ");
+        //System.out.println("Enter XML file path: ");
 
         LoadResultDTO res = facade.loadFromXML(menuControl.scanner.nextLine());
-        System.out.println(res.message());
+        //System.out.println(res.message());
         return res.isLoaded();
     }
 

@@ -10,6 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import jfx.ui.MainFX.MainFXController;
 import jfx.ui.ViewComp.ViewCompController;
 
@@ -41,52 +42,95 @@ public class InstructionsTableController {
     @FXML
     private void initialize()
     {
-        instructionsTable.setRowFactory(tv -> new TableRow<InstructionDTO>()
-                {
-                    @Override
-                    protected void updateItem(InstructionDTO item, boolean empty)
-                    {
-                        super.updateItem(item, empty);
+        instructionsTable.setRowFactory(tv -> {
+            TableRow<InstructionDTO> row = new TableRow<InstructionDTO>() {
+                @Override
+                protected void updateItem(InstructionDTO item, boolean empty) {
+                    super.updateItem(item, empty);
 
-                        getStyleClass().removeAll("highlight", "highlightRowDebug");
+                    getStyleClass().removeAll("highlight", "highlightRowDebug", "breakpoint");
 
-                        if (!empty && item != null) {
-                            getStyleClass().addAll(updateHighlights(item, getIndex()));
+                    if (!empty && item != null) {
+                        getStyleClass().addAll(updateHighlights(item, getIndex()));
+                    }
+                }
+            };
+
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    if (event.getClickCount() == 2 ||
+                            (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
+
+                        InstructionDTO instruction = row.getItem();
+                        if (instruction != null && viewController != null &&
+                                viewController.getMainController() != null) {
+                            viewController.getMainController().toggleBreakpointAtLine(instruction.lineIndex());
                         }
                     }
-                });
+                }
+            });
+
+            return row;
+        });
 
         indexCol.setCellValueFactory(cd -> new ReadOnlyObjectWrapper<>(cd.getValue().lineIndex()));
         labelCol.setCellValueFactory(cd -> new ReadOnlyStringWrapper(cd.getValue().label()));
         cyclesCol.setCellValueFactory(cd -> new ReadOnlyObjectWrapper<>(cd.getValue().toStringCyclesByFuncName()));
         bsCol.setCellValueFactory(cd -> new ReadOnlyStringWrapper(cd.getValue().computeSynthetic()));
         commandCol.setCellValueFactory(cd -> new ReadOnlyStringWrapper(cd.getValue().commandBody()));
-
-
     }
-
 
     private List<String> updateHighlights(InstructionDTO item, int rowIndex)
     {
         List<String> res = new ArrayList<>();
-        if (viewController != null)
+        if (viewController != null && viewController.getMainController() != null)
         {
+            MainFXController mainController = viewController.getMainController();
+
+            if (mainController.hasBreakpoint(item.lineIndex())) {
+                res.add("breakpoint");
+            }
+
             String selection = viewController.getHighlightSelection();
             if (selection != null && !selection.equals("No selection") &&
                     !selection.isEmpty() && item.isInInstruction(selection)) {
                 res.add("highlight");
             }
 
-            if (viewController.getMainController() != null &&
-                    rowIndex == viewController.getMainController().getCurrPC_Property().getValue()
-                    && viewController.getMainController().getDebugModeProperty().get())
-            {
+            if (rowIndex == mainController.getCurrPC_Property().getValue()
+                    && mainController.getDebugModeProperty().get()) {
                 res.add("highlightRowDebug");
             }
         }
         return res;
     }
 
+
+    /*private List<String> updateHighlights(InstructionDTO item, int rowIndex)
+    {
+        List<String> res = new ArrayList<>();
+        if (viewController != null && viewController.getMainController() != null)
+        {
+            MainFXController mainController = viewController.getMainController();
+
+            if (mainController.hasBreakpoint(item.lineIndex())) {
+                res.add("breakpoint");
+            }
+
+            String selection = viewController.getHighlightSelection();
+            if (selection != null && !selection.equals("No selection") &&
+                    !selection.isEmpty() && item.isInInstruction(selection)) {
+                res.add("highlight");
+            }
+
+            if (rowIndex == mainController.getCurrPC_Property().getValue()
+                    && mainController.getDebugModeProperty().get()) {
+                res.add("highlightRowDebug");
+            }
+        }
+        return res;
+    }
+*/
     public void setViewController(ViewCompController viewController)
     {
         this.viewController = viewController;
@@ -115,6 +159,11 @@ public class InstructionsTableController {
     public void disableSelection()
     {
         instructionsTable.setSelectionModel(null);
+    }
+
+    public InstructionDTO getSelectedInstruction()
+    {
+        return instructionsTable.getSelectionModel().getSelectedItem();
     }
 
 }
