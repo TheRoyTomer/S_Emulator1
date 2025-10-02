@@ -144,8 +144,7 @@ public class Program
             //this.isProgramAlreadyDoneMaxExpensions = true;
             this.maxDegree = this.calcMaxDegree();
             if (this.functions != null) {this.functions.forEach(Program::initProgram);}
-        //}
-        //System.out.printf("%s: %d: Functions empty: %s%n", this.name, this.maxDegree, this.functions == null ? "Yes" : "No");//Todo: Delete
+
     }
 
     public void setInstructions(List<Instruction> instructions)

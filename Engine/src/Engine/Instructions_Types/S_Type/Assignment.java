@@ -52,10 +52,6 @@ public class Assignment extends S_Instruction
     @Override
     public List<Variable> getUsedVariables()
     {
-        //Todo: Delete
-        if (var == null || arg1 == null) {
-            throw new IllegalStateException("Variable is null! var=" + var + ", arg1=" + arg1 + ", holder" + holder.getName() + holder.getLineIndex());
-        }
         return List.of(var,  arg1);
     }
 

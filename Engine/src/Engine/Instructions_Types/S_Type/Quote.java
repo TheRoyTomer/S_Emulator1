@@ -104,6 +104,7 @@ public class Quote extends S_Instruction
             instruction.execute();
             this.argumentsCycles += instruction.getCycles() - 5;
 
+
             return tempContext.getVarValue(Variable.OUTPUT);
         }
     }
@@ -137,8 +138,8 @@ public class Quote extends S_Instruction
         for (long PC = 0; PC < instructions.size();)
         {
             Instruction currentInstruction = instructions.get((int) PC);
-            sumCycles += currentInstruction.getCycles();
             LabelInterface label = currentInstruction.execute();
+            sumCycles += currentInstruction.getCycles();
 
             if (label == FixedLabels.EMPTY)
             {

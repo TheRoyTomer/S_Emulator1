@@ -1,6 +1,7 @@
 package Engine.Programs;
 
 import Engine.Instructions_Types.Instruction;
+import Engine.Instructions_Types.S_Type.Quote;
 import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
@@ -77,9 +78,7 @@ public class Executer
 
     public ExecuteResultDTO resume(long PCVal)
     {
-        System.out.println(PCVal);
         int cycles = runProgram(PCVal) + statePreDebug.getCycle();
-        System.out.println(cycles);
 
         List<VariableDTO> varsInList = getAllVarsInRun();
         //Inserts new statistic to the history.
@@ -131,13 +130,19 @@ public class Executer
         }
     }
 
-    public StepOverResult breakPoint(long PC)
+    public StepOverResult breakPoint(long startPC, long destPC)
     {
-        long nextPC = 0;
+        long nextPC = startPC;
         StepOverResult res = null;
         int sumCycles = 0;
 
-        while ((nextPC != PC) && (nextPC != program.getExpandedInstructions().size()))
+        if (startPC == destPC) {
+            res = stepOver(nextPC);
+            nextPC = res.nextPC();
+            sumCycles += res.cycles();
+        }
+
+        while ((nextPC != destPC) && (nextPC != program.getExpandedInstructions().size()))
         {
             res = stepOver(nextPC);
             nextPC = res.nextPC();
@@ -175,7 +180,7 @@ public class Executer
                     getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), statePreDebug.getInputs()),
                     getAllVarsInRun(),
                     statePreDebug.getCycle());
-            System.out.println("im here");
+
         }
         return new StepOverResult(
                 currentInstruction.getCycles(),

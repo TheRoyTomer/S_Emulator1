@@ -66,7 +66,7 @@ public class ExecutionCompController {
                 .or(mainController.getDebugModeProperty()));
 
         breakpointButton.disableProperty().bind(mainController.getDebugModeProperty().not()
-                .or(getStepOverStartedProperty()));
+               /* .or(getStepOverStartedProperty())*/);
 
         stepOverButton.disableProperty().bind(mainController.getDebugModeProperty().not());
         resumeButton.disableProperty().bind(mainController.getDebugModeProperty().not());

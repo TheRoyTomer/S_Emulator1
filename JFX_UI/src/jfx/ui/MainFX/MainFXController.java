@@ -276,10 +276,8 @@ public class MainFXController {
     {
         if (currentBreakpoint != null && currentBreakpoint == lineIndex) {
             currentBreakpoint = null;
-            UTILS.showInfo("Breakpoint removed from line " + lineIndex);
         } else {
             currentBreakpoint = lineIndex;
-            UTILS.showInfo("Breakpoint set at line " + lineIndex);
         }
 
         viewCompController.refreshInstructionsTable();
@@ -303,7 +301,8 @@ public class MainFXController {
 
     public void handleBreakPoint()
     {
-        StepOverResult res = facade.breakPoint((long)currentBreakpoint);
+        long startFrom = this.nextPC;
+        StepOverResult res = facade.breakPoint(startFrom, (long)currentBreakpoint);
 
         if (res.nextPC() < viewCompController.getInstructionTableSize())
         {

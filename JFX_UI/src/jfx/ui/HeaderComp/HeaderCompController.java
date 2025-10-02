@@ -128,8 +128,6 @@ public class HeaderCompController {
         javafx.application.Platform.runLater(() -> {
             progressBar.setVisible(true);
             progressLabel.setVisible(true);
-            //Todo: Chat said to remove, does it works without?
-            //loadButton.setDisable(true);
         });
     }
 
@@ -139,8 +137,6 @@ public class HeaderCompController {
             progressLabel.setVisible(false);
             progressBar.progressProperty().unbind();
             progressLabel.setText("");
-            //Todo: Chat said to remove, does it works without?
-            //loadButton.setDisable(false);
         });
     }
     public void setFacade(EngineFacade facade)
