@@ -1,150 +1,302 @@
-/* Execution Component specific styling */
 
-/* Button groups styling */
 .hbox .button {
-    -fx-background-color: #6c757d;
-    -fx-text-fill: white;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
-    -fx-font-weight: bold;
-    -fx-padding: 4px 8px;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-padding: 6px 10px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 4, 0, 0, 2);
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
 }
 
-/* New Run button */
+.hbox .button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 6, 0, 0, 3);
+    -fx-translate-y: -1px;
+}
+
+.hbox .button:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 1);
+    -fx-translate-y: 1px;
+}
+
+/* New Run button - Green theme with shimmer */
 #newRunButton {
-    -fx-background-color: #28a745;
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #34d058, #28a745);
+    -fx-text-fill: white;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px 1px 0 1px;
+    -fx-border-radius: 8px;
 }
 
 #newRunButton:hover {
-    -fx-background-color: #218838;
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #28a745, #218838);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+#newRunButton:pressed {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)),
+        linear-gradient(to bottom, #1e7e34, #1c7430);
 }
 
 #newRunButton:disabled {
     -fx-background-color: #e9ecef;
-    -fx-text-fill: #6c757d;
+    -fx-text-fill: #adb5bd;
+    -fx-effect: none;
+    -fx-opacity: 0.6;
+    -fx-border-color: transparent;
 }
 
-/* Execute button */
+/* Execute button - Blue theme with glow */
 #executeButton {
-    -fx-background-color: #007bff;
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #0d6efd, #0056b3);
+    -fx-text-fill: white;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px 1px 0 1px;
+    -fx-border-radius: 8px;
 }
 
 #executeButton:hover {
-    -fx-background-color: #0056b3;
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #0056b3, #004085);
+    -fx-effect: dropshadow(gaussian, rgba(13, 110, 253, 0.4), 8, 0, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+#executeButton:pressed {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)),
+        linear-gradient(to bottom, #003d82, #003570);
 }
 
 #executeButton:disabled {
     -fx-background-color: #e9ecef;
-    -fx-text-fill: #6c757d;
+    -fx-text-fill: #adb5bd;
+    -fx-effect: none;
+    -fx-opacity: 0.6;
+    -fx-border-color: transparent;
 }
 
-/* Debug button */
+/* Debug button - Purple theme with gradient */
 #debugButton {
-    -fx-background-color: #6f42c1;
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #8b5cf6, #6f42c1);
     -fx-text-fill: white;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px 1px 0 1px;
+    -fx-border-radius: 8px;
 }
 
 #debugButton:hover {
-    -fx-background-color: #5a32a3;
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #6f42c1, #5a32a3);
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 8, 0, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+#debugButton:pressed {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)),
+        linear-gradient(to bottom, #4c2a8f, #452885);
 }
 
 #debugButton:disabled {
     -fx-background-color: #e9ecef;
-    -fx-text-fill: #6c757d;
+    -fx-text-fill: #adb5bd;
+    -fx-effect: none;
+    -fx-opacity: 0.6;
+    -fx-border-color: transparent;
 }
 
-/* Resume button */
-#resumeButton {
-    -fx-background-color: #17a2b8;
-}
-
-#resumeButton:hover {
-    -fx-background-color: #138496;
-}
-
-#resumeButton:disabled {
-    -fx-background-color: #e9ecef;
-    -fx-text-fill: #6c757d;
-}
-
-/* Stop button */
-#stopButton {
-    -fx-background-color: #dc3545;
-}
-
-#stopButton:hover {
-    -fx-background-color: #c82333;
-}
-
-#stopButton:disabled {
-    -fx-background-color: #e9ecef;
-    -fx-text-fill: #6c757d;
-}
-
-/* Step Over button */
-#stepOverButton {
-    -fx-background-color: #6f42c1;
-}
-
-#stepOverButton:hover {
-    -fx-background-color: #5a32a3;
-}
-
-#stepOverButton:disabled {
-    -fx-background-color: #e9ecef;
-    -fx-text-fill: #6c757d;
-}
-
-/* Cycles label styling */
-#cyclesLabel {
-    -fx-background-color: #f8f9fa;
-    -fx-text-fill: #495057;
-    -fx-font-weight: bold;
-    -fx-padding: 6px 12px;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 1px 0 0 0;
-    -fx-alignment: center;
-}
-
-/* Input tables styling */
-.table-view.editable {
-    -fx-border-color: #28a745;
-    -fx-border-width: 2px;
-}
-
-.table-view.editable .column-header {
-    -fx-background-color: #d4edda;
-    -fx-text-fill: #155724;
-}
-
-/* VBox containers */
-.execution-vbox {
-    -fx-background-color: white;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 1px;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    -fx-padding: 8px;
-}
-
+/* Breakpoint button - Indigo theme */
 #breakpointButton {
-    -fx-background-color: #fd7e14;
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #6366f1, #5856d6);
+    -fx-text-fill: white;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px 1px 0 1px;
+    -fx-border-radius: 8px;
 }
 
 #breakpointButton:hover {
-    -fx-background-color: #e96b00;
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #5856d6, #4846b0);
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 8, 0, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+#breakpointButton:pressed {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)),
+        linear-gradient(to bottom, #3d3c9a, #363590);
 }
 
 #breakpointButton:disabled {
     -fx-background-color: #e9ecef;
-    -fx-text-fill: #6c757d;
+    -fx-text-fill: #adb5bd;
+    -fx-effect: none;
+    -fx-opacity: 0.6;
+    -fx-border-color: transparent;
 }
 
-/* When breakpoint mode is active */
-#breakpointButton.active {
-    -fx-background-color: #28a745;
+/* Step Over button - Teal theme */
+#stepOverButton {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #14b8a6, #20c997);
+    -fx-text-fill: white;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px 1px 0 1px;
+    -fx-border-radius: 8px;
 }
 
-#breakpointButton.active:hover {
-    -fx-background-color: #218838;
+#stepOverButton:hover {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #20c997, #17a589);
+    -fx-effect: dropshadow(gaussian, rgba(20, 184, 166, 0.4), 8, 0, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+#stepOverButton:pressed {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)),
+        linear-gradient(to bottom, #138f75, #108970);
+}
+
+#stepOverButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #adb5bd;
+    -fx-effect: none;
+    -fx-opacity: 0.6;
+    -fx-border-color: transparent;
+}
+
+/* Stop button - Red theme */
+#stopButton {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #ef4444, #dc3545);
+    -fx-text-fill: white;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px 1px 0 1px;
+    -fx-border-radius: 8px;
+}
+
+#stopButton:hover {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #dc3545, #c82333);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.4), 8, 0, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+#stopButton:pressed {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)),
+        linear-gradient(to bottom, #bd2130, #a71d2a);
+}
+
+#stopButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #adb5bd;
+    -fx-effect: none;
+    -fx-opacity: 0.6;
+    -fx-border-color: transparent;
+}
+
+/* Resume button - Cyan theme */
+#resumeButton {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #06b6d4, #17a2b8);
+    -fx-text-fill: white;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px 1px 0 1px;
+    -fx-border-radius: 8px;
+}
+
+#resumeButton:hover {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, #17a2b8, #138496);
+    -fx-effect: dropshadow(gaussian, rgba(6, 182, 212, 0.4), 8, 0, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+#resumeButton:pressed {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)),
+        linear-gradient(to bottom, #10707f, #0e6674);
+}
+
+#resumeButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #adb5bd;
+    -fx-effect: none;
+    -fx-opacity: 0.6;
+    -fx-border-color: transparent;
+}
+
+/* Cycles label */
+#cyclesLabel {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #f8f9fa);
+    -fx-text-fill: #212529;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 6px 12px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 2px 0 0 0;
+    -fx-alignment: center;
+    -fx-background-radius: 3px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+/* Input tables - editable state */
+.table-view.editable {
+    -fx-border-color: #28a745;
+    -fx-border-width: 2px;
+    -fx-border-radius: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(40, 167, 69, 0.2), 4, 0, 0, 2);
+}
+
+.table-view.editable .column-header {
+    -fx-background-color: linear-gradient(to bottom, #d4edda, #c3e6cb);
+    -fx-text-fill: #155724;
+    -fx-font-weight: bold;
+}
+
+/* VBox container */
+.execution-vbox {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #fafbfc);
+    -fx-border-color: #d1d5db;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 3);
+}
+
+/* HBox spacing improvements */
+.hbox {
+    -fx-alignment: center;
 }
