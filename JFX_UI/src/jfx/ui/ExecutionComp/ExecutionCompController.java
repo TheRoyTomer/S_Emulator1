@@ -3,17 +3,12 @@ package jfx.ui.ExecutionComp;
 import EngineObject.VariableDTO;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import jfx.ui.UTILS;
-import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import jfx.ui.MainFX.MainFXController;
+import jfx.ui.EmulatorScreen.EmulatorScreenController;
 import jfx.ui.VarsTableView.VarsTableViewController;
 import jfx.ui.VariableInputsTableView.VariableInputsTableViewController;
 
@@ -23,7 +18,7 @@ import java.util.List;
 
 public class ExecutionCompController {
 
-    private MainFXController mainController;
+    private EmulatorScreenController mainController;
 
     @FXML private Button breakpointButton;
     @FXML private Button newRunButton;
@@ -53,7 +48,7 @@ public class ExecutionCompController {
 
     }
 
-    public void setMainController(MainFXController mainController)
+    public void setMainController(EmulatorScreenController mainController)
     {
         this.mainController = mainController;
         newRunButton.disableProperty().bind(mainController.getFileLoadedProperty().not()
@@ -89,11 +84,18 @@ public class ExecutionCompController {
         inputVarsCompController.clearTableView();
         varTableCompController.clearTableView();
         mainController.resetCyclesProperty();
-        inputVarsCompController.setRows(mainController.getInputVariables());
         inputVarsComp.setEditable(true);
         inputVarsCompController.setValueColEditable(true);
         setStepOverStarted(false);
+        mainController.getRequests().httpGetInputVariables();
 
+
+    }
+
+    public void setinputVarsCompControllerRows(ObservableList<VariableDTO> inputVarsList)
+    {
+        System.out.println(inputVarsList.toString());
+        inputVarsCompController.setRows(inputVarsList);
     }
 
     public void resetInputFieldsState()
@@ -118,10 +120,15 @@ public class ExecutionCompController {
     {
         List<Long> res = new ArrayList<>();
         int counter = 1;
-        int newListSize = mainController.getInputVariables().getLast().getSerial();
+        //int newListSize = mainController.httpGetInputVariables().getLast().getSerial();
+        ObservableList<VariableDTO> items = inputVarsComp.getItems();
+        int maxSerial = items.stream()
+                .mapToInt(VariableDTO::getSerial)
+                .max()
+                .orElse(0);
         ObservableList<VariableDTO> lst = inputVarsComp.getItems();
 
-        while (counter <= newListSize)
+        while (counter <= maxSerial)
         {
             res.add(inputVarsCompController.getFromInputVarsMap(counter));
             counter++;

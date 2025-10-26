@@ -1,12 +1,11 @@
 package jfx.ui;
 
-import Engine.EngineFacade;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import jfx.ui.MainFX.MainFXController;
+import jfx.ui.EmulatorScreen.EmulatorScreenController;
 
 
 public class App extends Application {
@@ -14,25 +13,26 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            // Load the main FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/jfx/ui/MainFX/MainFX.fxml"));
+            // Load the Login screen instead of MainFX
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/jfx/ui/LoginComp/LoginComp.fxml"));
             Parent root = loader.load();
 
-            // Inject the engine facade into the main controller
-          MainFXController mainController = loader.getController();
-            mainController.setFacade(new EngineFacade()); // replace with your real implementation if needed
 
-            // Show stage
+
+
             Scene scene = new Scene(root);
-            stage.setTitle("S-Emulator");
+            stage.setTitle("Login Test");
             stage.setScene(scene);
-            stage.setMinWidth(429);
-            stage.setMinHeight(387);
+            stage.setMinWidth(400);
+            stage.setMinHeight(300);
+
+
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     public static void main(String[] args) {
         launch(args);

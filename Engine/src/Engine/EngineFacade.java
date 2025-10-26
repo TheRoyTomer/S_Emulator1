@@ -10,34 +10,30 @@ import Out.ViewResultDTO;
 
 import java.io.File;
 import java.util.List;
-import java.util.Objects;
 
 public class EngineFacade
 {
-    private final Program originalProgram;
     private final Executer executer;
     private final Loader loader;
     private final Viewer viewer;
-    private Program selectedProgram;
+    private Program program;
 
 
     public EngineFacade()
     {
-        this.originalProgram = new Program();
-        this.executer = new Executer(originalProgram);
-        this.loader = new Loader(originalProgram);
-        this.viewer = new Viewer(originalProgram);
-        //this.selectedProgram = Program.getSelectedProgram();
-        this.selectedProgram = this.originalProgram;
+        this.program = new Program();
+        this.executer = new Executer(program);
+        this.loader = new Loader(program);
+        this.viewer = new Viewer(program);
 
     }
-    public int getMaxDegree() { return selectedProgram.calcMaxDegree();}
+    public int getMaxDegree() { return program.calcMaxDegree();}
 
     public List<VariableDTO> getInputVariablesPreExecute()
     {
-        return selectedProgram.getContext().getAll_X_InList(selectedProgram.getInstructions())
+        return program.getContext().getAll_X_InList(program.getInstructions())
                 .stream()
-                .map(var ->Convertor.VariableToDTO(var, selectedProgram.getContext()))
+                .map(var ->Convertor.VariableToDTO(var, program.getContext()))
                 .toList();
     }
 
@@ -46,17 +42,16 @@ public class EngineFacade
         try
         {
             loader.load(file);
-            this.selectedProgram = this.originalProgram;
-            this.viewer.setProgramAndContext(this.selectedProgram);
-            this.executer.setProgramAndContext(this.selectedProgram);
+            this.viewer.setProgramAndContext(this.program);
+            this.executer.setProgramAndContext(this.program);
         } catch (RuntimeException e) {
             return new LoadResultDTO(false, List.of(), e.getMessage());
         }
-        return new LoadResultDTO(true, this.selectedProgram.getFunctionsUserStringAndNames(), "File is loaded!");
+        return new LoadResultDTO(true, this.program.getFunctionsUserStringAndNames(), "File is loaded!");
     }
 
 
-    public ViewResultDTO viewOriginalProgram()
+    public ViewResultDTO viewProgram()
     {
         return viewer.viewProgram(0);
     }
@@ -74,7 +69,7 @@ public class EngineFacade
 
     public List<StatisticDTO> getHistory()
     {
-        return selectedProgram.getHistory().getListAsDTOs();
+        return program.getHistory().getListAsDTOs();
     }
 
     public StepOverResult stepOver(long PC) {return executer.stepOver(PC);}
@@ -84,25 +79,32 @@ public class EngineFacade
 
     public ExecuteResultDTO resumeDebug(int PC) {return executer.resume(PC);}
 
-    public ViewResultDTO changeSelectedProgram(String name)
+  /*  public ViewResultDTO changeSelectedProgram(String name)
     {
         if (name.equals(originalProgram.getName()))
         {
             this.selectedProgram = this.originalProgram;
-            /*Program.setSelectedProgram(this.originalProgram);
-            this.selectedProgram = Program.getSelectedProgram();*/
         }
         else
         {
             this.selectedProgram = this.originalProgram.getFunctionByName(name);
-            /*this.selectedProgram = this.originalProgram.getFunctionByName(name);
-            Program.setSelectedProgram( this.selectedProgram);*/
         }
         viewer.setProgramAndContext(this.selectedProgram);
         executer.setProgramAndContext(this.selectedProgram);
-        //this.selectedProgram.initProgram();
-        return this.viewOriginalProgram();
+        return this.viewProgram();
+    }
+*/
+
+    public Program getProgram()
+    {
+        return this.program;
     }
 
-
+    public ViewResultDTO loadExistingProgram(Program selected)
+    {
+        this.program = selected;
+        viewer.setProgramAndContext(selected);
+        executer.setProgramAndContext(selected);
+        return this.viewProgram();
+    }
 }

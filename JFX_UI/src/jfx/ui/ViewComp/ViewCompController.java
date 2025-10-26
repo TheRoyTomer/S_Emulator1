@@ -9,20 +9,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import jfx.ui.InstructionTableView.InstructionsTableController;
-import jfx.ui.MainFX.MainFXController;
+import jfx.ui.EmulatorScreen.EmulatorScreenController;
 
 import java.util.List;
-import java.util.Objects;
-
-import javafx.collections.ListChangeListener;
 
 
 public class ViewCompController {
 
-    private MainFXController mainController;
+    private EmulatorScreenController mainController;
 
     private boolean isUpdatingDegreeSelector = false;
 
@@ -78,7 +74,7 @@ public class ViewCompController {
         });
     }
 
-    public void setMainController(MainFXController mainController)
+    public void setMainController(EmulatorScreenController mainController)
     {
         this.mainController = mainController;
 
@@ -95,8 +91,8 @@ public class ViewCompController {
                         .or(mainController.getDebugModeProperty())
         );
 
-        programSelectorComboBox.disableProperty().bind(mainController.getFileLoadedProperty().not()
-                .or(mainController.getDebugModeProperty()));
+       /* programSelectorComboBox.disableProperty().bind(mainController.getFileLoadedProperty().not()
+                .or(mainController.getDebugModeProperty()));*/
 
         highlightSelectorCombo.disableProperty().bind(mainController.getFileLoadedProperty().not()
                 .or(mainController.getDebugModeProperty()));
@@ -132,7 +128,7 @@ public class ViewCompController {
 
     }
 
-    public MainFXController getMainController()
+    public EmulatorScreenController getMainController()
     {
         return mainController;
     }

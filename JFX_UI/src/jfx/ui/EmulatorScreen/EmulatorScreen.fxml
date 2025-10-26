@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.BorderPane?>
 
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.MainFX.MainFXController">
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.EmulatorScreen.EmulatorScreenController">
     <content>
-        <BorderPane minHeight="400.0" minWidth="700.0" prefHeight="600.0" prefWidth="850.0" stylesheets="@MainFX_CSS.css">
+        <BorderPane minHeight="400.0" minWidth="700.0" prefHeight="600.0" prefWidth="850.0" stylesheets="@EmulatorScreen_CSS.css">
             <top>
                 <fx:include fx:id="headerComp" source="../HeaderComp/HeaderComp.fxml" BorderPane.alignment="CENTER" />
             </top>

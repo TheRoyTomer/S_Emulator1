@@ -17,6 +17,34 @@ public record InstructionDTO(
         Optional<String> funcArgs)
 {
 
+    public InstructionDTO(
+            int lineIndex,
+            boolean isSynthetic,
+            String label,
+            VariableDTO var,
+            String name,
+            InstructionDTO holder,
+            int cycles,
+            Optional<VariableDTO> arg,
+            Optional<Long> constant,
+            Optional<String> labelToJump,
+            Optional<String> funcName,
+            Optional<String> funcArgs) {
+
+        this.lineIndex = lineIndex;
+        this.isSynthetic = isSynthetic;
+        this.label = label;
+        this.var = var;
+        this.name = name;
+        this.holder = holder;
+        this.cycles = cycles;
+
+        this.arg = arg == null ? Optional.empty() : arg;
+        this.constant = constant == null ? Optional.empty() : constant;
+        this.labelToJump = labelToJump == null ? Optional.empty() : labelToJump;
+        this.funcName = funcName == null ? Optional.empty() : funcName;
+        this.funcArgs = funcArgs == null ? Optional.empty() : funcArgs;
+    }
 
     public String commandBody()
     {

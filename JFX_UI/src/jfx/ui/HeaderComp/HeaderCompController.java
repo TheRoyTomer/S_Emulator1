@@ -1,25 +1,27 @@
 package jfx.ui.HeaderComp;
 
-import Engine.EngineFacade;
 import Out.LoadResultDTO;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import jfx.ui.MainFX.MainFXController;
+import Client_UTILS.ClientConstants;
+import jfx.ui.EmulatorScreen.EmulatorScreenController;
 import jfx.ui.UTILS;
 
+import okhttp3.*;
+
 import java.io.File;
+import java.io.IOException;
 
 public class HeaderCompController {
 
-    private MainFXController mainController;
-    private EngineFacade facade;
+    private EmulatorScreenController mainController;
+/*    private EngineFacade facade;*/
     @FXML
     private Label filePathLabel;
 
@@ -35,7 +37,7 @@ public class HeaderCompController {
     @FXML
     private Label progressLabel;
 
-    public void setMainController(MainFXController mainController)
+    public void setMainController(EmulatorScreenController mainController)
     {
         this.mainController = mainController;
         loadButton.disableProperty().bind(mainController.getDebugModeProperty());
@@ -43,10 +45,10 @@ public class HeaderCompController {
 
     @FXML
     void handleLoadButton(ActionEvent event) {
-        if (facade == null) {
+      /*  if (facade == null) {
             UTILS.showError("Engine is not initialized.");
             return;
-        }
+        }*/
 
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Select XML file");
@@ -63,6 +65,8 @@ public class HeaderCompController {
         mainController.handleLoad();
     }
 
+
+
     private void loadFileWithProgress(File file, String path)
     {
         Task<LoadResultDTO> loadTask = new Task<LoadResultDTO>()
@@ -77,7 +81,8 @@ public class HeaderCompController {
                 }
 
                 updateProgress(40, 100);
-                LoadResultDTO result = facade.loadFromXML(file);
+                //LoadResultDTO result = facade.loadFromXML(file);
+                Out.LoadResultDTO result = httpLoad(file);
                 updateProgress(70, 100);
 
                 for (int i = 75; i <= 95; i += 5) {
@@ -94,6 +99,7 @@ public class HeaderCompController {
             protected void succeeded() {
                 LoadResultDTO result = getValue();
                 hideProgress();
+                System.out.println(result.isLoaded() ? "Success" : "Failed");
 
                 if (result.isLoaded())
                 {
@@ -124,12 +130,41 @@ public class HeaderCompController {
         loadThread.start();
     }
 
-    private void showProgress() {
-        javafx.application.Platform.runLater(() -> {
-            progressBar.setVisible(true);
-            progressLabel.setVisible(true);
-        });
+    private Out.LoadResultDTO httpLoad(File file) throws IOException {
+        MediaType XML = MediaType.parse("application/xml");
+        RequestBody fileBody = RequestBody.create(file, XML);
+
+        MultipartBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("programFile", file.getName(), fileBody)
+                .build();
+
+        String url = ClientConstants.SERVER_URL + "/api/load";
+
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+
+
+        try (Response response = ClientConstants.HTTP_CLIENT.newCall(request).execute())
+        {
+            if (!response.isSuccessful()) {
+                String respBody = response.body() != null ? response.body().string() : "";
+
+                if (!response.isSuccessful()) {
+                    throw new IOException("HTTP " + response.code() + " - " + respBody);
+                }
+                throw new IOException("HTTP " + response.code());
+            }
+            String body = response.body() != null ? response.body().string() : "";
+            return ClientConstants.GSON.fromJson(body, LoadResultDTO.class);
+        }
+
     }
+
+
 
     private void hideProgress() {
         javafx.application.Platform.runLater(() -> {
@@ -139,8 +174,15 @@ public class HeaderCompController {
             progressLabel.setText("");
         });
     }
-    public void setFacade(EngineFacade facade)
+
+    private void showProgress() {
+        javafx.application.Platform.runLater(() -> {
+            progressBar.setVisible(true);
+            progressLabel.setVisible(true);
+        });
+    }
+   /* public void setFacade(EngineFacade facade)
     {
         this.facade = facade;
-    }
+    }*/
 }

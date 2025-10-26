@@ -11,13 +11,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import jfx.ui.MainFX.MainFXController;
+import jfx.ui.EmulatorScreen.EmulatorScreenController;
 
 import java.util.List;
 
 public class HistoryCompController {
 
-    private MainFXController mainFXController;
+    private EmulatorScreenController emulatorScreenController;
 
     @FXML
     private TreeView<StatisticDTO> historyTreeView;
@@ -54,10 +54,10 @@ public class HistoryCompController {
     }
 
 
-    public void setMainFXController(MainFXController mainFXController)
+    public void setMainFXController(EmulatorScreenController emulatorScreenController)
     {
-        this.mainFXController = mainFXController;
-        reRunButton.disableProperty().bind(mainFXController.getDebugModeProperty());
+        this.emulatorScreenController = emulatorScreenController;
+        reRunButton.disableProperty().bind(emulatorScreenController.getDebugModeProperty());
     }
 
     public void updateHistoryTree(List<StatisticDTO> statistics)
@@ -91,7 +91,8 @@ public class HistoryCompController {
     void onRerun(ActionEvent event)
     {
         StatisticDTO selected = getSelectedStatistic();
-        if (selected != null) {mainFXController.handleReRun(selected);}
+        if (selected != null) {
+            emulatorScreenController.handleReRun(selected);}
     }
 
     @FXML

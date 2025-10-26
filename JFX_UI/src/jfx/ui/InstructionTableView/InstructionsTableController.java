@@ -9,17 +9,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
-import jfx.ui.MainFX.MainFXController;
+import jfx.ui.EmulatorScreen.EmulatorScreenController;
 import jfx.ui.ViewComp.ViewCompController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
-
-import static com.sun.javafx.css.StyleClassSet.getStyleClass;
 
 
 public class InstructionsTableController {
@@ -85,7 +80,7 @@ public class InstructionsTableController {
         List<String> res = new ArrayList<>();
         if (viewController != null && viewController.getMainController() != null)
         {
-            MainFXController mainController = viewController.getMainController();
+            EmulatorScreenController mainController = viewController.getMainController();
 
             if (mainController.hasBreakpoint(item.lineIndex())) {
                 res.add("breakpoint");
@@ -111,7 +106,7 @@ public class InstructionsTableController {
         List<String> res = new ArrayList<>();
         if (viewController != null && viewController.getMainController() != null)
         {
-            MainFXController mainController = viewController.getMainController();
+            EmulatorScreenController mainController = viewController.getMainController();
 
             if (mainController.hasBreakpoint(item.lineIndex())) {
                 res.add("breakpoint");
