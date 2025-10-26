@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="jfx.ui.MainComp.MainCompController"
+            prefHeight="950.0" prefWidth="1400.0">
+
+    <!-- Top: Header with username, screen name, and credits -->
+    <top>
+        <HBox spacing="20" alignment="CENTER" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20"/>
+            </padding>
+
+            <!-- Left: Username Label -->
+            <Label fx:id="usernameLabel" text="Username: Guest" HBox.hgrow="NEVER"/>
+
+            <!-- Center: Screen Name Label -->
+            <HBox HBox.hgrow="ALWAYS" alignment="CENTER">
+                <Label fx:id="screenNameLabel" text="Login Screen"/>
+            </HBox>
+
+            <!-- Right: Credits Label -->
+            <Label fx:id="creditsLabel" text="Credits: 0" HBox.hgrow="NEVER"/>
+
+        </HBox>
+    </top>
+
+    <!-- Center: StackPane for switching between screens -->
+    <center>
+        <StackPane fx:id="screenStackPane" BorderPane.alignment="CENTER"/>
+    </center>
+
+</BorderPane>

@@ -61,12 +61,42 @@ public class HelloWorldServlet extends HttpServlet {
         out.println("</head>");
         out.println("<body>");
         out.println("<div class='stars'></div>");
-        out.println("<div class='message'>יעלה ויבוא, יעלה ויבוא, השרת 🚀</div>");        out.println("</body>");
+        out.println("<div class='message'>יעלה ויבוא, יעלה ויבוא, השרת 🚀</div>");
+
+        // Audio player
+        out.println("<audio id='bgMusic' loop>");
+        out.println("  <source src='music.mp3' type='audio/mpeg'>");
+        out.println("</audio>");
+
+        out.println("<script>");
+        out.println("const audio = document.getElementById('bgMusic');");
+        out.println("console.log('Trying to load music.mp3...');");
+        out.println("");
+        out.println("audio.addEventListener('error', () => {");
+        out.println("  console.error('Failed to load music!');");
+        out.println("});");
+        out.println("");
+        out.println("audio.addEventListener('canplay', () => {");
+        out.println("  console.log('Music loaded successfully!');");
+        out.println("});");
+        out.println("");
+        out.println("// ניסיון autoplay");
+        out.println("document.addEventListener('DOMContentLoaded', () => {");
+        out.println("  audio.play().then(() => {");
+        out.println("    console.log('Playing!');");
+        out.println("  }).catch(() => {");
+        out.println("    console.log('Autoplay blocked - click to start');");
+        out.println("    // אם נחסם, נחכה ללחיצה");
+        out.println("    document.body.addEventListener('click', () => {");
+        out.println("      audio.play().then(() => console.log('Started!'));");
+        out.println("    }, { once: true });");
+        out.println("  });");
+        out.println("});");
+        out.println("</script>");
+
+        out.println("</body>");
         out.println("</html>");
 
         out.flush();
     }
 }
-
-
-

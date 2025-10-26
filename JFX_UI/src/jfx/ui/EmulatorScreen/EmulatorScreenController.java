@@ -12,11 +12,13 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.SplitPane;
 import jfx.ui.ExecutionComp.ExecutionCompController;
 import jfx.ui.HeaderComp.HeaderCompController;
 import jfx.ui.HistoryComp.HistoryCompController;
+import jfx.ui.MainComp.MainCompController;
 import jfx.ui.UTILS;
 import jfx.ui.ViewComp.ViewCompController;
 import jfx.ui.httpRequests;
@@ -34,8 +36,8 @@ import static Client_UTILS.ClientConstants.*;
 public class EmulatorScreenController
 {
 
-    @FXML
-    private VBox headerComp;
+  /*  @FXML
+    private HBox headerComp;*/
     @FXML
     private SplitPane viewComp;
     @FXML
@@ -43,17 +45,14 @@ public class EmulatorScreenController
     @FXML
     private VBox historyComp;
 
-    @FXML
-    private HeaderCompController headerCompController;
+   /* @FXML
+    private HeaderCompController headerCompController;*/
     @FXML
     private ViewCompController viewCompController;
     @FXML
     private ExecutionCompController executionCompController;
     @FXML
     private HistoryCompController historyCompController;
-
-
-/*    private EngineFacade facade;*/
 
     private final httpRequests requests = new httpRequests(this);
 
@@ -68,16 +67,15 @@ public class EmulatorScreenController
     private long nextPC = 0;
     private Integer currentBreakpoint = null;
 
-    private Timer timer;
-    private StateRefresher refresher;
+    private MainCompController mainCompController;
+
 
 
     @FXML
     private void initialize()
     {
-        if (this.headerCompController != null && this.viewCompController != null
-                && this.executionCompController != null) {
-            headerCompController.setMainController(this);
+        if (this.viewCompController != null && this.executionCompController != null)
+        {
             viewCompController.setMainController(this);
             executionCompController.setMainController(this);
             historyCompController.setMainFXController(this);
@@ -96,26 +94,38 @@ public class EmulatorScreenController
                 }
             });
         }
+/*
         startPolling();
+*/
     }
 
-    public void startPolling()
+    public void setMainCompController(MainCompController mainCompController)
     {
-        this.timer = new Timer();
-        this.refresher = new StateRefresher(this);
-        timer.schedule(this.refresher, 0, REFRESH_RATE);
+        this.mainCompController = mainCompController;
     }
 
-    public void stopPolling()
+    public void preDisplaySelectedProgram()
     {
-        if (timer != null) timer.cancel();
-        if (refresher != null) refresher.cancel();
+        fileLoadedProperty.set(true);
+        currentDegreeProperty.set(0);
     }
 
+    public void postDisplaySelectedProgram(ViewResultDTO res, int maxDegree)
+    {
+        InstructionsUpdate(res);
+        maxDegreeProperty.set(maxDegree);
+        historyCompController.resetHistory();
+        executionCompController.resetInputFieldsState();
+        //requests.loadAvailablePrograms();
+    }
+
+//Todo: what to do with that?
+/*
     public void handleLoad()
     {
         currentBreakpoint = null;
     }
+*/
 
 
     public BooleanProperty getFileLoadedProperty()
@@ -143,142 +153,15 @@ public class EmulatorScreenController
         debugModeProperty.set(value);
     }
 
-  /*  public void setFacade(EngineFacade facade)
-    {
-        this.facade = facade;
-        if (headerCompController != null) {
-           // headerCompController.setFacade(facade);
-        }
-    }*/
-
     public void resetCurrAndNextPC()
     {
         currPC_Property.set(-1);
         this.nextPC = 0;
     }
 
-/*
-    public EngineFacade getFacade()
-    {
-        return facade;
-    }
-*/
-
     public httpRequests getRequests()
     {
         return requests;
-    }
-
-    public void onProgramLoaded(List<FunctionSelectorChoiseDTO> funcInputStringsAndNames)
-    {
-        fileLoadedProperty.set(true);
-        currentDegreeProperty.set(0);
-
-        final String viewUrl = SERVER_URL + "/viewProgram";
-        final String degreeUrl = SERVER_URL + "/GetMaxDegree";
-
-
-        Request viewRequest = new Request.Builder()
-                .url(viewUrl)
-                .get()
-                .addHeader("Accept", "application/json")
-                .build();
-
-        HTTP_CLIENT.newCall(viewRequest).enqueue(new Callback()
-        {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
-            {
-                String json;
-                try {
-                    int code = response.code();
-                    json = (response.body() != null) ? response.body().string() : "";
-
-                    if (!response.isSuccessful()) {
-                        final String msg = "viewProgram failed: HTTP " + code;
-                        Platform.runLater(() -> UTILS.showError(msg));
-                        return;
-                    }
-
-                    ViewResultDTO res;
-                    try {
-                        res = GSON.fromJson(json, ViewResultDTO.class);
-                    } catch (Exception parseEx) {
-                        final String msg = "viewProgram JSON parse error: " + parseEx.getMessage();
-                        Platform.runLater(() -> UTILS.showError(msg));
-                        return;
-                    }
-
-                    Request maxDegreeRequest = new Request.Builder()
-                            .url(degreeUrl)
-                            .get()
-                            .addHeader("Accept", "application/json")
-                            .build();
-
-                    HTTP_CLIENT.newCall(maxDegreeRequest).enqueue(new Callback()
-                    {
-                        @Override
-                        public void onResponse(@NotNull Call call2, @NotNull Response response2) throws IOException
-                        {
-                            String json2 = null;
-                            try {
-                                int code2 = response2.code();
-                                json2 = (response2.body() != null) ? response2.body().string() : "";
-
-                                if (!response2.isSuccessful()) {
-                                    final String msg = "GetMaxDegree failed: HTTP " + code2;
-                                    Platform.runLater(() -> UTILS.showError(msg));
-                                    return;
-                                }
-
-                                Map<String, Object> result;
-                                try {
-                                    result = GSON.fromJson(json2, Map.class);
-                                } catch (Exception parseEx2) {
-                                    final String msg = "GetMaxDegree JSON parse error: " + parseEx2.getMessage();
-                                    Platform.runLater(() -> UTILS.showError(msg));
-                                    return;
-                                }
-
-                                Object md = result.get("maxDegree");
-                                if (md == null) {
-                                    Platform.runLater(() -> UTILS.showError("GetMaxDegree: missing 'maxDegree' in response"));
-                                    return;
-                                }
-                                int maxDegree = (md instanceof Number) ? ((Number) md).intValue() : Integer.parseInt(md.toString());
-
-                                Platform.runLater(() -> {
-                                    InstructionsUpdate(res);
-                                    maxDegreeProperty.set(maxDegree);
-                                    historyCompController.resetHistory();
-                                    executionCompController.resetInputFieldsState();
-                                    requests.loadAvailablePrograms();
-                                });
-
-                            } finally {
-                                response2.close();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NotNull Call call2, @NotNull IOException e)
-                        {
-                            System.out.println("[CLIENT] GetMaxDegree network error: " + e.getMessage());
-                            Platform.runLater(() -> UTILS.showError("Failed to get max degree: " + e.getMessage()));
-                        }
-                    });
-
-                } finally {
-                    response.close();
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e)
-            {
-                Platform.runLater(() -> UTILS.showError("Failed to view original program: " + e.getMessage()));
-            }
-        });
     }
 
 
@@ -289,7 +172,7 @@ public class EmulatorScreenController
         requests.httpChangeSelectedProgram(viewedProgramName);
     }
 
-    public void postChangeSelectedProgram(ViewResultDTO res)
+   /* public void postChangeSelectedProgram(ViewResultDTO res)
     {
         maxDegreeProperty.set(requests.httpGetMaxDegree());
         InstructionsUpdate(res);
@@ -300,7 +183,7 @@ public class EmulatorScreenController
             currentBreakpoint = null;
         });
 
-    }
+    }*/
 
 
     public IntegerProperty getCurrentDegreeProperty()
@@ -516,10 +399,15 @@ public class EmulatorScreenController
         executionCompController.updateVarTable(variablesRes);
     }
 
+    public void resetBreakPoint()
+    {
+        this.currentBreakpoint = null;
+    }
 
-    public void updateProgramComboBox(List<FunctionSelectorChoiseDTO> programs)
+
+ /*   public void updateProgramComboBox(List<FunctionSelectorChoiseDTO> programs)
     {
         viewCompController.updateProgramSelectorCombo(programs);
-    }
+    }*/
 }
 

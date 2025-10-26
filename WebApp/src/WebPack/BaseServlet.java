@@ -28,4 +28,14 @@ public abstract class BaseServlet extends HttpServlet {
             resp.getWriter().print("{\"status\":\"error\",\"message\":\"unauthorized\"}");
         } catch (Exception ignore) {}
     }
+
+    protected String getUsername(HttpServletRequest req, HttpServletResponse resp)
+    {
+        HttpSession session = req.getSession(false);
+        if (session != null)
+        {
+            return (String) session.getAttribute("username");
+        }
+        return null;
+    }
 }

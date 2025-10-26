@@ -7,9 +7,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import Client_UTILS.ClientConstants;
+import jfx.ui.DashboardScreenComp.DashboardScreenCompController;
 import jfx.ui.EmulatorScreen.EmulatorScreenController;
 import jfx.ui.UTILS;
 
@@ -20,8 +22,7 @@ import java.io.IOException;
 
 public class HeaderCompController {
 
-    private EmulatorScreenController mainController;
-/*    private EngineFacade facade;*/
+    private DashboardScreenCompController mainController;
     @FXML
     private Label filePathLabel;
 
@@ -37,18 +38,21 @@ public class HeaderCompController {
     @FXML
     private Label progressLabel;
 
-    public void setMainController(EmulatorScreenController mainController)
+    @FXML
+    private Button chargeCreditsBtn;
+
+    @FXML
+    private TextField creditsField;
+
+
+    public void setMainController(DashboardScreenCompController mainController)
     {
         this.mainController = mainController;
-        loadButton.disableProperty().bind(mainController.getDebugModeProperty());
     }
 
     @FXML
-    void handleLoadButton(ActionEvent event) {
-      /*  if (facade == null) {
-            UTILS.showError("Engine is not initialized.");
-            return;
-        }*/
+    void handleLoadButton(ActionEvent event)
+    {
 
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Select XML file");
@@ -62,7 +66,10 @@ public class HeaderCompController {
 
         String path = selected.getAbsolutePath();
         loadFileWithProgress(selected, path);
-        mainController.handleLoad();
+        if (mainController != null)
+        {
+            mainController.getMainCompController().resetBreakPoint();
+        }
     }
 
 
@@ -104,7 +111,7 @@ public class HeaderCompController {
                 if (result.isLoaded())
                 {
                     filePathLabel.setText(path);
-                    mainController.onProgramLoaded(result.funcNames());
+                   // mainController.onProgramLoaded(result.funcNames());
                 }
                 UTILS.showInfo(result.message());
             }
@@ -181,8 +188,7 @@ public class HeaderCompController {
             progressLabel.setVisible(true);
         });
     }
-   /* public void setFacade(EngineFacade facade)
-    {
-        this.facade = facade;
-    }*/
+    @FXML
+    private void onChargeCreditsPress() {//Todo: implement
+        }
 }

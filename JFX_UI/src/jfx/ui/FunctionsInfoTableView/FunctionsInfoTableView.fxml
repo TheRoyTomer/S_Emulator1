@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+
+<TableView xmlns="http://javafx.com/javafx/24.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="jfx.ui.FunctionsInfoTableView.FunctionsInfoTableViewController"
+           fx:id="table" prefWidth="700.0" prefHeight="400.0">
+    <columns>
+        <TableColumn fx:id="nameCol" text="Name" prefWidth="120.0"/>
+        <TableColumn fx:id="uploadUserNameCol" text="Uploaded By" prefWidth="120.0"/>
+        <TableColumn fx:id="instructionCountCol" text="Instructions" prefWidth="100.0"/>
+        <TableColumn fx:id="maxDegreeCol" text="Max Degree" prefWidth="100.0"/>
+        <TableColumn fx:id="relatedProgramCol" text="Related Program" prefWidth="150.0"/>
+    </columns>
+</TableView>

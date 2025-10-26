@@ -2,6 +2,7 @@ package WebPack;
 
 import Engine.EngineFacade;
 import Out.ExecuteResultDTO;
+import Server_UTILS.UserData;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 import static Server_UTILS.ServerConstants.GSON;
 
@@ -34,6 +36,13 @@ public class ExecuteProgramServlet extends BaseServlet
         }
 
         ExecuteResultDTO result = facade.executeProgram(deg, inputs);
+
+        @SuppressWarnings("unchecked")
+        ConcurrentMap<String, UserData> users =
+                (ConcurrentMap<String, UserData>) getServletContext().getAttribute("USERS");
+
+        UserData thisUser = users.get(getUsername(request, response));
+        thisUser.incrementExecutionCount();
         response.getWriter().println(GSON.toJson(result));
     }
 }

@@ -477,7 +477,8 @@ public class httpRequests
 
                     try {
                         ViewResultDTO res = GSON.fromJson(json, ViewResultDTO.class);
-                        Platform.runLater(() -> mainController.postChangeSelectedProgram(res));
+                        //Todo: change that later
+                        //Platform.runLater(() -> mainController.postChangeSelectedProgram(res));
 
                     } catch (Exception parseEx) {
                         final String msg = "changeSelectedProgram JSON parse error: " + parseEx.getMessage();
@@ -584,7 +585,7 @@ public class httpRequests
     }
 
 
-    public void loadAvailablePrograms() {
+    /*public void loadAvailablePrograms() {
         String url = ClientConstants.SERVER_URL + "/getAllPrograms";
         Request request = new Request.Builder().url(url).get().build();
 
@@ -600,6 +601,6 @@ public class httpRequests
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }

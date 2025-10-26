@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import jfx.ui.EmulatorScreen.EmulatorScreenController;
+import jfx.ui.MainComp.MainCompController;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -31,6 +32,13 @@ public class LoginCompController
 
     @FXML
     private TextField usernameField;
+
+    private MainCompController mainCompController;
+
+    public void setMainCompController(MainCompController mainCompController)
+    {
+        this.mainCompController = mainCompController;
+    }
 
     @FXML
     void onLogin(ActionEvent event) {
@@ -67,24 +75,15 @@ public class LoginCompController
                     if (res.isSuccessful()) {
                         Platform.runLater(() -> {
                             try {
-                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/jfx/ui/EmulatorScreen/EmulatorScreen.fxml"));
-                                Parent nextRoot = loader.load();
-
-
-                                Scene nextScene = new Scene(nextRoot);
-                                Stage stage = (Stage) loginButton.getScene().getWindow();
-                                //Todo: change controller
-                                EmulatorScreenController controller = loader.getController();
-                                stage.setOnCloseRequest(event -> {
-                                    controller.stopPolling();
-
-                                });
-                                stage.setScene(nextScene);
-                                stage.setTitle("S-Emulator - " + username);
-                                stage.show();
+                                // Update username in MainComp
+                                if (mainCompController != null) {
+                                    mainCompController.setUsername(username);
+                                    // Load Dashboard screen
+                                    mainCompController.loadDashboardScreen();
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                errorLabel.setText("Error loading next screen: " + e.getMessage());
+                                errorLabel.setText("Error loading dashboard: " + e.getMessage());
                             }
                         });
                     }
@@ -123,5 +122,6 @@ public class LoginCompController
         } catch (Exception ignore) { }
         return null;
     }
+
 
 }

@@ -1,0 +1,69 @@
+package jfx.ui.AvailableProgsAndFuncsComp;
+
+import Out.FunctionInfoDTO;
+import Out.ProgramInfoDTO;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
+import jfx.ui.DashboardScreenComp.DashboardScreenCompController;
+import jfx.ui.FunctionsInfoTableView.FunctionsInfoTableViewController;
+import jfx.ui.ProgramsInfoTableView.ProgramsInfoTableViewController;
+
+import java.util.List;
+
+public class AvailableProgsAndFuncsCompController {
+
+    @FXML
+    private Button executeProgramBtn;
+
+    @FXML
+    private Button executeFunctionBtn;
+
+    @FXML
+    private TableView<ProgramInfoDTO> programsTable;
+
+    @FXML
+    private ProgramsInfoTableViewController programsTableController;
+
+    @FXML
+    private TableView<FunctionInfoDTO> functionsTable;
+
+    @FXML
+    private FunctionsInfoTableViewController functionsTableController;
+    private DashboardScreenCompController mainController;
+
+    public void setMainController(DashboardScreenCompController mainController)
+    {
+        this.mainController = mainController;
+    }
+
+    @FXML
+    private void initialize()
+    {
+        // Todo Optional: init logic
+    }
+
+    @FXML
+    private void onExecuteProgram()
+    {
+        // TODO
+    }
+
+    @FXML
+    private void onExecuteFunction()
+    {
+        // TODO
+    }
+
+    public void UpdateTables(List<ProgramInfoDTO> programDTOs, List<FunctionInfoDTO> functionDTOs)
+    {
+        if (this.programsTableController != null )
+        {
+            this.programsTableController.setRows(programDTOs);
+        }
+        if (this.functionsTableController != null )
+        {
+            this.functionsTableController.setRows(functionDTOs);
+        }
+    }
+}

@@ -2,7 +2,10 @@ package WebPack;
 
 import Engine.EngineFacade;
 import Engine.Programs.Program;
+import Server_UTILS.FunctionHolderWrapper;
+import Server_UTILS.ProgramHolderWrapper;
 import Server_UTILS.ServerConstants;
+import Server_UTILS.UserData;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import jakarta.servlet.ServletContext;
@@ -40,12 +43,29 @@ public class LoginServlet extends BaseServlet
             this.usernameToSession = map;
 
             @SuppressWarnings("unchecked")
-            ConcurrentMap<String, Program> programs =
-                    (ConcurrentMap<String, Program>) ctx.getAttribute("ALL_PROGRAMS");
+            ConcurrentMap<String, ProgramHolderWrapper> programs =
+                    (ConcurrentMap<String, ProgramHolderWrapper>) ctx.getAttribute("ALL_PROGRAMS");
             if (programs == null)
             {
                 programs = new ConcurrentHashMap<>();
                 ctx.setAttribute("ALL_PROGRAMS", programs);
+            }
+            @SuppressWarnings("unchecked")
+            ConcurrentMap<String, FunctionHolderWrapper> functions =
+                    (ConcurrentMap<String, FunctionHolderWrapper>) ctx.getAttribute("ALL_FUNCTIONS");
+            if (functions == null)
+            {
+                functions = new ConcurrentHashMap<>();
+                ctx.setAttribute("ALL_FUNCTIONS", functions);
+            }
+
+            @SuppressWarnings("unchecked")
+            ConcurrentMap<String, UserData> users =
+                    (ConcurrentMap<String, UserData>) ctx.getAttribute("USERS");
+            if (users == null)
+            {
+                users = new ConcurrentHashMap<>();
+                ctx.setAttribute("USERS", users);
             }
         }
     }
@@ -83,7 +103,10 @@ public class LoginServlet extends BaseServlet
         EngineFacade facade = new EngineFacade();
         session.setAttribute(ServerConstants.SESSION_FACADE_KEY, facade);
         session.setAttribute("username", username);
-
+        @SuppressWarnings("unchecked")
+        ConcurrentMap<String, UserData> users =
+                (ConcurrentMap<String, UserData>) getServletContext().getAttribute("USERS");
+        users.put(username, new UserData(username));
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().print("{\"status\":\"success\",\"username\":\"" + username + "\"}");
     }
