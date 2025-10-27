@@ -21,8 +21,7 @@
                 </padding>
                 <Label text="Available Programs" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
                 <Pane HBox.hgrow="ALWAYS"/>
-                <Button fx:id="executeProgramBtn" text="Execute Program"/>
-            </HBox>
+                <Button fx:id="executeProgramBtn" text="Execute Program" onAction="#onExecuteProgram"/>            </HBox>
             <fx:include fx:id="programsTable" source="../ProgramsInfoTableView/ProgramsInfoTableView.fxml"/>
         </VBox>
 
@@ -34,7 +33,7 @@
                 </padding>
                 <Label text="Available Functions" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
                 <Pane HBox.hgrow="ALWAYS"/>
-                <Button fx:id="executeFunctionBtn" text="Execute Function"/>
+                <Button fx:id="executeFunctionBtn" text="Execute Function" onAction="#onExecuteFunction"/>
             </HBox>
             <fx:include fx:id="functionsTable" source="../FunctionsInfoTableView/FunctionsInfoTableView.fxml"/>
         </VBox>

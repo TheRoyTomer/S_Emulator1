@@ -585,6 +585,7 @@ public class httpRequests
     }
 
 
+
     /*public void loadAvailablePrograms() {
         String url = ClientConstants.SERVER_URL + "/getAllPrograms";
         Request request = new Request.Builder().url(url).get().build();

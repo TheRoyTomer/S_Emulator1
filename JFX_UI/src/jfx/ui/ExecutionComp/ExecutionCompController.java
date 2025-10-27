@@ -37,6 +37,9 @@ public class ExecutionCompController {
     @FXML private VarsTableViewController varTableCompController;
     @FXML private VariableInputsTableViewController inputVarsCompController;
 
+    @FXML private Button backToDashboardButton;
+
+    @FXML private ComboBox<String> architectureSelectionComboBox;
     private final BooleanProperty stepOverStartedProperty = new SimpleBooleanProperty(false);
 
 
@@ -230,6 +233,14 @@ public class ExecutionCompController {
         varTableCompController.clearMap();
     }
 
+    @FXML
+    private void onBackToDashboard(ActionEvent e)
+    {
+        // TODO: Implement navigation back to dashboard
+        System.out.println("Back to Dashboard clicked");
+        mainController.getMainCompController().loadDashboardScreen();
+
+    }
 
 
 }

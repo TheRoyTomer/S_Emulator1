@@ -42,8 +42,7 @@ public class EmulatorScreenController
     private SplitPane viewComp;
     @FXML
     private VBox executionComp;
-    @FXML
-    private VBox historyComp;
+
 
    /* @FXML
     private HeaderCompController headerCompController;*/
@@ -51,8 +50,7 @@ public class EmulatorScreenController
     private ViewCompController viewCompController;
     @FXML
     private ExecutionCompController executionCompController;
-    @FXML
-    private HistoryCompController historyCompController;
+
 
     private final httpRequests requests = new httpRequests(this);
 
@@ -67,6 +65,11 @@ public class EmulatorScreenController
     private long nextPC = 0;
     private Integer currentBreakpoint = null;
 
+    public MainCompController getMainCompController()
+    {
+        return mainCompController;
+    }
+
     private MainCompController mainCompController;
 
 
@@ -78,7 +81,6 @@ public class EmulatorScreenController
         {
             viewCompController.setMainController(this);
             executionCompController.setMainController(this);
-            historyCompController.setMainFXController(this);
 
             viewCompController.bindDegrees(currentDegreeProperty, maxDegreeProperty);
             executionCompController.bindCycles(cyclesProperty);
@@ -114,7 +116,6 @@ public class EmulatorScreenController
     {
         InstructionsUpdate(res);
         maxDegreeProperty.set(maxDegree);
-        historyCompController.resetHistory();
         executionCompController.resetInputFieldsState();
         //requests.loadAvailablePrograms();
     }
@@ -272,7 +273,7 @@ public class EmulatorScreenController
         cyclesProperty.setValue(res.cycles());
         executionCompController.updateVarTable(res.usedVarsByOrder());
         requests.httpGetHistory(history -> {
-            historyCompController.updateHistoryTree(history);
+            //historyCompController.updateHistoryTree(history);
             newRunStartedProperty.set(false);
             debugModeProperty.set(false);
             requests.httpViewExpandedProgram(currentDegreeProperty.get());
@@ -304,7 +305,7 @@ public class EmulatorScreenController
             debugModeProperty.set(false);
             newRunStartedProperty.set(false);
             requests.httpGetHistory(history -> {
-                historyCompController.updateHistoryTree(history);
+                //historyCompController.updateHistoryTree(history);
                 executionCompController.refreshAndClear();
                 viewCompController.refreshInstructionsTable();
             });
@@ -375,7 +376,7 @@ public class EmulatorScreenController
             debugModeProperty.set(false);
             newRunStartedProperty.set(false);
             requests.httpGetHistory(history -> {
-                historyCompController.updateHistoryTree(history);
+               // historyCompController.updateHistoryTree(history);
                 executionCompController.refreshAndClear();
             });
         }

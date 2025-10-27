@@ -5,6 +5,7 @@ import Engine.Vars.Variable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Function extends Program
 {
@@ -14,6 +15,22 @@ public class Function extends Program
     {
         super();
         this.userString = userString;
+    }
+
+    public Function duplicateFunction()
+    {
+        Function newF = new Function(this.userString);
+        newF.setName(this.getName());
+        newF.setMaxDegree(this.getMaxDegree());
+
+        newF.setInstructions(this.getInstructions().stream()
+                .map(instruction -> duplicateInstruction(instruction, newF.getContext()))
+                .collect(Collectors.toList()));
+
+        newF.setFunctions(this.getFunctions());
+
+
+        return newF;
     }
 
     public String getUserString()

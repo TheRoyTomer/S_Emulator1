@@ -16,7 +16,6 @@
                 <HBox spacing="8.0" alignment="CENTER" prefHeight="30.0">
                     <children>
                         <ComboBox fx:id="DegreeSelectorComboBox" onAction="#OnDegreeSelection" prefWidth="150.0" promptText="Degree selector" HBox.hgrow="ALWAYS" maxWidth="180.0" />
-                        <ComboBox fx:id="programSelectorComboBox" onAction="#handleProgramSelector" prefWidth="150.0" promptText="Function selector" HBox.hgrow="ALWAYS" maxWidth="180.0" />
                         <ComboBox id="HightlightCombo" fx:id="highlightSelectorCombo" prefWidth="150.0" promptText="Highlight" HBox.hgrow="ALWAYS" maxWidth="180.0" />
                     </children>
                     <padding>

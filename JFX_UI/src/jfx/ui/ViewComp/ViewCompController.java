@@ -22,7 +22,6 @@ public class ViewCompController {
 
     private boolean isUpdatingDegreeSelector = false;
 
-    @FXML private ComboBox<FunctionSelectorChoiseDTO> programSelectorComboBox;
     @FXML private Button collapseButton;
     @FXML private Label currMaxDegreeLabel;
     @FXML private Button expandButton;
@@ -166,7 +165,7 @@ public class ViewCompController {
 
     }
 
-        @FXML
+  /*      @FXML
     private void handleProgramSelector(ActionEvent event)
     {
         FunctionSelectorChoiseDTO selectedItem = this.programSelectorComboBox.getValue();
@@ -175,7 +174,7 @@ public class ViewCompController {
             mainController.changeViewedProgram(selectedItem.name());
 
         }
-    }
+    }*/
 
     @FXML
     private void handleCollapse(ActionEvent event)
@@ -202,7 +201,7 @@ public class ViewCompController {
         return list;
     }
 
-    public void updateProgramSelectorCombo(List<FunctionSelectorChoiseDTO> funcInputStrings)
+   /* public void updateProgramSelectorCombo(List<FunctionSelectorChoiseDTO> funcInputStrings)
     {
         programSelectorComboBox.setItems(FXCollections.observableList(funcInputStrings));
         
@@ -229,7 +228,7 @@ public class ViewCompController {
                 }
             }
         });
-    }
+    }*/
 
 
     public String getHighlightSelection()

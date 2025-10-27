@@ -28,6 +28,7 @@ public abstract class Instruction implements Calculable
         this.holder = holder;
     }
 
+
     @Override
     public abstract int calcMaxDegree();
 
@@ -99,6 +100,8 @@ public abstract class Instruction implements Calculable
     {
         return Optional.empty();
     }
+
+
 
     //For the DTO
     public Optional<String> getFuncUserInputIfExist()

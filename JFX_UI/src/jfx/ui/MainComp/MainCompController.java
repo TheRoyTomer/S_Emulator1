@@ -12,10 +12,7 @@ import jfx.ui.DashboardScreenComp.DashboardScreenCompController;
 import jfx.ui.EmulatorScreen.EmulatorScreenController;
 import jfx.ui.LoginComp.LoginCompController;
 import jfx.ui.UTILS;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -93,10 +90,12 @@ public class MainCompController {
     }
 
     // Method to load EmulatorScreen
-    public void loadEmulatorScreen() {
+    public void loadEmulatorScreen()
+    {
         try {
             // Load EmulatorScreen.fxml if not already loaded (cache it)
-            if (emulatorScreen == null) {
+            if (emulatorScreen == null)
+            {
                 FXMLLoader loader = loadFXML("/jfx/ui/EmulatorScreen/EmulatorScreen.fxml");
                 emulatorScreen = loader.load();
                 emulatorScreenController = loader.getController();
@@ -139,6 +138,11 @@ public class MainCompController {
 
             // Store controller
             currentScreenController = dashboardScreenCompController;
+
+            if (dashboardScreenCompController != null)
+            {
+                dashboardScreenCompController.startPolling();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -203,8 +207,10 @@ public class MainCompController {
     }
 
 //Todo: use that when switching DASHBOARD TO emulator
-    public void displaySelectedProgram(List<FunctionSelectorChoiseDTO> funcInputStringsAndNames)
+    /*public void displaySelectedProgram(List<FunctionSelectorChoiseDTO> funcInputStringsAndNames)
     {
+        loadEmulatorScreen();
+
         emulatorScreenController.preDisplaySelectedProgram();
 
         final String viewUrl = SERVER_URL + "/viewProgram";
@@ -309,12 +315,168 @@ public class MainCompController {
             }
         });
     }
-
+*/
     public void resetBreakPoint()
     {
         if (emulatorScreenController != null)
         {
             emulatorScreenController.resetBreakPoint();
         }
+    }
+
+    public void displaySelectedProgram(String programName)
+    {
+        loadEmulatorScreen();
+        emulatorScreenController.preDisplaySelectedProgram();
+        changeAndDisplayProgram("/changeSelectedProgram", "programName", programName);
+    }
+
+    public void displaySelectedFunction(String functionName)
+    {
+        loadEmulatorScreen();
+        emulatorScreenController.preDisplaySelectedProgram();
+        changeAndDisplayProgram("/changeSelectedFunction", "functionName", functionName);
+    }
+
+    // Generic method - handles both programs and functions!
+    private void changeAndDisplayProgram(String endpoint, String paramName, String paramValue)
+    {
+        final String changeUrl = SERVER_URL + endpoint;
+
+        HttpUrl url = HttpUrl.parse(changeUrl).newBuilder()
+                .addQueryParameter(paramName, paramValue)
+                .build();
+
+        Request changeRequest = new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(new byte[0]))
+                .addHeader("Accept", "application/json")
+                .build();
+
+        HTTP_CLIENT.newCall(changeRequest).enqueue(new Callback()
+        {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
+            {
+                try {
+                    int code = response.code();
+                    String json = (response.body() != null) ? response.body().string() : "";
+
+                    if (!response.isSuccessful()) {
+                        Platform.runLater(() -> UTILS.showError("Failed to change selection: HTTP " + code));
+                        return;
+                    }
+
+                    viewAndDisplayProgram();
+
+                } finally {
+                    response.close();
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e)
+            {
+                Platform.runLater(() -> UTILS.showError("Failed to change selection: " + e.getMessage()));
+            }
+        });
+    }
+
+    private void viewAndDisplayProgram()
+    {
+        final String viewUrl = SERVER_URL + "/viewProgram";
+        final String degreeUrl = SERVER_URL + "/GetMaxDegree";
+
+        Request viewRequest = new Request.Builder()
+                .url(viewUrl)
+                .get()
+                .addHeader("Accept", "application/json")
+                .build();
+
+        HTTP_CLIENT.newCall(viewRequest).enqueue(new Callback()
+        {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
+            {
+                String json;
+                try {
+                    int code = response.code();
+                    json = (response.body() != null) ? response.body().string() : "";
+
+                    if (!response.isSuccessful()) {
+                        Platform.runLater(() -> UTILS.showError("viewProgram failed: HTTP " + code));
+                        return;
+                    }
+
+                    ViewResultDTO res;
+                    try {
+                        res = GSON.fromJson(json, ViewResultDTO.class);
+                    } catch (Exception parseEx) {
+                        Platform.runLater(() -> UTILS.showError("viewProgram JSON parse error: " + parseEx.getMessage()));
+                        return;
+                    }
+
+                    Request maxDegreeRequest = new Request.Builder()
+                            .url(degreeUrl)
+                            .get()
+                            .addHeader("Accept", "application/json")
+                            .build();
+
+                    HTTP_CLIENT.newCall(maxDegreeRequest).enqueue(new Callback()
+                    {
+                        @Override
+                        public void onResponse(@NotNull Call call2, @NotNull Response response2) throws IOException
+                        {
+                            try {
+                                int code2 = response2.code();
+                                String json2 = (response2.body() != null) ? response2.body().string() : "";
+
+                                if (!response2.isSuccessful()) {
+                                    Platform.runLater(() -> UTILS.showError("GetMaxDegree failed: HTTP " + code2));
+                                    return;
+                                }
+
+                                Map<String, Object> result;
+                                try {
+                                    result = GSON.fromJson(json2, Map.class);
+                                } catch (Exception parseEx2) {
+                                    Platform.runLater(() -> UTILS.showError("GetMaxDegree JSON parse error: " + parseEx2.getMessage()));
+                                    return;
+                                }
+
+                                Object md = result.get("maxDegree");
+                                if (md == null) {
+                                    Platform.runLater(() -> UTILS.showError("GetMaxDegree: missing 'maxDegree' in response"));
+                                    return;
+                                }
+                                int maxDegree = (md instanceof Number) ? ((Number) md).intValue() : Integer.parseInt(md.toString());
+
+                                Platform.runLater(() -> {
+                                    emulatorScreenController.postDisplaySelectedProgram(res, maxDegree);
+                                });
+
+                            } finally {
+                                response2.close();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NotNull Call call2, @NotNull IOException e)
+                        {
+                            Platform.runLater(() -> UTILS.showError("Failed to get max degree: " + e.getMessage()));
+                        }
+                    });
+
+                } finally {
+                    response.close();
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e)
+            {
+                Platform.runLater(() -> UTILS.showError("Failed to view program: " + e.getMessage()));
+            }
+        });
     }
 }

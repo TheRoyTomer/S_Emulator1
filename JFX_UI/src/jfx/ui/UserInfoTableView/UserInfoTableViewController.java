@@ -41,16 +41,6 @@ public class UserInfoTableViewController {
     @FXML
     public void initialize()
     {
-        System.out.println("########## INITIALIZE START ##########");
-        System.out.println("=== UserInfoTableViewController.initialize() ===");
-        System.out.println("usersTable is null? " + (usersTable == null));
-        System.out.println("userNameColumn is null? " + (userNameColumn == null));
-        System.out.println("uploadedProgramsColumn is null? " + (uploadedProgramsColumn == null));
-        System.out.println("uploadedFunctionsColumn is null? " + (uploadedFunctionsColumn == null));
-        System.out.println("currentCreditsColumn is null? " + (currentCreditsColumn == null));
-        System.out.println("usedCreditsColumn is null? " + (usedCreditsColumn == null));
-        System.out.println("executionsColumn is null? " + (executionsColumn == null));
-
         // Set up row factory for styling and selection
         usersTable.setRowFactory(tv -> {
             TableRow<UserInfoDTO> row = new TableRow<UserInfoDTO>() {
@@ -111,8 +101,8 @@ public class UserInfoTableViewController {
 
     public void setRows(List<UserInfoDTO> list)
     {
-        System.out.println("setRows called with " + list.size() + " users");
-        System.out.println("usersTable is null? " + (usersTable == null));
+        //System.out.println("setRows called with " + list.size() + " users");
+        //System.out.println("usersTable is null? " + (usersTable == null));
 
         if (usersTable == null)
         {
@@ -122,12 +112,12 @@ public class UserInfoTableViewController {
 
         usersTable.setItems(FXCollections.observableArrayList(list));
         usersTable.refresh();
-        System.out.println("Table items size: " + usersTable.getItems().size());
+        //System.out.println("Table items size: " + usersTable.getItems().size());
     }
 
     private void handleUserSelection(UserInfoDTO user) {
         // TODO: Implement what happens when a user is selected
-        System.out.println("Selected user: " + user.userName());
+        //System.out.println("Selected user: " + user.userName());
     }
 
     @FXML

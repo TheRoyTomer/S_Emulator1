@@ -1,7 +1,12 @@
 package Engine.Programs;
 
+import Engine.Instructions_Types.B_Type.Decrease;
+import Engine.Instructions_Types.B_Type.Increase;
+import Engine.Instructions_Types.B_Type.JNZ;
+import Engine.Instructions_Types.B_Type.Neutral;
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.S_Instruction;
+import Engine.Instructions_Types.S_Type.*;
 import Engine.Statistics.HistoryList;
 import Engine.Vars.Variable;
 import Out.FunctionSelectorChoiseDTO;
@@ -27,7 +32,40 @@ public class Program
     public Program()
     {
         this.context = new Context();
-        //Program.selectedProgram = this;
+    }
+
+    public Program duplicate()
+    {
+        Program newP = new Program();
+        newP.name = this.name;
+        newP.maxDegree = this.maxDegree;
+
+        newP.instructions = this.instructions.stream()
+                .map(instruction -> duplicateInstruction(instruction, newP.getContext()))
+                .collect(Collectors.toList());
+
+        newP.functions = this.functions;
+
+        return newP;
+    }
+
+    public Instruction duplicateInstruction(Instruction instruction, Context newContext)
+    {
+        return switch (instruction.getInstructionData()) {
+            case DECREASE -> new Decrease(newContext, instruction.getHolder(), instruction.getVar(), instruction.getLabel());
+            case INCREASE -> new Increase(newContext, instruction.getHolder(), instruction.getVar(), instruction.getLabel());
+            case NEUTRAL -> new Neutral(newContext, instruction.getHolder(), instruction.getVar(), instruction.getLabel());
+            case JUMP_NOT_ZERO -> new JNZ(newContext, instruction.getHolder(), instruction.getVar(), instruction.getLabel(), instruction.getLabelToJumpIfExist().get());
+            case ZERO_VARIABLE -> new Zero_Variable(newContext, instruction.getHolder(), instruction.getVar(), instruction.getLabel());
+            case CONSTANT_ASSIGNMENT -> new Constant_Assignment(newContext, instruction.getHolder(), instruction.getVar(), instruction.getLabel(), instruction.getConstantIfExist().get());
+            case JUMP_EQUAL_CONSTANT -> new Jump_Equal_Constant(newContext, instruction.getHolder(), instruction.getVar(), instruction.getLabel(), instruction.getLabelToJumpIfExist().get(),instruction.getConstantIfExist().get());
+            case JUMP_EQUAL_VARIABLE -> new Jump_Equal_Variable(newContext, instruction.getHolder(), instruction.getVar(), instruction.getLabel(), instruction.getLabelToJumpIfExist().get(),instruction.getArgIfExist().get());
+            case JUMP_ZERO -> new Jump_Zero(newContext, instruction.getHolder(), instruction.getVar(), instruction.getLabel(), instruction.getLabelToJumpIfExist().get());
+            case GOTO_LABEL -> new Goto_Label(newContext, instruction.getHolder(), instruction.getVar(), instruction.getLabel(),instruction.getLabelToJumpIfExist().get());
+            case ASSIGNMENT -> new Assignment(newContext, instruction.getHolder(), instruction.getVar(), instruction.getArgIfExist().get(), instruction.getLabel());
+            case QUOTE -> new Quote(newContext, instruction.getHolder(), instruction.getVar(), ((Quote)instruction).getFuncArgs(),((Quote)instruction).getFunction(), instruction.getLabel());
+            case JUMP_EQUAL_FUNCTION -> new JumpEqualFunction(newContext, instruction.getHolder(), instruction.getVar(), ((Quote)instruction).getFuncArgs(),((Quote)instruction).getFunction(), instruction.getLabel(),instruction.getLabelToJumpIfExist().get());
+        };
     }
 
     public static void clearNameToFuncMap() {nameToFuncMap.clear();}
@@ -69,18 +107,6 @@ public class Program
     {
         return maxDegree;
     }
-
-/*
-    public boolean isProgramAlreadyDoneMaxExpensions()
-    {
-        return isProgramAlreadyDoneMaxExpensions;
-    }
-
-    public void setProgramAlreadyDoneMaxExpensions(boolean programAlreadyDoneMaxExpensions)
-    {
-        isProgramAlreadyDoneMaxExpensions = programAlreadyDoneMaxExpensions;
-    }
-*/
 
     public List<FunctionSelectorChoiseDTO> getFunctionsUserStringAndNames()
     {
@@ -166,6 +192,8 @@ public class Program
                 ? this.instructions
                 : this.ExpandedInstructions;
     }
+
+    public void setMaxDegree(int maxDegree) {this.maxDegree = maxDegree;}
 }
 
 

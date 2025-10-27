@@ -18,6 +18,12 @@ import java.util.stream.Collectors;
 public class Quote extends S_Instruction
 {
     private final List<String> functionArguments;
+
+    public Function getFunction()
+    {
+        return function;
+    }
+
     private final Function function;
     private int cycles;
 
@@ -289,6 +295,11 @@ public class Quote extends S_Instruction
     @Override
     public int getCycles() {
         return cycles;
+    }
+
+    public List<String> getFuncArgs()
+    {
+        return functionArguments;
     }
 
 }

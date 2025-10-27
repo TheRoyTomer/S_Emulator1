@@ -3,6 +3,7 @@ package WebPack;
 import Engine.EngineFacade;
 import Engine.Programs.Program;
 import Out.ViewResultDTO;
+import Server_UTILS.ProgramHolderWrapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,18 +39,23 @@ public class ChangeSelectedProgramServlet extends BaseServlet
         if (facade == null) return;
 
         String programName = request.getParameter("programName");
+        @SuppressWarnings("unchecked")
+        ConcurrentMap<String, ProgramHolderWrapper> allPrograms =
+                (ConcurrentMap<String, ProgramHolderWrapper>) getServletContext().getAttribute("ALL_PROGRAMS");
 
-        ConcurrentMap<String, Program> allPrograms =
-                (ConcurrentMap<String, Program>) getServletContext().getAttribute("ALL_PROGRAMS");
+        ProgramHolderWrapper programWrapper = allPrograms.get(programName);
 
-        Program selected = allPrograms.get(programName);
-        if (selected != null)
+        if (programWrapper != null)
         {
-            facade.loadExistingProgram(selected);
+            Program selected = programWrapper.getProgram();
+            Program selectedDuplicated = selected.duplicate();
+            selectedDuplicated.initProgram();
+            facade.loadExistingProgram(selectedDuplicated);
             response.getWriter().println("{\"status\":\"success\"}");
         } else {
             response.setStatus(404);
             response.getWriter().println("{\"error\":\"Program not found\"}");
         }
+
     }
 }
