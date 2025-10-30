@@ -121,8 +121,6 @@ public class Executer
         int sumCycles = 0;
         for (long PC = PCVal; PC < instructions.size(); )
         {
-            //Todo: delete
-            System.out.println("Credits: " + credits + " | Cycles: " + sumCycles);
             long prevPC = PC;
             PC = this.SingleStepRun(PC, credits);
             if (PC < 0)
@@ -154,27 +152,40 @@ public class Executer
         }
     }
 
-    public StepOverResult breakPoint(long startPC, long destPC)
+    public StepOverResult breakPoint(long startPC, long destPC, int creditsLeft)
     {
         long nextPC = startPC;
         StepOverResult res = null;
+        boolean debugFinished = false;
         int sumCycles = 0;
 
-        if (startPC == destPC) {
-            res = stepOver(nextPC,540);
+        if (startPC == destPC)
+        {
+            res = stepOver(nextPC, creditsLeft);
+
+            if (res.isFailed()) {return StepOverResult.FAILED;}
+
             nextPC = res.nextPC();
             sumCycles += res.cycles();
+            creditsLeft -= res.cycles();
         }
 
         while ((nextPC != destPC) && (nextPC != program.getExpandedInstructions().size()))
         {
-            res = stepOver(nextPC, 5050);
+            res = stepOver(nextPC, creditsLeft);
+
+            if (res.isFailed()) {return StepOverResult.FAILED;}
+
             nextPC = res.nextPC();
             sumCycles += res.cycles();
-
+            creditsLeft -= res.cycles();
         }
+
         if (nextPC >= program.getExpandedInstructions().size())
         {
+            debugFinished = true;
+
+
             program.getHistory().addExecutionStatistics(
                     statePreDebug.getDegree(),
                     context.getVarValue(Variable.OUTPUT),
@@ -182,23 +193,32 @@ public class Executer
                     getAllVarsInRun(),
                     statePreDebug.getCycle());
         }
-        StepOverResult res2 = new StepOverResult(
+
+        return new StepOverResult(
                 sumCycles,
-                res.changedVars(),
-                res.nextPC(),
-                true);
-        return res2;
+                res != null ? res.changedVars() : List.of(),
+                nextPC,
+                true,
+                debugFinished);
     }
 
     public StepOverResult stepOver(long PC, int creditsLeft)
     {
+        boolean debugFinished = false;
+
         Instruction currentInstruction = program.getExpandedInstructions().get((int) PC);
 
         List<Variable> temp = currentInstruction.getChangedVariables();
         long nextPC = this.SingleStepRun(PC, creditsLeft);
+
+        if (nextPC < 0) {return StepOverResult.FAILED;}
+
         statePreDebug.increaseCyclesByNumber(currentInstruction.getCycles());
         if (nextPC >= program.getExpandedInstructions().size())
         {
+            debugFinished = true;
+
+
             program.getHistory().addExecutionStatistics(
                     statePreDebug.getDegree(),
                     context.getVarValue(Variable.OUTPUT),
@@ -211,7 +231,8 @@ public class Executer
                 currentInstruction.getCycles(),
                 Convertor.varsToDTOList(temp, context),
                 nextPC,
-                true);
+                true,
+                debugFinished);
     }
 
     private List<VariableDTO> getAllVarsInRun()

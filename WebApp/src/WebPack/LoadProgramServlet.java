@@ -48,9 +48,7 @@ public class LoadProgramServlet extends BaseServlet
             Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
         }
 
-/*
-        EngineFacade facade = requireFacade(request, response);
-*/
+        //EngineFacade facade = requireFacade(request, response);
         EngineFacade facade = new EngineFacade();
         try {
             LoadResultDTO res = facade.loadFromXML(tempFile.toFile());

@@ -1,8 +1,11 @@
 package WebPack;
 
 import Engine.EngineFacade;
+import Engine.Programs.Function;
+import Engine.Programs.Program;
 import Out.ExecuteResultDTO;
 import Out.StepOverResult;
+import Server_UTILS.ProgramHolderWrapper;
 import Server_UTILS.UserData;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -60,8 +63,23 @@ public class StepOverServlet extends BaseServlet
         }
         else
         {
+            @SuppressWarnings("unchecked")
+            ConcurrentMap<String, ProgramHolderWrapper> allPrograms =
+                    (ConcurrentMap<String, ProgramHolderWrapper>) getServletContext().getAttribute("ALL_PROGRAMS");
+
+            Program p = facade.getProgram();
+
+            if (result.isDebugCompleted() && p != null && !(p instanceof Function))
+            {
+                thisUser.incrementExecutionCount();
+                ProgramHolderWrapper thisProgram = allPrograms.get(p.getName());
+                thisProgram.IncreaseExecutions();
+                thisProgram.addTotalCreditCost(result.cycles() + archCost);
+
+            }
             thisUser.useCredits(result.cycles());
             response.getWriter().println(GSON.toJson(result));
+
         }
     }
 }

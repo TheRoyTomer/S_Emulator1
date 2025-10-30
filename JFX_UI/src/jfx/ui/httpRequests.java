@@ -302,13 +302,14 @@ public class httpRequests
     }
 
 
-    public void httpBreakPoint(long startPC,  long destPC)
+    public void httpBreakPoint(long startPC,  long destPC, int architecture)
     {
-        HttpUrl url = Objects.requireNonNull(HttpUrl.parse(SERVER_URL + "/breakPoint"))
-                .newBuilder()
+        HttpUrl url = HttpUrl.parse(SERVER_URL + "/breakPoint").newBuilder()
                 .addQueryParameter("startPC", String.valueOf(startPC))
-                .addQueryParameter("destPC", String.valueOf(destPC)).build();
-
+                .addQueryParameter("destPC", String.valueOf(destPC))
+                .addQueryParameter("architecture", String.valueOf(architecture))
+                .addQueryParameter("isFirstStep", String.valueOf(mainController.getIsIsFirstStepInDebugPropertyValue()))
+                .build();
         RequestBody body = RequestBody.create(new byte[0]);
         Request request = new Request.Builder()
                 .url(url)
@@ -334,7 +335,12 @@ public class httpRequests
 
                     try {
                         StepOverResult res = GSON.fromJson(json, StepOverResult.class);
-                        Platform.runLater(() -> mainController.postBreakPointAction(res));
+                        Platform.runLater(() -> {
+                            mainController.postBreakPointAction(res);
+
+
+
+                        });
 
                     } catch (Exception parseEx)
                     {
@@ -342,13 +348,19 @@ public class httpRequests
                         Platform.runLater(() -> UTILS.showError(msg));
                     }
                 } finally {
+                    mainController.setIsIsFirstStepInDebugPropertyValue(false);
                     response.close();
                 }
             }
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e)
             {
-                Platform.runLater(() -> UTILS.showError("Failed to BreakPoint: " + e.getMessage()));
+                Platform.runLater(() -> {
+                    UTILS.showError("Failed to BreakPoint: " + e.getMessage());
+                    mainController.setIsIsFirstStepInDebugPropertyValue(false);
+
+
+                });
             }
         });
     }

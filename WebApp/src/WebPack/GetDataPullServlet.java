@@ -62,19 +62,11 @@ public class GetDataPullServlet extends BaseServlet
         List<ProgramInfoDTO> programDTOs = new ArrayList<>();
         if (allPrograms != null)
         {
-            System.out.println("=== GetDataPullServlet: Converting Programs to DTOs ===");
-            System.out.println("Total programs in map: " + allPrograms.size());
-            allPrograms.forEach((key, wrapper) -> {
-                System.out.println("  Map Key: " + key + " | Program Name: " + wrapper.getProgram().getName());
-            });
-
             allPrograms.values().forEach(wrapper -> {
                 ProgramInfoDTO dto = wrapper.convertToProgramInfoDTO();
                 programDTOs.add(dto);
-                System.out.println("  Added DTO: " + dto.getName());
             });
 
-            System.out.println("Total DTOs created: " + programDTOs.size());
             programDTOs.forEach(dto -> System.out.println("  Final DTO: " + dto.getName()));
         }
 
@@ -101,8 +93,6 @@ public class GetDataPullServlet extends BaseServlet
 
         // Log the JSON before sending
         String jsonResponse = GSON.toJson(updateData);
-        System.out.println("=== GetDataPullServlet: JSON Response ===");
-        System.out.println(jsonResponse);
 
         // Send response
         response.setStatus(HttpServletResponse.SC_OK);

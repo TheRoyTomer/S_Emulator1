@@ -39,7 +39,6 @@ public class Loader
 
     public void loadFromReader(XML_Reader reader)
     {
-        Program.clearNameToFuncMap();
         context.clearMaps();
         destProgram.setName(reader.getName());
         destProgram.setFunctions(convertToFunctionsList(reader.getFunctions()));

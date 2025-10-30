@@ -18,23 +18,8 @@ import static Server_UTILS.ServerConstants.GSON;
 @WebServlet(name = "ChangeSelectedProgramServlet", urlPatterns = {"/changeSelectedProgram"})
 public class ChangeSelectedProgramServlet extends BaseServlet
 {
-  /*  @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
-    {
-
-        response.setContentType("application/json;charset=UTF-8");
-        String programName = request.getParameter("Name");
-        EngineFacade facade = requireFacade(request, response);
-        if (facade == null) {
-            return;
-        }
-        ViewResultDTO result = facade.changeSelectedProgram(programName);
-        response.getWriter().println(GSON.toJson(result));
-    }*/
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
-
         EngineFacade facade = requireFacade(request, response);
         if (facade == null) return;
 

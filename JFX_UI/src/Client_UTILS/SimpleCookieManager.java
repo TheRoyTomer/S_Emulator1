@@ -24,7 +24,8 @@ public class SimpleCookieManager implements CookieJar {
                 cookiesPerDomain = new ArrayList<>(cookies.get(host).values());
             }
         }
-        System.out.println(" Total of " + cookiesPerDomain.size() + " cookie(s) will be loaded !");
+        //Todo: remove the // so it will printed
+        //System.out.println(" Total of " + cookiesPerDomain.size() + " cookie(s) will be loaded !");
         return cookiesPerDomain;
     }
 
@@ -37,7 +38,8 @@ public class SimpleCookieManager implements CookieJar {
                     .stream()
                     .filter(cookie -> !cookiesMap.containsKey(cookie.name()))  // I have the freedom to choose not to accept changes in existing cookie
                     .forEach(cookie -> {
-                        System.out.println(CACHE_MANAGER_STORE_PREFIX + "Storing cookie [" + cookie.name() + "] = [" + cookie.value() + "]");
+                        //Todo: remove the // so it will printed
+                        //System.out.println(CACHE_MANAGER_STORE_PREFIX + "Storing cookie [" + cookie.name() + "] = [" + cookie.value() + "]");
                         cookiesMap.put(cookie.name(), cookie);
                     });
         }

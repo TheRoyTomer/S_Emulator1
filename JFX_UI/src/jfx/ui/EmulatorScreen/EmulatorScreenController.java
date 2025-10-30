@@ -203,14 +203,6 @@ public class EmulatorScreenController
     }
 
 
-    public void changeViewedProgram(String viewedProgramName)
-    {
-        fileLoadedProperty.set(true);
-        currentDegreeProperty.set(0);
-        requests.httpChangeSelectedProgram(viewedProgramName);
-    }
-
-
     public IntegerProperty getCurrentDegreeProperty()
     {
         return currentDegreeProperty;
@@ -369,6 +361,9 @@ public class EmulatorScreenController
             handleStop();
             newRunStartedProperty.set(false);
             debugModeProperty.set(false);
+            cyclesProperty.setValue(0);
+            this.nextPC = 0;
+            return;
         }
         cyclesProperty.setValue(cyclesProperty.get() + res.cycles());
         this.nextPC = res.nextPC();
@@ -416,14 +411,25 @@ public class EmulatorScreenController
         viewCompController.refreshInstructionsTable();
     }
 
-    public void handleBreakPoint()
+    public void handleBreakPoint(int architecture)
     {
         long startFrom = this.nextPC;
-        requests.httpBreakPoint(startFrom, (long) currentBreakpoint);
+        requests.httpBreakPoint(startFrom, (long) currentBreakpoint, architecture);
     }
 
     public void postBreakPointAction(StepOverResult res)
     {
+        if (res.isFailed())
+        {
+            UTILS.showError("Breakpoint stopped: Insufficient credits.\nPlease charge your account to continue.");
+            handleStop();
+            newRunStartedProperty.set(false);
+            debugModeProperty.set(false);
+            cyclesProperty.setValue(0);
+            this.nextPC = 0;
+            return;
+        }
+
         if (res.nextPC() < viewCompController.getInstructionTableSize()) {
             currPC_Property.set(res.nextPC() - 1);
             this.nextPC = res.nextPC();

@@ -132,17 +132,8 @@ public class DashboardScreenCompController
                 }
 
                 String json = response.body() != null ? response.body().string() : "";
-                System.out.println("=== Client: Received JSON from server ===");
-                System.out.println(json);
 
                 UpdateDataDTO data = ClientConstants.GSON.fromJson(json, UpdateDataDTO.class);
-
-                System.out.println("=== Client: Parsed UpdateDataDTO ===");
-                System.out.println("Programs count: " + (data.getAllPrograms() != null ? data.getAllPrograms().size() : 0));
-                if (data.getAllPrograms() != null) {
-                    data.getAllPrograms().forEach(p -> System.out.println("  Program: " + p.getName()));
-                }
-
                 Platform.runLater(() -> {updateDashboardUI(data);});
             }
 
@@ -156,12 +147,6 @@ public class DashboardScreenCompController
 
     private void updateDashboardUI(UpdateDataDTO data)
     {
-        System.out.println("=== Client: updateDashboardUI called ===");
-        System.out.println("Programs to update: " + (data.getAllPrograms() != null ? data.getAllPrograms().size() : 0));
-        if (data.getAllPrograms() != null) {
-            data.getAllPrograms().forEach(p -> System.out.println("  Will update with: " + p.getName()));
-        }
-
         if (availableProgsAndFuncsCompController != null)
         {
             availableProgsAndFuncsCompController.UpdateTables(

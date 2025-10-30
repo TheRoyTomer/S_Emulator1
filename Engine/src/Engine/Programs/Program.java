@@ -34,6 +34,28 @@ public class Program
         this.context = new Context();
     }
 
+    @Override
+    public String toString()
+    {
+        StringBuilder str = new StringBuilder();
+        if (this.functions != null)
+        {
+            for (Function f : this.functions)
+            {
+                str.append("   ").append(f.toString()).append("\n");
+            }
+        }
+
+        String contextIsNull = this.getContext() == null ? "null" : "NotNull";
+
+
+        return "Program{" +
+                "\nname= '" + name + '\'' +
+                "\ncontext= " + contextIsNull +
+                "functions= \n" + functions +
+                '}';
+    }
+
     public Program duplicate()
     {
         Program newP = new Program();

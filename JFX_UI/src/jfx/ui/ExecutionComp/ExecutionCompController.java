@@ -157,8 +157,7 @@ public class ExecutionCompController {
     private void onBreakpointPress(ActionEvent e)
     {
         mainController.addBreakpointFromSelectedRow();
-        mainController.handleBreakPoint();
-
+        mainController.handleBreakPoint(getSelectedArchitecture());
     }
 
     public List<Long> handleInputs()

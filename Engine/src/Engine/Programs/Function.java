@@ -17,6 +17,13 @@ public class Function extends Program
         this.userString = userString;
     }
 
+    @Override
+    public String toString()
+    {
+        String str = this.getContext() == null ? "null" : "NotNull";
+        return "Function {" + this.getName() + " Context :" + str + "}";
+    }
+
     public Function duplicateFunction()
     {
         Function newF = new Function(this.userString);
