@@ -8,6 +8,7 @@ import Out.FunctionSelectorChoiseDTO;
 import Out.StepOverResult;
 import Out.ViewResultDTO;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -57,6 +58,7 @@ public class EmulatorScreenController
     private final BooleanProperty fileLoadedProperty = new SimpleBooleanProperty(false);
     private final BooleanProperty newRunStartedProperty = new SimpleBooleanProperty(false);
     private final BooleanProperty debugModeProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty isArchFitForExecute = new SimpleBooleanProperty(false);
 
     private final IntegerProperty currentDegreeProperty = new SimpleIntegerProperty(0);
     private final IntegerProperty maxDegreeProperty = new SimpleIntegerProperty(0);
@@ -65,13 +67,15 @@ public class EmulatorScreenController
     private long nextPC = 0;
     private Integer currentBreakpoint = null;
 
+    private BooleanProperty isFirstStepInDebugProperty = new SimpleBooleanProperty(false);
+
+    private MainCompController mainCompController;
+
+
     public MainCompController getMainCompController()
     {
         return mainCompController;
     }
-
-    private MainCompController mainCompController;
-
 
 
     @FXML
@@ -85,6 +89,11 @@ public class EmulatorScreenController
             viewCompController.bindDegrees(currentDegreeProperty, maxDegreeProperty);
             executionCompController.bindCycles(cyclesProperty);
 
+            // Connect architecture selection to summary label
+            executionCompController.getSelectedArchitectureProperty().addListener((obs, oldVal, newVal) -> {
+                viewCompController.updateSummaryLabel(newVal.intValue());
+            });
+
             currentDegreeProperty.addListener((obs, oldVal, newVal) -> {
                 onDegreeChange();
             });
@@ -95,15 +104,36 @@ public class EmulatorScreenController
                     cyclesProperty.set(0);
                 }
             });
+            setupIsArchFitForExecuteBinding();
+
         }
-/*
-        startPolling();
-*/
+
     }
 
     public void setMainCompController(MainCompController mainCompController)
     {
         this.mainCompController = mainCompController;
+    }
+
+    public boolean getIsIsFirstStepInDebugPropertyValue()
+    {
+        return isFirstStepInDebugProperty.getValue();
+    }
+
+    public void setIsIsFirstStepInDebugPropertyValue(boolean value)
+    {
+        isFirstStepInDebugProperty.setValue(value);
+    }
+
+
+    public BooleanProperty isFirstStepInDebugPropertyProperty()
+    {
+        return isFirstStepInDebugProperty;
+    }
+
+    public BooleanProperty getIsArchFitForExecute()
+    {
+        return isArchFitForExecute;
     }
 
     public void preDisplaySelectedProgram()
@@ -127,6 +157,13 @@ public class EmulatorScreenController
         currentBreakpoint = null;
     }
 */
+
+    private void setupIsArchFitForExecuteBinding()
+    {
+        isArchFitForExecute.bind(Bindings.createBooleanBinding(() -> {
+            return viewCompController.getMaxArchitectureValue() <= executionCompController.getSelectedArchitecture();
+        }, viewCompController.getMaxInstArchProperty(), executionCompController.getSelectedArchitectureProperty()));
+    }
 
 
     public BooleanProperty getFileLoadedProperty()
@@ -172,19 +209,6 @@ public class EmulatorScreenController
         currentDegreeProperty.set(0);
         requests.httpChangeSelectedProgram(viewedProgramName);
     }
-
-   /* public void postChangeSelectedProgram(ViewResultDTO res)
-    {
-        maxDegreeProperty.set(requests.httpGetMaxDegree());
-        InstructionsUpdate(res);
-        requests.httpGetHistory(history ->
-        {
-            historyCompController.updateHistoryTree(history);
-            executionCompController.resetInputFieldsState();
-            currentBreakpoint = null;
-        });
-
-    }*/
 
 
     public IntegerProperty getCurrentDegreeProperty()
@@ -263,13 +287,21 @@ public class EmulatorScreenController
 
     }
 
-    public void onExecution(List<Long> inputs)
+    public void onExecution(List<Long> inputs, int architecture)
     {
-        requests.httpExecuteProgram(currentDegreeProperty.getValue(), inputs);
+        requests.httpExecuteProgram(currentDegreeProperty.getValue(), inputs, architecture);
     }
 
     public void handleExecuteRes(ExecuteResultDTO res)
     {
+        if (res.isFailed())
+        {
+            UTILS.showError("Execution stopped: Insufficient credits. Please charge your account to continue.");
+            handleStop();
+            newRunStartedProperty.set(false);
+            debugModeProperty.set(false);
+
+        }
         cyclesProperty.setValue(res.cycles());
         executionCompController.updateVarTable(res.usedVarsByOrder());
         requests.httpGetHistory(history -> {
@@ -281,24 +313,39 @@ public class EmulatorScreenController
 
     }
 
-    public void handleResume()
+    public void handleResume(int architecture)
     {
-        requests.httpResume((int) nextPC);
+        requests.httpResume((int) nextPC, architecture);
     }
 
     public void postResume(ExecuteResultDTO res)
     {
-        handleExecuteRes(res);
+        if (res.isFailed())
+        {
+            UTILS.showError("Resume stopped: Insufficient credits.\nPlease charge your account to continue.");
+            handleStop();
+            newRunStartedProperty.set(false);
+            debugModeProperty.set(false);
+        }
+        this.setIsIsFirstStepInDebugPropertyValue(false);
         resetCurrAndNextPC();
         viewCompController.refreshInstructionsTable();
         executionCompController.refreshAndClear();
+        cyclesProperty.setValue(res.cycles());
+        executionCompController.updateVarTable(res.usedVarsByOrder());
+        requests.httpGetHistory(history -> {
+            //historyCompController.updateHistoryTree(history);
+            newRunStartedProperty.set(false);
+            debugModeProperty.set(false);
+            requests.httpViewExpandedProgram(currentDegreeProperty.get());
+        });
     }
 
-    public void handleStepOver()
+    public void handleStepOver(int architecture)
     {
         currPC_Property.set(this.nextPC);
         if (currPC_Property.get() < viewCompController.getInstructionTableSize()) {
-            requests.httpStepOver(currPC_Property.get());
+            requests.httpStepOver(currPC_Property.get(), architecture);
 
         } else {
             resetCurrAndNextPC();
@@ -316,6 +363,13 @@ public class EmulatorScreenController
 
     public void postStepOverAction(StepOverResult res)
     {
+        if (res.isFailed())
+        {
+            UTILS.showError("Step over stopped: Insufficient credits.\nPlease charge your account to continue.");
+            handleStop();
+            newRunStartedProperty.set(false);
+            debugModeProperty.set(false);
+        }
         cyclesProperty.setValue(cyclesProperty.get() + res.cycles());
         this.nextPC = res.nextPC();
         executionCompController.updateChangedVariables(res.changedVars());
@@ -329,13 +383,17 @@ public class EmulatorScreenController
         setNewRunStarted(false);
         resetCyclesProperty();
         viewCompController.refreshInstructionsTable();
+        executionCompController.postHandleStop();
     }
 
     public void toggleBreakpointAtLine(int lineIndex)
     {
-        if (currentBreakpoint != null && currentBreakpoint == lineIndex) {
+        if (currentBreakpoint != null && currentBreakpoint == lineIndex)
+        {
             currentBreakpoint = null;
-        } else {
+        }
+        else
+        {
             currentBreakpoint = lineIndex;
         }
 
@@ -344,9 +402,7 @@ public class EmulatorScreenController
 
     public void addBreakpointFromSelectedRow()
     {
-        if (currentBreakpoint == null) {
-            UTILS.showError("Please select an instruction row first!");
-        }
+        if (currentBreakpoint == null) {UTILS.showError("Please select an instruction row first!");}
     }
 
     public boolean hasBreakpoint(int lineIndex)
@@ -406,9 +462,9 @@ public class EmulatorScreenController
     }
 
 
- /*   public void updateProgramComboBox(List<FunctionSelectorChoiseDTO> programs)
+    public ExecutionCompController getExecutionCompController()
     {
-        viewCompController.updateProgramSelectorCombo(programs);
-    }*/
+        return executionCompController;
+    }
 }
 

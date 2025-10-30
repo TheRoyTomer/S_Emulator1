@@ -78,7 +78,11 @@ public class LoginCompController
                                 // Update username in MainComp
                                 if (mainCompController != null) {
                                     mainCompController.setUsername(username);
-                                    // Load Dashboard screen
+
+                                    // Reset credits to 0 for new login
+                                    mainCompController.setCredits(0);
+
+                                    // Load Dashboard screen (will pull credits from server)
                                     mainCompController.loadDashboardScreen();
                                 }
                             } catch (Exception e) {
@@ -87,6 +91,7 @@ public class LoginCompController
                             }
                         });
                     }
+
                     else {
                         String errMsg = extractMessage(responseBody);
                         int code = res.code();
@@ -113,7 +118,8 @@ public class LoginCompController
         new Thread(task, "login-call").start();
     }
 
-    private String extractMessage(String json) {
+    private String extractMessage(String json)
+    {
         try {
             JsonObject obj = GSON.fromJson(json, JsonObject.class);
             if (obj != null && obj.has("message")) {

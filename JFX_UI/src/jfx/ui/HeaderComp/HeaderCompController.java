@@ -16,6 +16,7 @@ import jfx.ui.EmulatorScreen.EmulatorScreenController;
 import jfx.ui.UTILS;
 
 import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -182,13 +183,100 @@ public class HeaderCompController {
         });
     }
 
-    private void showProgress() {
+    private void showProgress()
+    {
         javafx.application.Platform.runLater(() -> {
             progressBar.setVisible(true);
             progressLabel.setVisible(true);
         });
     }
     @FXML
-    private void onChargeCreditsPress() {//Todo: implement
+    private void onChargeCreditsPress()
+    {
+        String text = creditsField.getText();
+        // Clear field immediately
+        creditsField.clear();
+
+        // Validate input
+        if (text == null || text.trim().isEmpty())
+        {
+            UTILS.showError("Credits amount is required");
+            return;
         }
+
+        int creditsToAdd;
+        try {
+            creditsToAdd = Integer.parseInt(text.trim());
+        } catch (NumberFormatException e) {
+            UTILS.showError("Credits amount must be a valid integer number");
+            return;
+        }
+
+        if (creditsToAdd <= 0)
+        {
+            UTILS.showError("Credits amount must be a positive integer number");
+            return;
+        }
+
+        // Send request to server
+        chargeCredits(creditsToAdd);
+    }
+
+    private void chargeCredits(int amount)
+    {
+        String url = ClientConstants.SERVER_URL + "/chargeCredits";
+
+        RequestBody body = RequestBody.create(
+                "{\"amount\":" + amount + "}",
+                MediaType.parse("application/json")
+        );
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .addHeader("Accept", "application/json")
+                .build();
+
+        ClientConstants.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String json = response.body() != null ? response.body().string() : "";
+
+                if (!response.isSuccessful())
+                {
+                    javafx.application.Platform.runLater(() ->
+                            UTILS.showError("Failed to charge credits: HTTP " + response.code())
+                    );
+                    return;
+                }
+
+                try {
+                    com.google.gson.JsonObject result = ClientConstants.GSON.fromJson(json, com.google.gson.JsonObject.class);
+                    int newTotal = result.get("totalCredits").getAsInt();
+
+                    javafx.application.Platform.runLater(() -> {
+                        // Update MainComp credits
+                        mainController.getMainCompController().setCredits(newTotal);
+
+                        // Clear field and show success
+                        creditsField.clear();
+                        UTILS.showInfo("Successfully charged " + amount + " credits!\nNew total: " + newTotal);
+                    });
+
+                } catch (Exception e) {
+                    javafx.application.Platform.runLater(() ->
+                            UTILS.showError("Failed to parse response: " + e.getMessage())
+                    );
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e)
+            {
+                javafx.application.Platform.runLater(() ->
+                        UTILS.showError("Network error: " + e.getMessage())
+                );
+            }
+        });
+    }
 }

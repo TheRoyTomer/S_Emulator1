@@ -70,7 +70,23 @@ public class FunctionsInfoTableViewController {
     }
 
     public void setRows(List<FunctionInfoDTO> list) {
+        // Save the currently selected item BEFORE updating
+        FunctionInfoDTO selectedItem = table.getSelectionModel().getSelectedItem();
+        String selectedFunctionName = selectedItem != null ? selectedItem.getName() : null;
+
+        // Update the table items
         table.setItems(FXCollections.observableArrayList(list));
+
+        table.refresh();
+        // Restore selection if the same function still exists in the new list
+        if (selectedFunctionName != null) {
+            for (int i = 0; i < table.getItems().size(); i++) {
+                if (table.getItems().get(i).getName().equals(selectedFunctionName)) {
+                    table.getSelectionModel().select(i);
+                    break;
+                }
+            }
+        }
     }
 
     private void handleFunctionSelection(FunctionInfoDTO function) {

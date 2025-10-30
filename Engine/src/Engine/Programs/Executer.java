@@ -52,13 +52,18 @@ public class Executer
         return getAllVarsInRun();
     }
 
-    public ExecuteResultDTO execute(int degree, List<Long> inputs)
+    public ExecuteResultDTO execute(int degree, List<Long> inputs, int credits)
     {
         context.resetMapsState();
         context.insertInputsToMap(inputs);
         expand(degree);
         context.updateIndexLabels(program.getExpandedInstructions());
-        int totalCycles = runProgram(0);
+        int totalCycles = runProgram(0, credits);
+        //-1 means no credits left mid run
+        if (totalCycles == -1)
+        {
+            return ExecuteResultDTO.FAILED;
+        }
         //Inserts new statistic to the history.
         List<VariableDTO> varsInList = getAllVarsInRun();
         program.getHistory().addExecutionStatistics(
@@ -76,9 +81,19 @@ public class Executer
                 totalCycles);
     }
 
-    public ExecuteResultDTO resume(long PCVal)
+    public saveStatePreDebug getStatePreDebug()
     {
-        int cycles = runProgram(PCVal) + statePreDebug.getCycle();
+        return statePreDebug;
+    }
+
+    public ExecuteResultDTO resume(long PCVal, int creditsLeft)
+    {
+
+        int cyclesSoFar = runProgram(PCVal, creditsLeft);
+
+        if (cyclesSoFar == -1) {return ExecuteResultDTO.FAILED;}
+
+        int cycles = cyclesSoFar += statePreDebug.getCycle();
 
         List<VariableDTO> varsInList = getAllVarsInRun();
         //Inserts new statistic to the history.
@@ -100,23 +115,34 @@ public class Executer
 
     }
 
-    public int runProgram(long PCVal)
+    public int runProgram(long PCVal, int credits)
     {
         List<Instruction> instructions = program.getExpandedInstructions();
         int sumCycles = 0;
         for (long PC = PCVal; PC < instructions.size(); )
         {
+            //Todo: delete
+            System.out.println("Credits: " + credits + " | Cycles: " + sumCycles);
             long prevPC = PC;
-            PC = this.SingleStepRun(PC);
-            sumCycles += instructions.get((int) prevPC).getCycles();
+            PC = this.SingleStepRun(PC, credits);
+            if (PC < 0)
+            {
+                return -1;
+            }
+            int instCycles = instructions.get((int) prevPC).getCycles();
+            sumCycles += instCycles;
+            credits -= instCycles;
         }
         return sumCycles;
     }
 
-    public long SingleStepRun(long currPC)
+    public long SingleStepRun(long currPC, int creditsLeft)
     {
         Instruction currentInstruction = program.getExpandedInstructions().get((int) currPC);
+
         LabelInterface label = currentInstruction.execute();
+
+        if (currentInstruction.getCycles() > creditsLeft) {return -1;}
         if (label == FixedLabels.EMPTY)
         {
             return currPC + 1;
@@ -135,14 +161,14 @@ public class Executer
         int sumCycles = 0;
 
         if (startPC == destPC) {
-            res = stepOver(nextPC);
+            res = stepOver(nextPC,540);
             nextPC = res.nextPC();
             sumCycles += res.cycles();
         }
 
         while ((nextPC != destPC) && (nextPC != program.getExpandedInstructions().size()))
         {
-            res = stepOver(nextPC);
+            res = stepOver(nextPC, 5050);
             nextPC = res.nextPC();
             sumCycles += res.cycles();
 
@@ -159,16 +185,17 @@ public class Executer
         StepOverResult res2 = new StepOverResult(
                 sumCycles,
                 res.changedVars(),
-                res.nextPC());
+                res.nextPC(),
+                true);
         return res2;
     }
 
-    public StepOverResult stepOver(long PC)
+    public StepOverResult stepOver(long PC, int creditsLeft)
     {
         Instruction currentInstruction = program.getExpandedInstructions().get((int) PC);
 
         List<Variable> temp = currentInstruction.getChangedVariables();
-        long nextPC = this.SingleStepRun(PC);
+        long nextPC = this.SingleStepRun(PC, creditsLeft);
         statePreDebug.increaseCyclesByNumber(currentInstruction.getCycles());
         if (nextPC >= program.getExpandedInstructions().size())
         {
@@ -183,7 +210,8 @@ public class Executer
         return new StepOverResult(
                 currentInstruction.getCycles(),
                 Convertor.varsToDTOList(temp, context),
-                nextPC);
+                nextPC,
+                true);
     }
 
     private List<VariableDTO> getAllVarsInRun()

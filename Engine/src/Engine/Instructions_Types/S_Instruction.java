@@ -1,6 +1,7 @@
 
 package Engine.Instructions_Types;
 
+import Engine.ArchitectureTypes.ArchitectureTypeEnum;
 import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
 import Engine.Vars.Variable;

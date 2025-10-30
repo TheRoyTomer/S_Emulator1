@@ -10,6 +10,7 @@ public record InstructionDTO(
         String name,
         InstructionDTO holder,
         int cycles,
+        int archType,
         Optional<VariableDTO> arg,
         Optional<Long> constant,
         Optional<String> labelToJump,
@@ -25,11 +26,13 @@ public record InstructionDTO(
             String name,
             InstructionDTO holder,
             int cycles,
+            int archType,
             Optional<VariableDTO> arg,
             Optional<Long> constant,
             Optional<String> labelToJump,
             Optional<String> funcName,
-            Optional<String> funcArgs) {
+            Optional<String> funcArgs)
+    {
 
         this.lineIndex = lineIndex;
         this.isSynthetic = isSynthetic;
@@ -38,6 +41,7 @@ public record InstructionDTO(
         this.name = name;
         this.holder = holder;
         this.cycles = cycles;
+        this.archType = archType;
 
         this.arg = arg == null ? Optional.empty() : arg;
         this.constant = constant == null ? Optional.empty() : constant;
@@ -117,6 +121,23 @@ public record InstructionDTO(
             if (result.equals("5")) result = result + " + X";
         }
         return result;
+    }
+
+    public boolean isArchitectureContains(int architectureTypeSerial)
+    {
+        return this.archType <= architectureTypeSerial;
+    }
+
+    public String getArchitectureStringRepresentation()
+    {
+       return switch (this.archType)
+        {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            default -> "";
+        };
     }
 
 

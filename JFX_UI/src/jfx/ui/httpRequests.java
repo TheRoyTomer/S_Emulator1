@@ -130,12 +130,13 @@ public class httpRequests
         });
     }
 
-    public void httpExecuteProgram(int degree, List<Long> inputsVal)
+    public void httpExecuteProgram(int degree, List<Long> inputsVal, int architecture)
     {
 
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(SERVER_URL + "/executeProgram"))
                 .newBuilder()
-                .addQueryParameter("degree", String.valueOf(degree));
+                .addQueryParameter("degree", String.valueOf(degree))
+                .addQueryParameter("architecture", String.valueOf(architecture));
 
         for (Long inputVal : inputsVal) {urlBuilder.addQueryParameter("inputs", String.valueOf(inputVal));}
 
@@ -165,7 +166,9 @@ public class httpRequests
 
                     try {
                         ExecuteResultDTO res = GSON.fromJson(json, ExecuteResultDTO.class);
-                        Platform.runLater(() -> mainController.handleExecuteRes(res));
+                        Platform.runLater(() -> {
+                            mainController.handleExecuteRes(res);
+                });
 
                     } catch (Exception parseEx)
                     {
@@ -185,12 +188,15 @@ public class httpRequests
     }
 
 
-    public void httpStepOver(long pc)
+    public void httpStepOver(long pc, int architecture)
     {
 
         HttpUrl url = Objects.requireNonNull(HttpUrl.parse(SERVER_URL + "/stepOver"))
                 .newBuilder()
-                .addQueryParameter("PC", String.valueOf(pc)).build();
+                .addQueryParameter("PC", String.valueOf(pc))
+                .addQueryParameter("architecture", String.valueOf(architecture))
+                .addQueryParameter("isFirstStep", String.valueOf(mainController.getIsIsFirstStepInDebugPropertyValue()))
+                .build();
 
 
         Request request = new Request.Builder()
@@ -226,12 +232,17 @@ public class httpRequests
                     }
                 } finally {
                     response.close();
+                    mainController.setIsIsFirstStepInDebugPropertyValue(false);
+
                 }
             }
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e)
             {
-                Platform.runLater(() -> UTILS.showError("Failed to step Over: " + e.getMessage()));
+                Platform.runLater(() -> {
+                    UTILS.showError("Failed to step Over: " + e.getMessage());
+                    mainController.setIsIsFirstStepInDebugPropertyValue(false);
+                });
             }
         });
     }
@@ -344,11 +355,14 @@ public class httpRequests
 
 
 
-    public void httpResume(int pc)
+    public void httpResume(int pc, int architecture)
     {
         HttpUrl url = Objects.requireNonNull(HttpUrl.parse(SERVER_URL + "/resumeDebug"))
                 .newBuilder()
-                .addQueryParameter("PC", String.valueOf(pc)).build();
+                .addQueryParameter("PC", String.valueOf(pc))
+                .addQueryParameter("architecture", String.valueOf(architecture))
+                .addQueryParameter("isFirstStep", String.valueOf(mainController.getIsIsFirstStepInDebugPropertyValue()))
+                .build();
 
         RequestBody body = RequestBody.create(new byte[0]);
         Request request = new Request.Builder()
@@ -393,58 +407,6 @@ public class httpRequests
             }
         });
     }
-
-
-
-   /* public void httpChangeSelectedProgram(String name)
-    {
-        HttpUrl url = Objects.requireNonNull(HttpUrl.parse(SERVER_URL + "/changeSelectedProgram"))
-                .newBuilder()
-                .addQueryParameter("Name", name).build();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .build();
-
-        HTTP_CLIENT.newCall(request).enqueue(new Callback()
-        {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
-            {
-
-                String json;
-                try {
-                    int code = response.code();
-                    json = (response.body() != null) ? response.body().string() : "";
-
-                    if (!response.isSuccessful()) {
-
-                        final String msg = "changeSelectedProgram failed: HTTP " + code;
-                        Platform.runLater(() -> UTILS.showError(msg));
-                        return;
-                    }
-
-                    try {
-                        ViewResultDTO res = GSON.fromJson(json, ViewResultDTO.class);
-                        Platform.runLater(() -> mainController.postChangeSelectedProgram(res));
-
-                    } catch (Exception parseEx) {
-                        final String msg = "changeSelectedProgram JSON parse error: " + parseEx.getMessage();
-                        Platform.runLater(() -> UTILS.showError(msg));
-                    }
-                } finally {
-                    response.close();
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e)
-            {
-                Platform.runLater(() -> UTILS.showError("Failed to changeSelectedProgram: " + e.getMessage()));
-            }
-        });
-    }*/
 
       public void httpChangeSelectedProgram(String name)
     {
@@ -585,23 +547,5 @@ public class httpRequests
     }
 
 
-
-    /*public void loadAvailablePrograms() {
-        String url = ClientConstants.SERVER_URL + "/getAllPrograms";
-        Request request = new Request.Builder().url(url).get().build();
-
-        try (Response response = ClientConstants.HTTP_CLIENT.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String body = response.body().string();
-                List<FunctionSelectorChoiseDTO> programs =
-                        ClientConstants.GSON.fromJson(body,
-                                new TypeToken<List<FunctionSelectorChoiseDTO>>(){}.getType());
-
-                Platform.runLater(() -> mainController.updateProgramComboBox(programs));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
 }

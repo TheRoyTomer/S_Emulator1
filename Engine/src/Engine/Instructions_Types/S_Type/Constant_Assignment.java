@@ -1,5 +1,6 @@
 package Engine.Instructions_Types.S_Type;
 
+import Engine.ArchitectureTypes.ArchitectureTypeEnum;
 import Engine.Instructions_Types.B_Type.Increase;
 import Engine.Instructions_Types.Instruction;
 import Engine.Instructions_Types.InstructionData;

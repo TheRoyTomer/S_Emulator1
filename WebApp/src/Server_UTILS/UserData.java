@@ -10,7 +10,8 @@ public class UserData {
     private int usedCredits;
     private int executionCount;
 
-    public UserData(String userName) {
+    public UserData(String userName)
+    {
         this.userName = userName;
         this.uploadedProgramCount = 0;
         this.uploadedFunctionCount = 0;
@@ -31,10 +32,49 @@ public class UserData {
     public void incrementProgramCount() { uploadedProgramCount++; }
     public void incrementFunctionCount() { uploadedFunctionCount++; }
     public void incrementExecutionCount() { executionCount++; }
-    public void useCredits(int amount)
+
+    //returns whether client have the amount of credits to use
+    public boolean useCredits(int amount)
     {
-        currentCredits -= amount;
-        usedCredits += amount;
+        if (this.currentCredits < amount)
+        {
+            this.usedCredits += this.currentCredits;
+            this.currentCredits = 0;
+            return false;
+        }
+        else
+        {
+            currentCredits -= amount;
+            usedCredits += amount;
+            return true;
+        }
+
+    }
+
+/*    //returns whether client finishes his credits
+    public boolean getArchitectureCost(int architecture)
+    {
+        int amount = switch (architecture)
+        {
+            case 1 -> 5;
+            case 2 -> 100;
+            case 3 -> 500;
+            case 4 -> 1000;
+            default -> 0;
+        };
+
+        return this.useCredits(amount);
+    }*/
+
+    public void chargeCredits(int amount)
+    {
+        currentCredits += amount;
+    }
+
+    public void takeAllCredits()
+    {
+        this.usedCredits += this.currentCredits;
+        this.currentCredits = 0;
     }
 
     // Convert to DTO
@@ -43,4 +83,6 @@ public class UserData {
         return new UserInfoDTO(userName, uploadedProgramCount, uploadedFunctionCount,
                 currentCredits, usedCredits, executionCount);
     }
+
+
 }

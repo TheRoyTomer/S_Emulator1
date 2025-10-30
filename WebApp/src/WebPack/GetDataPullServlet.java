@@ -27,6 +27,13 @@ public class GetDataPullServlet extends BaseServlet
     {
         response.setContentType("application/json; charset=UTF-8");
 
+        // Get username from session
+        String username = null;
+        jakarta.servlet.http.HttpSession session = request.getSession(false);
+        if (session != null) {
+            username = (String) session.getAttribute("username");
+        }
+
         // Get all programs from ServletContext
         @SuppressWarnings("unchecked")
         ConcurrentMap<String, ProgramHolderWrapper> allPrograms =
@@ -42,13 +49,33 @@ public class GetDataPullServlet extends BaseServlet
         ConcurrentMap<String, UserData> allUsers =
                 (ConcurrentMap<String, UserData>) getServletContext().getAttribute("USERS");
 
+        // Get current user's credits
+        int userCredits = 0;
+        if (username != null && allUsers != null)
+        {
+            UserData userData = allUsers.get(username);
+
+            if (userData != null) {userCredits = userData.getCurrentCredits();}
+        }
+
         // Convert programs to DTOs using convertToProgramInfoDTO
         List<ProgramInfoDTO> programDTOs = new ArrayList<>();
         if (allPrograms != null)
         {
-            allPrograms.values().forEach(wrapper -> {
-                programDTOs.add(wrapper.convertToProgramInfoDTO());
+            System.out.println("=== GetDataPullServlet: Converting Programs to DTOs ===");
+            System.out.println("Total programs in map: " + allPrograms.size());
+            allPrograms.forEach((key, wrapper) -> {
+                System.out.println("  Map Key: " + key + " | Program Name: " + wrapper.getProgram().getName());
             });
+
+            allPrograms.values().forEach(wrapper -> {
+                ProgramInfoDTO dto = wrapper.convertToProgramInfoDTO();
+                programDTOs.add(dto);
+                System.out.println("  Added DTO: " + dto.getName());
+            });
+
+            System.out.println("Total DTOs created: " + programDTOs.size());
+            programDTOs.forEach(dto -> System.out.println("  Final DTO: " + dto.getName()));
         }
 
         // Convert functions to DTOs using convertToProgramInfoDTO
@@ -69,11 +96,16 @@ public class GetDataPullServlet extends BaseServlet
             });
         }
 
-        // Create the response DTO
-        UpdateDataDTO updateData = new UpdateDataDTO(programDTOs, functionDTOs,  userDTOs);
+        // Create the response DTO with user credits
+        UpdateDataDTO updateData = new UpdateDataDTO(programDTOs, functionDTOs, userDTOs, userCredits);
+
+        // Log the JSON before sending
+        String jsonResponse = GSON.toJson(updateData);
+        System.out.println("=== GetDataPullServlet: JSON Response ===");
+        System.out.println(jsonResponse);
 
         // Send response
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(GSON.toJson(updateData));
+        response.getWriter().println(jsonResponse);
     }
 }

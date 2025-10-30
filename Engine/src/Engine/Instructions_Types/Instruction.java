@@ -1,5 +1,6 @@
 package Engine.Instructions_Types;
 
+import Engine.ArchitectureTypes.ArchitectureTypeEnum;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
 import Engine.Programs.Context;
@@ -28,6 +29,10 @@ public abstract class Instruction implements Calculable
         this.holder = holder;
     }
 
+    public ArchitectureTypeEnum getArchitecture()
+    {
+        return instructionData.getArchitectureType();
+    }
 
     @Override
     public abstract int calcMaxDegree();

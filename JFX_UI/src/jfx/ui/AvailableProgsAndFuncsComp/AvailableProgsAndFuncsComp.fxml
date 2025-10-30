@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.5" orientation="VERTICAL"
+<SplitPane dividerPositions="0.5" orientation="VERTICAL" minWidth="450.0" prefWidth="700.0"
            xmlns="http://javafx.com/javafx/24.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="jfx.ui.AvailableProgsAndFuncsComp.AvailableProgsAndFuncsCompController">
@@ -21,7 +21,8 @@
                 </padding>
                 <Label text="Available Programs" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
                 <Pane HBox.hgrow="ALWAYS"/>
-                <Button fx:id="executeProgramBtn" text="Execute Program" onAction="#onExecuteProgram"/>            </HBox>
+                <Button fx:id="executeProgramBtn" text="Execute Program" onAction="#onExecuteProgram"/>
+            </HBox>
             <fx:include fx:id="programsTable" source="../ProgramsInfoTableView/ProgramsInfoTableView.fxml"/>
         </VBox>
 

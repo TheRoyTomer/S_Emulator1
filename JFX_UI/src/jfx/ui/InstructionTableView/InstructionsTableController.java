@@ -33,6 +33,9 @@ public class InstructionsTableController {
 
     @FXML private TableColumn<InstructionDTO, String> cyclesCol;
 
+    @FXML private TableColumn<InstructionDTO, String> architectureCol;
+
+
 
     @FXML
     private void initialize()
@@ -69,6 +72,7 @@ public class InstructionsTableController {
         });
 
         indexCol.setCellValueFactory(cd -> new ReadOnlyObjectWrapper<>(cd.getValue().lineIndex()));
+        architectureCol.setCellValueFactory(cd -> new ReadOnlyStringWrapper(cd.getValue().getArchitectureStringRepresentation()));
         labelCol.setCellValueFactory(cd -> new ReadOnlyStringWrapper(cd.getValue().label()));
         cyclesCol.setCellValueFactory(cd -> new ReadOnlyObjectWrapper<>(cd.getValue().toStringCyclesByFuncName()));
         bsCol.setCellValueFactory(cd -> new ReadOnlyStringWrapper(cd.getValue().computeSynthetic()));

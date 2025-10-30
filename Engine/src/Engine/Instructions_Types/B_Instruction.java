@@ -1,5 +1,6 @@
 package Engine.Instructions_Types;
 
+import Engine.ArchitectureTypes.ArchitectureTypeEnum;
 import Engine.Labels.LabelInterface;
 import Engine.Programs.Context;
 import Engine.Vars.Variable;
@@ -10,7 +11,7 @@ public abstract class B_Instruction extends Instruction
 {
     public B_Instruction(InstructionData instructionData, Context context, S_Instruction holder, Variable var, LabelInterface label)
     {
-        super(instructionData, context,holder , var, label);
+        super(instructionData, context,holder, var, label);
         this.maxDegree = this.calcMaxDegree();
     }
 

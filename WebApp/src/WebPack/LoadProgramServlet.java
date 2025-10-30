@@ -48,10 +48,10 @@ public class LoadProgramServlet extends BaseServlet
             Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
         }
 
+/*
         EngineFacade facade = requireFacade(request, response);
-        if (facade == null) {
-            return;
-        }
+*/
+        EngineFacade facade = new EngineFacade();
         try {
             LoadResultDTO res = facade.loadFromXML(tempFile.toFile());
             if(res.isLoaded())
@@ -73,6 +73,7 @@ public class LoadProgramServlet extends BaseServlet
                 Program mainProgram = facade.getProgram();
                 allPrograms.put(mainProgram.getName(), new ProgramHolderWrapper(mainProgram, uploadedUsername));
 
+
                 thisUser.incrementProgramCount();
                 List<Function> functions = mainProgram.getFunctions();
                 if (functions != null) {
@@ -84,6 +85,7 @@ public class LoadProgramServlet extends BaseServlet
                 }
 
             }
+
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().println(GSON.toJson(res));
 

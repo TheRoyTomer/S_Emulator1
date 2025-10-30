@@ -43,7 +43,7 @@ public class ProgramsInfoTableViewController {
                     super.updateItem(item, empty);
 
                     // Clear previous styles
-                    getStyleClass().removeAll("selected-program"); // או כל CSS class שתרצה
+                    getStyleClass().removeAll("selected-program");
 
                     if (!empty && item != null) {
                         // TODO: Add CSS classes based on conditions
@@ -72,11 +72,29 @@ public class ProgramsInfoTableViewController {
         executionsCol.setCellValueFactory(new PropertyValueFactory<>("numberOfExecutions"));
         avgCreditCol.setCellValueFactory(new PropertyValueFactory<>("avgCreditCost"));
     }
+
     public void setRows(List<ProgramInfoDTO> list) {
+        // Save the currently selected item BEFORE updating
+        ProgramInfoDTO selectedItem = table.getSelectionModel().getSelectedItem();
+        String selectedProgramName = selectedItem != null ? selectedItem.getName() : null;
+
+        // Update the table items
         table.setItems(FXCollections.observableArrayList(list));
+        table.refresh();
+
+        // Restore selection if the same program still exists in the new list
+        if (selectedProgramName != null) {
+            for (int i = 0; i < table.getItems().size(); i++) {
+                if (table.getItems().get(i).getName().equals(selectedProgramName)) {
+                    table.getSelectionModel().select(i);
+                    break;
+                }
+            }
+        }
     }
 
-    private void handleProgramSelection(ProgramInfoDTO program) {
+    private void handleProgramSelection(ProgramInfoDTO program)
+    {
         // TODO: Implement what happens when a program is selected
         System.out.println("Selected program: " + program.getName());
     }

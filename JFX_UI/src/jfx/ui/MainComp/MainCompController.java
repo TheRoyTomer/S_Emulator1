@@ -3,6 +3,11 @@ package jfx.ui.MainComp;
 import Out.FunctionSelectorChoiseDTO;
 import Out.ViewResultDTO;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -51,19 +56,33 @@ public class MainCompController {
     // Current screen controller
     private Object currentScreenController;
 
+
+    // Credits property
+    private final IntegerProperty creditsProperty = new SimpleIntegerProperty(0);
+
+
     @FXML
-    public void initialize() {
+    public void initialize()
+    {
         // Initialize with default values
         setUsername("Guest");
         setScreenName("Login Screen");
-        setCredits(0);
-    }
 
+        // Bind credits label to property
+        creditsLabel.textProperty().bind(
+                Bindings.format("Credits: %d", creditsProperty)
+        );
+
+        // Set initial value
+        creditsProperty.set(0);
+    }
     // Method to load LoginComp screen
-    public void loadLoginScreen() {
+    public void loadLoginScreen()
+    {
         try {
             // Load LoginComp.fxml if not already loaded
-            if (loginScreen == null) {
+            if (loginScreen == null)
+            {
                 FXMLLoader loader = loadFXML("/jfx/ui/LoginComp/LoginComp.fxml");
                 loginScreen = loader.load();
                 loginCompController = loader.getController();
@@ -78,7 +97,7 @@ public class MainCompController {
             // Update labels
             setScreenName("Login Screen");
             setUsername("Guest");
-            setCredits(0);
+            creditsProperty.set(0);
 
             // Store controller
             currentScreenController = loginCompController;
@@ -156,37 +175,33 @@ public class MainCompController {
         return loader;
     }
 
-    // Getters and Setters for labels
-    public void setUsername(String username) {
+    public void setUsername(String username)
+    {
         usernameLabel.setText("Username: " + username);
     }
 
+    public String getUsername()
+    {
+        String text = usernameLabel.getText();
+        return text.replace("Username: ", "");
+    }
     public void setScreenName(String screenName) {
         screenNameLabel.setText(screenName);
     }
 
-    public void setCredits(int credits) {
-        creditsLabel.setText("Credits: " + credits);
-    }
 
-    public String getUsername() {
-        String text = usernameLabel.getText();
-        return text.replace("Username: ", "");
-    }
 
     public String getScreenName() {
         return screenNameLabel.getText();
     }
 
-    public int getCredits() {
-        String text = creditsLabel.getText();
-        String creditsStr = text.replace("Credits: ", "");
-        try {
-            return Integer.parseInt(creditsStr);
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
+    public void setCredits(int credits) {creditsProperty.set(credits);}
+
+    public void removeCredits(int credits) {creditsProperty.set(creditsProperty.get() - credits);}
+
+    public int getCredits() {return creditsProperty.get();}
+
+    public IntegerProperty getCreditsProperty() {return creditsProperty;}
 
     // Getter for current screen controller
     public Object getCurrentScreenController() {
@@ -205,6 +220,8 @@ public class MainCompController {
     public DashboardScreenCompController getDashboardScreenCompController() {
         return dashboardScreenCompController;
     }
+
+
 
 //Todo: use that when switching DASHBOARD TO emulator
     /*public void displaySelectedProgram(List<FunctionSelectorChoiseDTO> funcInputStringsAndNames)
@@ -479,4 +496,18 @@ public class MainCompController {
             }
         });
     }
+
+    public int getArchitectureCost(int architecture)
+    {
+        return switch (architecture)
+        {
+            case 1 -> 5;
+            case 2 -> 100;
+            case 3 -> 500;
+            case 4 -> 1000;
+            default -> 0;
+        };
+    }
+
+
 }

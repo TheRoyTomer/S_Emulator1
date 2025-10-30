@@ -38,3 +38,17 @@
 .table-row-cell.breakpoint.highlightRowDebug {
     -fx-background-color: pink;
 }
+
+.table-view .cell {
+    -fx-border-color: -fx-box-border;
+    -fx-border-width: 0 1 1 0;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-border-color: -fx-box-border;
+    -fx-border-width: 0 1 1 0;
+}
+
+.table-view .filler {
+    -fx-background-color: transparent;
+}

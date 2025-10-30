@@ -2,14 +2,19 @@ package jfx.ui.ViewComp;
 
 import EngineObject.InstructionDTO;
 import Out.FunctionSelectorChoiseDTO;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import jfx.ui.InstructionTableView.InstructionsTableController;
 import jfx.ui.EmulatorScreen.EmulatorScreenController;
 
@@ -30,35 +35,62 @@ public class ViewCompController {
     @FXML private TableView<InstructionDTO> instructionHistoryChainTable;
     @FXML private InstructionsTableController instructionsTableController;
     @FXML private InstructionsTableController instructionHistoryChainTableController;
-    @FXML private Label summeryLineLabel;
+    @FXML private HBox summeryLineLabel;
+
+    private IntegerBinding countI;
+    private IntegerBinding countII;
+    private IntegerBinding countIII;
+    private IntegerBinding countIV;
+    private IntegerBinding totalCount;
 
     @FXML private ComboBox<Integer> DegreeSelectorComboBox;
+
+    private final IntegerProperty MaxInstArch = new SimpleIntegerProperty(1);
+
 
     @FXML
     private void initialize()
     {
-        IntegerBinding countS = Bindings.createIntegerBinding(() ->
+        countI = Bindings.createIntegerBinding(() ->
                         (int) instructionsTable.getItems().stream()
-                                .filter(InstructionDTO::isSynthetic)
+                                .filter(i -> i.archType() == 1)
                                 .count(),
                 instructionsTable.itemsProperty()
         );
 
-        IntegerBinding countB = Bindings.createIntegerBinding(() ->
+        countII = Bindings.createIntegerBinding(() ->
                         (int) instructionsTable.getItems().stream()
-                                .filter(i -> !i.isSynthetic())
+                                .filter(i -> i.archType() == 2)
                                 .count(),
                 instructionsTable.itemsProperty()
         );
 
-        summeryLineLabel.textProperty().bind(
-                Bindings.format(
-                        "Basic commands: %d | Synthetic commands: %d | Total commands: %d",
-                        countB,
-                        countS,
-                        Bindings.add(countB, countS)
-                ));
+        countIII = Bindings.createIntegerBinding(() ->
+                        (int) instructionsTable.getItems().stream()
+                                .filter(i -> i.archType() == 3)
+                                .count(),
+                instructionsTable.itemsProperty()
+        );
 
+        countIV = Bindings.createIntegerBinding(() ->
+                        (int) instructionsTable.getItems().stream()
+                                .filter(i -> i.archType() == 4)
+                                .count(),
+                instructionsTable.itemsProperty()
+        );
+
+        totalCount = Bindings.createIntegerBinding(() ->
+                        instructionsTable.getItems().size(),
+                instructionsTable.itemsProperty()
+        );
+
+        // Add listeners to update the TextFlow when counts change
+        countI.addListener((obs, oldVal, newVal) -> updateSummaryLabelFromCurrentArchitecture());
+        countII.addListener((obs, oldVal, newVal) -> updateSummaryLabelFromCurrentArchitecture());
+        countIII.addListener((obs, oldVal, newVal) -> updateSummaryLabelFromCurrentArchitecture());
+        countIV.addListener((obs, oldVal, newVal) -> updateSummaryLabelFromCurrentArchitecture());
+        totalCount.addListener((obs, oldVal, newVal) -> updateSummaryLabelFromCurrentArchitecture());
+        setupMaxArchitectureBinding();
 
         if (instructionsTableController != null) {instructionsTableController.setViewController(this);}
 
@@ -90,8 +122,6 @@ public class ViewCompController {
                         .or(mainController.getDebugModeProperty())
         );
 
-       /* programSelectorComboBox.disableProperty().bind(mainController.getFileLoadedProperty().not()
-                .or(mainController.getDebugModeProperty()));*/
 
         highlightSelectorCombo.disableProperty().bind(mainController.getFileLoadedProperty().not()
                 .or(mainController.getDebugModeProperty()));
@@ -132,6 +162,22 @@ public class ViewCompController {
         return mainController;
     }
 
+    public int getMaxArchitectureValue()
+    {
+        return MaxInstArch.getValue();
+    }
+
+    private void setupMaxArchitectureBinding()
+    {
+        MaxInstArch.bind(Bindings.createIntegerBinding(() -> {
+            if (countIV.get() != 0) {return 4;}
+            else if (countIII.get() != 0) {return 3;}
+            else if (countII.get() != 0) {return 2;}
+            else if (countI.get() != 0) {return 1;}
+            else {return 0;}
+        }, countI, countII, countIII, countIV));
+    }
+
     public void bindDegrees(IntegerProperty current, IntegerProperty max)
     {
         currMaxDegreeLabel.textProperty().bind(
@@ -165,17 +211,6 @@ public class ViewCompController {
 
     }
 
-  /*      @FXML
-    private void handleProgramSelector(ActionEvent event)
-    {
-        FunctionSelectorChoiseDTO selectedItem = this.programSelectorComboBox.getValue();
-        if (selectedItem != null)
-        {
-            mainController.changeViewedProgram(selectedItem.name());
-
-        }
-    }*/
-
     @FXML
     private void handleCollapse(ActionEvent event)
     {
@@ -200,36 +235,6 @@ public class ViewCompController {
         }
         return list;
     }
-
-   /* public void updateProgramSelectorCombo(List<FunctionSelectorChoiseDTO> funcInputStrings)
-    {
-        programSelectorComboBox.setItems(FXCollections.observableList(funcInputStrings));
-        
-        programSelectorComboBox.setCellFactory(param -> new ListCell<FunctionSelectorChoiseDTO>() {
-            @Override
-            protected void updateItem(FunctionSelectorChoiseDTO item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.userInput());
-                }
-            }
-        });
-
-        programSelectorComboBox.setButtonCell(new ListCell<FunctionSelectorChoiseDTO>() {
-            @Override
-            protected void updateItem(FunctionSelectorChoiseDTO item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText("Function selector");
-                } else {
-                    setText(item.userInput());
-                }
-            }
-        });
-    }*/
-
 
     public String getHighlightSelection()
     {
@@ -267,5 +272,49 @@ public class ViewCompController {
             }
         }
         isUpdatingDegreeSelector = false;
+    }
+
+    public void updateSummaryLabel(int selectedArchitecture)
+    {
+        summeryLineLabel.getChildren().clear();
+
+        Text iText = new Text("I: " + countI.get());
+        Text sep1 = new Text(" | ");
+        Text iiText = new Text("II: " + countII.get());
+        Text sep2 = new Text(" | ");
+        Text iiiText = new Text("III: " + countIII.get());
+        Text sep3 = new Text(" | ");
+        Text ivText = new Text("IV: " + countIV.get());
+        Text sep4 = new Text(" | ");
+        Text totalText = new Text("Total Commands: " + totalCount.get());
+
+        // Color texts based on selected architecture (0 means no selection)
+        // Red only if:
+        // 1) instructions exist
+        // AND
+        // 2) selected architecture is insufficient
+        if (selectedArchitecture > 0)
+        {
+            if (countII.get() > 0 && selectedArchitecture < 2) {iiText.setFill(Color.RED);}
+            if (countIII.get() > 0 && selectedArchitecture < 3) {iiiText.setFill(Color.RED);}
+            if (countIV.get() > 0 && selectedArchitecture < 4) {ivText.setFill(Color.RED);}
+        }
+
+        summeryLineLabel.getChildren().addAll(iText, sep1, iiText, sep2, iiiText, sep3, ivText, sep4, totalText);
+    }
+
+    public IntegerProperty getMaxInstArchProperty()
+    {
+        return MaxInstArch;
+    }
+
+    private void updateSummaryLabelFromCurrentArchitecture()
+    {
+        if (mainController != null) {
+            int arch = mainController.getExecutionCompController().getSelectedArchitecture();
+            updateSummaryLabel(arch);
+        } else {
+            updateSummaryLabel(0);
+        }
     }
 }

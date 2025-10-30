@@ -23,6 +23,8 @@ public class ExecuteProgramServlet extends BaseServlet
     {
         response.setContentType("application/json;charset=UTF-8");
         int deg = Integer.parseInt(request.getParameter("degree"));
+        int architecture = Integer.parseInt(request.getParameter("architecture"));
+
         String[] inputParams = request.getParameterValues("inputs");
         List<Long> inputs = (inputParams == null)
                 ? List.of()
@@ -31,18 +33,36 @@ public class ExecuteProgramServlet extends BaseServlet
                 .toList();
 
         EngineFacade facade = requireFacade(request, response);
-        if (facade == null) {
-            return;
-        }
 
-        ExecuteResultDTO result = facade.executeProgram(deg, inputs);
+        if (facade == null) {return;}
 
         @SuppressWarnings("unchecked")
         ConcurrentMap<String, UserData> users =
                 (ConcurrentMap<String, UserData>) getServletContext().getAttribute("USERS");
 
         UserData thisUser = users.get(getUsername(request, response));
-        thisUser.incrementExecutionCount();
-        response.getWriter().println(GSON.toJson(result));
+        int archCost = facade.getCreditCostByArchitecture(architecture);
+
+        if (!thisUser.useCredits(archCost))
+        {
+            response.getWriter().println(GSON.toJson(ExecuteResultDTO.FAILED));
+            return;
+        }
+
+        ExecuteResultDTO result = facade.executeProgram(deg, inputs, thisUser.getCurrentCredits());
+        if (result.isFailed())
+        {
+            thisUser.takeAllCredits();
+            response.getWriter().println(GSON.toJson(ExecuteResultDTO.FAILED));
+        }
+        else
+        {
+            thisUser.incrementExecutionCount();
+            thisUser.useCredits(result.cycles());
+            response.getWriter().println(GSON.toJson(result));
+        }
+
+
+
     }
 }

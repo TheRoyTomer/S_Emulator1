@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane xmlns="http://javafx.com/javafx/24.0.1"
+<ScrollPane xmlns="http://javafx.com/javafx/24.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="jfx.ui.DashboardScreenComp.DashboardScreenCompController">
+            fx:controller="jfx.ui.DashboardScreenComp.DashboardScreenCompController"
+            fitToHeight="true" fitToWidth="true">
+    <content>
+        <BorderPane minHeight="400.0" minWidth="900.0" prefHeight="600.0" prefWidth="1000.0">
 
-    <!-- Top: Header Component -->
-    <top>
-        <fx:include fx:id="headerComp" source="../HeaderComp/HeaderComp.fxml" BorderPane.alignment="CENTER"/>
-    </top>
+            <!-- Top: Header Component -->
+            <top>
+                <fx:include fx:id="headerComp" source="../HeaderComp/HeaderComp.fxml" BorderPane.alignment="CENTER"/>
+            </top>
 
-    <!-- Center: SplitPane with equal split -->
-    <center>
-        <SplitPane dividerPositions="0.5">
-            <items>
-                <!-- Left: ShowUsersComp (50%) -->
-                <fx:include fx:id="showUsersComp" source="../ShowUsersComp/ShowUsersComp.fxml"/>
+            <!-- Center: SplitPane with equal split -->
+            <center>
+                <SplitPane dividerPositions="0.5">
+                    <items>
+                        <!-- Left: ShowUsersComp (50%) -->
+                        <fx:include fx:id="showUsersComp" source="../ShowUsersComp/ShowUsersComp.fxml"/>
 
-                <!-- Right: AvailableProgsAndFuncsComp (50%) -->
-                <fx:include fx:id="availableProgsAndFuncsComp" source="../AvailableProgsAndFuncsComp/AvailableProgsAndFuncsComp.fxml"/>
-            </items>
-        </SplitPane>
-    </center>
+                        <!-- Right: AvailableProgsAndFuncsComp (50%) -->
+                        <fx:include fx:id="availableProgsAndFuncsComp" source="../AvailableProgsAndFuncsComp/AvailableProgsAndFuncsComp.fxml"/>
+                    </items>
+                </SplitPane>
+            </center>
 
-</BorderPane>
+        </BorderPane>
+    </content>
+</ScrollPane>

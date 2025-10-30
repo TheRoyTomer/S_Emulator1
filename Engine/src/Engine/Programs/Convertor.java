@@ -39,6 +39,7 @@ public class Convertor
                 inst.getName(),
                 InstructionToDTO(inst.getHolder(), myContext),
                 inst.getCycles(),
+                inst.getArchitecture().getSerialRepresentation(),
                 inst.getArgIfExist().map(var -> VariableToDTO(var, myContext)),
                 inst.getConstantIfExist(),
                 inst.getLabelToJumpIfExist().map(LabelInterface::getLabelRepresentation),

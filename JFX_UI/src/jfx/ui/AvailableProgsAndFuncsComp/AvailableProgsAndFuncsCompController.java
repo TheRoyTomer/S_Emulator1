@@ -74,10 +74,22 @@ public class AvailableProgsAndFuncsCompController {
 
     public void UpdateTables(List<ProgramInfoDTO> programDTOs, List<FunctionInfoDTO> functionDTOs)
     {
+        System.out.println("=== AvailableProgsAndFuncsCompController: UpdateTables called ===");
+        System.out.println("Received programs: " + (programDTOs != null ? programDTOs.size() : 0));
+        if (programDTOs != null) {
+            programDTOs.forEach(p -> System.out.println("  Received program: " + p.getName()));
+        }
+
         if (this.programsTableController != null )
         {
+            System.out.println("Calling programsTableController.setRows()");
             this.programsTableController.setRows(programDTOs);
         }
+        else
+        {
+            System.out.println("WARNING: programsTableController is null!");
+        }
+
         if (this.functionsTableController != null )
         {
             this.functionsTableController.setRows(functionDTOs);

@@ -1,5 +1,6 @@
 package Engine;
 
+import Engine.ArchitectureTypes.ArchitectureTypeEnum;
 import Engine.Programs.*;
 import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
@@ -62,9 +63,9 @@ public class EngineFacade
         return viewer.viewProgram(degree);
     }
 
-    public ExecuteResultDTO executeProgram(int degree, List<Long> inputsVal)
+    public ExecuteResultDTO executeProgram(int degree, List<Long> inputsVal, int credits)
     {
-         return executer.execute(degree, inputsVal);
+         return executer.execute(degree, inputsVal, credits);
     }
 
     public List<StatisticDTO> getHistory()
@@ -72,28 +73,13 @@ public class EngineFacade
         return program.getHistory().getListAsDTOs();
     }
 
-    public StepOverResult stepOver(long PC) {return executer.stepOver(PC);}
+    public StepOverResult stepOver(long PC, int creditsLeft) {return executer.stepOver(PC, creditsLeft);}
     public StepOverResult breakPoint(long startPC, long destPC) {return executer.breakPoint(startPC ,destPC);}
 
     public List<VariableDTO> preDebug(int degree, List<Long> inputsVal) {return executer.preDebug(degree, inputsVal);}
 
-    public ExecuteResultDTO resumeDebug(int PC) {return executer.resume(PC);}
+    public ExecuteResultDTO resumeDebug(int PC, int creditsLeft) {return executer.resume(PC, creditsLeft);}
 
-  /*  public ViewResultDTO changeSelectedProgram(String name)
-    {
-        if (name.equals(originalProgram.getName()))
-        {
-            this.selectedProgram = this.originalProgram;
-        }
-        else
-        {
-            this.selectedProgram = this.originalProgram.getFunctionByName(name);
-        }
-        viewer.setProgramAndContext(this.selectedProgram);
-        executer.setProgramAndContext(this.selectedProgram);
-        return this.viewProgram();
-    }
-*/
 
     public Program getProgram()
     {
@@ -106,5 +92,17 @@ public class EngineFacade
         viewer.setProgramAndContext(selected);
         executer.setProgramAndContext(selected);
         return this.viewProgram();
+    }
+
+    public int getCreditCostByArchitecture(int architecture)
+    {
+        return switch (architecture)
+        {
+            case 1 -> ArchitectureTypeEnum.ONE.getCostArchitecture();
+            case 2 -> ArchitectureTypeEnum.TWO.getCostArchitecture();
+            case 3 -> ArchitectureTypeEnum.THREE.getCostArchitecture();
+            case 4 -> ArchitectureTypeEnum.FOUR.getCostArchitecture();
+            default -> 0;
+        };
     }
 }
