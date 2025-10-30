@@ -98,6 +98,15 @@ public class ViewCompController {
             instructionsTableController.refreshTable();
         });
 
+        // Set custom button cell for Degree Selector to always show "Degree Selector"
+        DegreeSelectorComboBox.setButtonCell(new ListCell<Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                setText("Degree Selector");
+            }
+        });
+
         DegreeSelectorComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (!isUpdatingDegreeSelector && newVal != null && mainController != null) {
                 mainController.setCurrentDegree(newVal);

@@ -142,20 +142,7 @@ public class ExecuteProgramServlet extends BaseServlet
             }
             else
             {
-                @SuppressWarnings("unchecked")
-                ConcurrentMap<String, ProgramHolderWrapper> allPrograms =
-                        (ConcurrentMap<String, ProgramHolderWrapper>) getServletContext().getAttribute("ALL_PROGRAMS");
-
-                Program p = facade.getProgram();
-
-                if (p != null && !(p instanceof Function))
-                {
-                    thisUser.incrementExecutionCount();
-                    ProgramHolderWrapper thisProgram = allPrograms.get(p.getName());
-                    thisProgram.IncreaseExecutions();
-                    thisProgram.addTotalCreditCost(result.cycles() + archCost);
-
-                }
+                updateInfo(thisUser, facade, result.cycles() + archCost);
                 thisUser.useCredits(result.cycles());
                 response.getWriter().println(GSON.toJson(result));
             }

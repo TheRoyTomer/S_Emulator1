@@ -30,6 +30,8 @@ public class FunctionsInfoTableViewController {
     @FXML
     private TableColumn<FunctionInfoDTO, String> relatedProgramCol;
 
+    private FunctionInfoDTO selectedFunction;
+
     @FXML
     public void initialize() {
         // Set up row factory for styling and selection
@@ -51,11 +53,7 @@ public class FunctionsInfoTableViewController {
 
             // Handle row click for selection
             row.setOnMouseClicked(event -> {
-                if (!row.isEmpty() && row.getItem() != null) {
-                    FunctionInfoDTO selectedFunction = row.getItem();
-                    // TODO: Handle function selection
-                    handleFunctionSelection(selectedFunction);
-                }
+                if (!row.isEmpty() && row.getItem() != null) {selectedFunction = row.getItem();}
             });
 
             return row;
@@ -89,8 +87,4 @@ public class FunctionsInfoTableViewController {
         }
     }
 
-    private void handleFunctionSelection(FunctionInfoDTO function) {
-        // TODO: Implement what happens when a function is selected
-        System.out.println("Selected function: " + function.getName());
-    }
 }

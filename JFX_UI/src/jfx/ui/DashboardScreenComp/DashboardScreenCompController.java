@@ -59,13 +59,8 @@ public class DashboardScreenCompController
             this.showUsersCompController.setMainController(this);
             this.availableProgsAndFuncsCompController.setMainController(this);
         }
-        // TODO: Initialize the dashboard screen
-        // TODO: Set up communication between components
-        // TODO: Bind properties and events
-
 
         startPolling();
-        //Todo: IMPORTANT!!! do stop polling when closing app or leaving Dashboard screen
 
     }
 
@@ -76,7 +71,6 @@ public class DashboardScreenCompController
         timer.schedule(this.refresher, 0, REFRESH_RATE);
     }
 
-    //Todo: IMPORTANT!!! do stop polling when closing app or leaving Dashboard screen
     public void stopPolling()
     {
         if (timer != null) timer.cancel();
@@ -92,25 +86,6 @@ public class DashboardScreenCompController
     {
         return this.mainCompController;
     }
-    // Getters for sub-controllers
-    public HeaderCompController getHeaderCompController()
-    {
-        // TODO: Return header component controller
-        return null;
-    }
-
-    public ShowUsersCompController getShowUsersCompController()
-    {
-        // TODO: Return show users component controller
-        return null;
-    }
-
-    public AvailableProgsAndFuncsCompController getAvailableProgsAndFuncsCompController()
-    {
-        // TODO: Return available programs and functions component controller
-        return null;
-    }
-
 
     public void pullDashboardData()
     {

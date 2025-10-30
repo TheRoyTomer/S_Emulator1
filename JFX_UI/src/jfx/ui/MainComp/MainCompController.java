@@ -1,5 +1,7 @@
 package jfx.ui.MainComp;
 
+import Out.BaseProgramInfoDTO;
+import Out.FunctionInfoDTO;
 import Out.FunctionSelectorChoiseDTO;
 import Out.ViewResultDTO;
 import javafx.application.Platform;
@@ -59,6 +61,8 @@ public class MainCompController {
 
     // Credits property
     private final IntegerProperty creditsProperty = new SimpleIntegerProperty(0);
+
+    private BaseProgramInfoDTO currentProgramInfo = null;
 
 
     @FXML
@@ -189,10 +193,15 @@ public class MainCompController {
         screenNameLabel.setText(screenName);
     }
 
-
-
     public String getScreenName() {
         return screenNameLabel.getText();
+    }
+
+    public BaseProgramInfoDTO getCurrentProgramInfo() {return currentProgramInfo;}
+
+    public void setCurrentProgramInfo(BaseProgramInfoDTO currentProgramInfo)
+    {
+        this.currentProgramInfo = currentProgramInfo;
     }
 
     public void setCredits(int credits) {creditsProperty.set(credits);}
@@ -220,7 +229,6 @@ public class MainCompController {
     public DashboardScreenCompController getDashboardScreenCompController() {
         return dashboardScreenCompController;
     }
-
 
 
 //Todo: use that when switching DASHBOARD TO emulator

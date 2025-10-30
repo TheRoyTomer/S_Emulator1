@@ -40,8 +40,8 @@ public class ProgramHolderWrapper
 
     public int getAvgCreditCost()
     {
-        if (numExecutions == 0) {return 0;}
-        return sumCreditCost / numExecutions;
+        if (this.numExecutions == 0) {return 0;}
+        return this.sumCreditCost / this.numExecutions;
     }
 
     public void IncreaseExecutions()
@@ -61,7 +61,7 @@ public class ProgramHolderWrapper
                 this.uploader,
                 program.getInstructions().size(),
                 program.getMaxDegree(),
-                this.numExecutions,
-                getAvgCreditCost());
+                this.getAvgCreditCost(),
+                this.numExecutions);
     }
 }

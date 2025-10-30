@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import jfx.ui.MainComp.MainCompController;
 import jfx.ui.UTILS;
 import jfx.ui.EmulatorScreen.EmulatorScreenController;
 import jfx.ui.VarsTableView.VarsTableViewController;
@@ -51,26 +52,39 @@ public class ExecutionCompController {
     private void initialize()
     {
         // Initialize architecture ComboBox with Roman numerals
-                architectureSelectionComboBox.setItems(FXCollections.observableArrayList("I", "II", "III", "IV"));
+        architectureSelectionComboBox.setItems(FXCollections.observableArrayList("I", "II", "III", "IV"));
 
         // Set prompt text instead of default value
-                architectureSelectionComboBox.setPromptText("Architecture Selection");
+        architectureSelectionComboBox.setPromptText("Architecture Selection");
+
+        // Set custom button cell to show prompt text when null
+        architectureSelectionComboBox.setButtonCell(new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("Architecture Selection");
+                } else {
+                    setText(item);
+                }
+            }
+        });
 
         // Listen to selection changes and convert to integer
-                architectureSelectionComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal != null)
-                    {
-                        int archType = switch (newVal)
-                        {
-                            case "I" -> 1;
-                            case "II" -> 2;
-                            case "III" -> 3;
-                            case "IV" -> 4;
-                            default -> 1;
-                        };
-                        selectedArchitectureProperty.set(archType);
-                    }
-                });
+        architectureSelectionComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null)
+            {
+                int archType = switch (newVal)
+                {
+                    case "I" -> 1;
+                    case "II" -> 2;
+                    case "III" -> 3;
+                    case "IV" -> 4;
+                    default -> 1;
+                };
+                selectedArchitectureProperty.set(archType);
+            }
+        });
     }
 
     public void setMainController(EmulatorScreenController mainController)
@@ -184,6 +198,9 @@ public class ExecutionCompController {
     @FXML
     private void onDebugPress(ActionEvent e)
     {
+        if (!this.preRunCreditsValidation()
+                && mainController.getIsIsFirstStepInDebugPropertyValue()) {return;}
+
         try {
             mainController.onDebug(handleInputs());
             inputVarsComp.setEditable(false);
@@ -202,7 +219,9 @@ public class ExecutionCompController {
     @FXML
     private void onExecutePress(ActionEvent e)
     {
-        try {
+            if (!this.preRunCreditsValidation()) {return;}
+
+            try {
             mainController.onExecution(handleInputs(), getSelectedArchitecture());
             inputVarsComp.setEditable(false);
 
@@ -279,7 +298,6 @@ public class ExecutionCompController {
     @FXML
     private void onBackToDashboard(ActionEvent e)
     {
-        // TODO: Implement navigation back to dashboard
         resetArchitectureSelection();
         mainController.getMainCompController().loadDashboardScreen();
 
@@ -293,5 +311,18 @@ public class ExecutionCompController {
 
     }
 
+    public boolean preRunCreditsValidation()
+    {
+        MainCompController mainCompController = mainController.getMainCompController();
+        if (mainCompController != null && mainCompController.getCurrentProgramInfo() != null
+            && mainCompController.getCredits() < mainCompController.getCurrentProgramInfo().getAvgCreditCost())
+        {
+
+            UTILS.showInfo("Your credit balance is lower than the average cost of running this program.\n" +
+                    "Please load more credits to run it.");
+            return false;
+        }
+        return true;
+    }
 
 }

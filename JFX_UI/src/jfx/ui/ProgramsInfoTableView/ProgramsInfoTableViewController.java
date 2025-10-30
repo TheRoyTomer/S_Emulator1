@@ -33,6 +33,8 @@ public class ProgramsInfoTableViewController {
     @FXML
     private TableColumn<ProgramInfoDTO, Integer> avgCreditCol;
 
+    private ProgramInfoDTO selectedProgram;
+
     @FXML
     public void initialize() {
         // Set up row factory for styling and selection
@@ -55,9 +57,7 @@ public class ProgramsInfoTableViewController {
             // Handle row click for selection
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && row.getItem() != null) {
-                    ProgramInfoDTO selectedProgram = row.getItem();
-                    // TODO: Handle program selection
-                    handleProgramSelection(selectedProgram);
+                     selectedProgram = row.getItem();
                 }
             });
 
@@ -91,11 +91,5 @@ public class ProgramsInfoTableViewController {
                 }
             }
         }
-    }
-
-    private void handleProgramSelection(ProgramInfoDTO program)
-    {
-        // TODO: Implement what happens when a program is selected
-        System.out.println("Selected program: " + program.getName());
     }
 }

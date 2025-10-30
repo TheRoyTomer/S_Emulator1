@@ -64,18 +64,11 @@ public class BreakPointServlet extends BaseServlet
         }
         else
         {
-            @SuppressWarnings("unchecked")
-            ConcurrentMap<String, ProgramHolderWrapper> allPrograms =
-                    (ConcurrentMap<String, ProgramHolderWrapper>) getServletContext().getAttribute("ALL_PROGRAMS");
-
             Program p = facade.getProgram();
 
-            if (result.isDebugCompleted() && p != null && !(p instanceof Function))
+            if (result.isDebugCompleted() && p != null)
             {
-                thisUser.incrementExecutionCount();
-                ProgramHolderWrapper thisProgram = allPrograms.get(p.getName());
-                thisProgram.IncreaseExecutions();
-                thisProgram.addTotalCreditCost(result.cycles() + archCost);
+                updateInfo(thisUser, facade, result.cycles() + archCost);
 
             }
 

@@ -48,11 +48,10 @@ public class AvailableProgsAndFuncsCompController {
     {
         ProgramInfoDTO selectedProgram = programsTable.getSelectionModel().getSelectedItem();
 
-        if (selectedProgram == null) {
-            // TODO: Show error message to user - no program selected
-            return;
-        }
+        if (selectedProgram == null) {return;}
+
         mainController.stopPolling();
+        mainController.getMainCompController().setCurrentProgramInfo(selectedProgram);
         mainController.getMainCompController().displaySelectedProgram(selectedProgram.getName());
 
     }
@@ -60,14 +59,13 @@ public class AvailableProgsAndFuncsCompController {
     @FXML
     private void onExecuteFunction()
     {
-        FunctionInfoDTO SelectedFunction = functionsTable.getSelectionModel().getSelectedItem();
+        FunctionInfoDTO selectedFunction = functionsTable.getSelectionModel().getSelectedItem();
 
-        if (SelectedFunction == null) {
-            // TODO: Show error message to user - no program selected
-            return;
-        }
+        if (selectedFunction == null) {return;}
+
         mainController.stopPolling();
-        mainController.getMainCompController().displaySelectedFunction(SelectedFunction.getName());
+        mainController.getMainCompController().setCurrentProgramInfo(selectedFunction);
+        mainController.getMainCompController().displaySelectedFunction(selectedFunction.getName());
 
     }
 
