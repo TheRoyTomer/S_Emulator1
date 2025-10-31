@@ -11,6 +11,8 @@ import Out.ViewResultDTO;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 public class EngineFacade
 {
@@ -19,6 +21,10 @@ public class EngineFacade
     private final Viewer viewer;
     private Program program;
 
+    private StatisticDTO recentExecutionStatistics;
+
+    private int executionID;
+
 
     public EngineFacade()
     {
@@ -26,23 +32,31 @@ public class EngineFacade
         this.executer = new Executer(program);
         this.loader = new Loader(program);
         this.viewer = new Viewer(program);
-
+        this.executionID = 1;
     }
-    public int getMaxDegree() { return program.calcMaxDegree();}
+
+    public int getMaxDegree()
+    {
+        return program.calcMaxDegree();
+    }
+
+    public StatisticDTO getRecentExecutionStatistics()
+    {
+        return recentExecutionStatistics;
+    }
 
     public List<VariableDTO> getInputVariablesPreExecute()
     {
         return program.getContext().getAll_X_InList(program.getInstructions())
                 .stream()
-                .map(var ->Convertor.VariableToDTO(var, program.getContext()))
+                .map(var -> Convertor.VariableToDTO(var, program.getContext()))
                 .toList();
     }
 
-    public LoadResultDTO loadFromXML(File file)
+    public LoadResultDTO loadFromXML(File file, ConcurrentMap<String, Function> functions, Set<String> programKeyName)
     {
-        try
-        {
-            loader.load(file);
+        try {
+            loader.load(file , functions, programKeyName);
             this.viewer.setProgramAndContext(this.program);
             this.executer.setProgramAndContext(this.program);
         } catch (RuntimeException e) {
@@ -63,21 +77,75 @@ public class EngineFacade
         return viewer.viewProgram(degree);
     }
 
-    public ExecuteResultDTO executeProgram(int degree, List<Long> inputsVal, int credits)
+    public ExecuteResultDTO executeProgram(int degree, List<Long> inputsVal, int credits, int archTypeSerial)
     {
-         return executer.execute(degree, inputsVal, credits);
+        ExecuteResultDTO res = executer.execute(degree, inputsVal, credits);
+        if (!res.isFailed())
+        {
+            this.recentExecutionStatistics = Convertor.convertStatisticToDTO(
+                    program.getRecentExecutionStatistics(),
+                    this.executionID,
+                    program instanceof Function ? true : false,
+                    archTypeSerial,
+                    program.getName());
+            this.executionID++;
+        }
+        return res;
     }
 
-    public List<StatisticDTO> getHistory()
+    public StepOverResult stepOver(long PC, int creditsLeft, int archTypeSerial)
     {
-        return program.getHistory().getListAsDTOs();
+        StepOverResult res = executer.stepOver(PC, creditsLeft);
+        if (!res.isFailed() && res.isDebugCompleted())
+        {
+            this.recentExecutionStatistics = Convertor.convertStatisticToDTO(
+                    program.getRecentExecutionStatistics(),
+                    this.executionID,
+                    program instanceof Function ? true : false,
+                    archTypeSerial,
+                    program.getName());
+            this.executionID++;
+        }
+        return res;
     }
 
-    public StepOverResult stepOver(long PC, int creditsLeft) {return executer.stepOver(PC, creditsLeft);}
-    public StepOverResult breakPoint(long startPC, long destPC, int creditsLeft) {return executer.breakPoint(startPC, destPC, creditsLeft);}
-    public List<VariableDTO> preDebug(int degree, List<Long> inputsVal) {return executer.preDebug(degree, inputsVal);}
+    public StepOverResult breakPoint(long startPC, long destPC, int creditsLeft, int archTypeSerial)
+    {
+        StepOverResult res =  executer.breakPoint(startPC, destPC, creditsLeft);
+        if (!res.isFailed() && res.isDebugCompleted())
+        {
+            this.recentExecutionStatistics = Convertor.convertStatisticToDTO(
+                    program.getRecentExecutionStatistics(),
+                    this.executionID,
+                    program instanceof Function ? true : false,
+                    archTypeSerial,
+                    program.getName());
+            this.executionID++;
+        }
+        return res;
 
-    public ExecuteResultDTO resumeDebug(int PC, int creditsLeft) {return executer.resume(PC, creditsLeft);}
+    }
+
+    public List<VariableDTO> preDebug(int degree, List<Long> inputsVal)
+    {
+        return executer.preDebug(degree, inputsVal);
+    }
+
+    public ExecuteResultDTO resumeDebug(int PC, int creditsLeft, int archTypeSerial)
+    {
+        ExecuteResultDTO res = executer.resume(PC, creditsLeft);
+        if (!res.isFailed())
+        {
+            this.recentExecutionStatistics = Convertor.convertStatisticToDTO(
+                    program.getRecentExecutionStatistics(),
+                    this.executionID,
+                    program instanceof Function ? true : false,
+                    archTypeSerial,
+                    program.getName());
+            this.executionID++;
+        }
+        return res;
+    }
 
 
     public Program getProgram()
@@ -95,8 +163,7 @@ public class EngineFacade
 
     public int getCreditCostByArchitecture(int architecture)
     {
-        return switch (architecture)
-        {
+        return switch (architecture) {
             case 1 -> ArchitectureTypeEnum.ONE.getCostArchitecture();
             case 2 -> ArchitectureTypeEnum.TWO.getCostArchitecture();
             case 3 -> ArchitectureTypeEnum.THREE.getCostArchitecture();

@@ -1,5 +1,7 @@
 package jfx.ui.MainComp;
 
+import EngineObject.StatisticDTO;
+import EngineObject.VariableDTO;
 import Out.BaseProgramInfoDTO;
 import Out.FunctionInfoDTO;
 import Out.FunctionSelectorChoiseDTO;
@@ -17,12 +19,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import jfx.ui.DashboardScreenComp.DashboardScreenCompController;
 import jfx.ui.EmulatorScreen.EmulatorScreenController;
+import jfx.ui.ExecutionComp.ExecutionCompController;
 import jfx.ui.LoginComp.LoginCompController;
 import jfx.ui.UTILS;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -230,117 +234,6 @@ public class MainCompController {
         return dashboardScreenCompController;
     }
 
-
-//Todo: use that when switching DASHBOARD TO emulator
-    /*public void displaySelectedProgram(List<FunctionSelectorChoiseDTO> funcInputStringsAndNames)
-    {
-        loadEmulatorScreen();
-
-        emulatorScreenController.preDisplaySelectedProgram();
-
-        final String viewUrl = SERVER_URL + "/viewProgram";
-        final String degreeUrl = SERVER_URL + "/GetMaxDegree";
-
-
-        Request viewRequest = new Request.Builder()
-                .url(viewUrl)
-                .get()
-                .addHeader("Accept", "application/json")
-                .build();
-
-        HTTP_CLIENT.newCall(viewRequest).enqueue(new Callback()
-        {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
-            {
-                String json;
-                try {
-                    int code = response.code();
-                    json = (response.body() != null) ? response.body().string() : "";
-
-                    if (!response.isSuccessful()) {
-                        final String msg = "viewProgram failed: HTTP " + code;
-                        Platform.runLater(() -> UTILS.showError(msg));
-                        return;
-                    }
-
-                    ViewResultDTO res;
-                    try {
-                        res = GSON.fromJson(json, ViewResultDTO.class);
-                    } catch (Exception parseEx) {
-                        final String msg = "viewProgram JSON parse error: " + parseEx.getMessage();
-                        Platform.runLater(() -> UTILS.showError(msg));
-                        return;
-                    }
-
-                    Request maxDegreeRequest = new Request.Builder()
-                            .url(degreeUrl)
-                            .get()
-                            .addHeader("Accept", "application/json")
-                            .build();
-
-                    HTTP_CLIENT.newCall(maxDegreeRequest).enqueue(new Callback()
-                    {
-                        @Override
-                        public void onResponse(@NotNull Call call2, @NotNull Response response2) throws IOException
-                        {
-                            String json2 = null;
-                            try {
-                                int code2 = response2.code();
-                                json2 = (response2.body() != null) ? response2.body().string() : "";
-
-                                if (!response2.isSuccessful()) {
-                                    final String msg = "GetMaxDegree failed: HTTP " + code2;
-                                    Platform.runLater(() -> UTILS.showError(msg));
-                                    return;
-                                }
-
-                                Map<String, Object> result;
-                                try {
-                                    result = GSON.fromJson(json2, Map.class);
-                                } catch (Exception parseEx2) {
-                                    final String msg = "GetMaxDegree JSON parse error: " + parseEx2.getMessage();
-                                    Platform.runLater(() -> UTILS.showError(msg));
-                                    return;
-                                }
-
-                                Object md = result.get("maxDegree");
-                                if (md == null) {
-                                    Platform.runLater(() -> UTILS.showError("GetMaxDegree: missing 'maxDegree' in response"));
-                                    return;
-                                }
-                                int maxDegree = (md instanceof Number) ? ((Number) md).intValue() : Integer.parseInt(md.toString());
-
-                                Platform.runLater(() -> {
-                                    emulatorScreenController.postDisplaySelectedProgram(res, maxDegree);
-                                });
-
-                            } finally {
-                                response2.close();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NotNull Call call2, @NotNull IOException e)
-                        {
-                            System.out.println("[CLIENT] GetMaxDegree network error: " + e.getMessage());
-                            Platform.runLater(() -> UTILS.showError("Failed to get max degree: " + e.getMessage()));
-                        }
-                    });
-
-                } finally {
-                    response.close();
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e)
-            {
-                Platform.runLater(() -> UTILS.showError("Failed to view original program: " + e.getMessage()));
-            }
-        });
-    }
-*/
     public void resetBreakPoint()
     {
         if (emulatorScreenController != null)
@@ -515,6 +408,28 @@ public class MainCompController {
             case 4 -> 1000;
             default -> 0;
         };
+    }
+
+    public void reRunStatistic(StatisticDTO selected)
+    {
+            if (emulatorScreenController != null && emulatorScreenController.getExecutionCompController() != null)
+            {
+                if(selected.isFunction())
+                {
+                    displaySelectedFunction(selected.name());
+                }
+                else
+                {
+                    displaySelectedProgram(selected.name());
+                }
+                ExecutionCompController execCompController = emulatorScreenController.getExecutionCompController();
+                List<VariableDTO> inputVars = selected.variables().stream()
+                        .filter(var -> var.getTypeRepresentation().equals("X"))
+                        .toList();
+
+                execCompController.onStatisticsNewRun(selected.inputs(), selected.arcType(), inputVars);
+                emulatorScreenController.setCurrentDegree(selected.degree());
+            }
     }
 
 

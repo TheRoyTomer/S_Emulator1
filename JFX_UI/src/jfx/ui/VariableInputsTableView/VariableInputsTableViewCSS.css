@@ -1,0 +1,46 @@
+/* ================================================
+   VariableInputsTableView CSS - Input Variables Table
+   ================================================ */
+
+/* ================ Editable Table State ================ */
+.table-view.editable {
+    -fx-border-color: #28a745;
+    -fx-border-width: 2px;
+    -fx-border-radius: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(40, 167, 69, 0.25), 6, 0, 0, 3);
+}
+
+.table-view.editable .column-header {
+    -fx-background-color: linear-gradient(to bottom, #d4edda, #c3e6cb);
+    -fx-text-fill: #155724;
+    -fx-font-weight: bold;
+}
+
+.table-view.editable .column-header-background {
+    -fx-background-color: #d4edda;
+}
+
+/* ================ Editable Cell Styling ================ */
+.table-view.editable .table-cell {
+    -fx-text-fill: #155724;
+}
+
+.table-view.editable .table-row-cell:hover {
+    -fx-background-color: #e2f3e5;
+}
+
+/* ================ Text Field in Cell ================ */
+.table-view .text-field {
+    -fx-background-color: white;
+    -fx-border-color: #28a745;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 2px 5px;
+}
+
+.table-view .text-field:focused {
+    -fx-border-color: #218838;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(40, 167, 69, 0.3), 4, 0, 0, 2);
+}

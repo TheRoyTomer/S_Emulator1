@@ -15,7 +15,7 @@ public class ClientConstants
             .build();
     public static final String SERVER_URL = "http://localhost:8080/web_war";
 
-    public static final int REFRESH_RATE = 2000;
+    public static final int REFRESH_RATE = 1000;
 
 
 

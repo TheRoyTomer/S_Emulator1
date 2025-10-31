@@ -18,7 +18,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import static Server_UTILS.ServerConstants.GSON;
 
@@ -50,8 +53,22 @@ public class LoadProgramServlet extends BaseServlet
 
         //EngineFacade facade = requireFacade(request, response);
         EngineFacade facade = new EngineFacade();
+
+        ConcurrentMap<String, FunctionHolderWrapper> Functions =
+                (ConcurrentMap<String, FunctionHolderWrapper>) getServletContext().getAttribute("ALL_FUNCTIONS");
+        ConcurrentMap<String, Function> functionMap = Functions.entrySet().stream()
+                .collect(Collectors.toConcurrentMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().getFunction()
+                ));
+
+        ConcurrentMap<String, ProgramHolderWrapper> allProgramKeySet =
+                (ConcurrentMap<String, ProgramHolderWrapper>) getServletContext().getAttribute("ALL_PROGRAMS");
+        Set<String> inputSet = allProgramKeySet.keySet();
+
         try {
-            LoadResultDTO res = facade.loadFromXML(tempFile.toFile());
+            LoadResultDTO res = facade.loadFromXML(tempFile.toFile(), functionMap, inputSet);
+
             if(res.isLoaded())
             {
                 @SuppressWarnings("unchecked")

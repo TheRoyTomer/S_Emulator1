@@ -1,0 +1,80 @@
+/* ================================================
+   UserInfoTableView CSS - Users Table Styling
+   ================================================ */
+
+/* ================ Table Specific Styling ================ */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+/* ================ Column Headers ================ */
+.table-view .column-header {
+    -fx-background-color: linear-gradient(to bottom, #e0f2f1, #b2dfdb);
+    -fx-text-fill: #00695c;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-border-color: #80cbc4;
+    -fx-border-width: 0 1px 2px 0;
+    -fx-padding: 8px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #e0f2f1;
+}
+
+/* ================ Table Rows ================ */
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-cell-size: 34px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #fafafa;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #e0f2f1;
+}
+
+/* Selected user highlighting */
+.table-row-cell.selected-user {
+    -fx-background-color: #b2dfdb !important;
+    -fx-border-color: #4db6ac;
+    -fx-border-width: 2px 0;
+}
+
+/* ================ Table Cells ================ */
+.table-cell {
+    -fx-padding: 4px 8px;
+    -fx-alignment: CENTER-LEFT;
+    -fx-text-fill: #212529;
+}
+
+/* Username column */
+.table-cell:nth-column(1) {
+    -fx-font-weight: bold;
+    -fx-text-fill: #00796b;
+}
+
+/* Number columns (all except username) */
+.table-cell:nth-column(2), 
+.table-cell:nth-column(3), 
+.table-cell:nth-column(4),
+.table-cell:nth-column(5),
+.table-cell:nth-column(6) {
+    -fx-alignment: CENTER;
+    -fx-font-weight: 600;
+}
+
+/* Credits columns - special colors */
+.table-cell:nth-column(4) {
+    -fx-text-fill: #28a745; /* Current credits - green */
+}
+
+.table-cell:nth-column(5) {
+    -fx-text-fill: #dc3545; /* Used credits - red */
+}

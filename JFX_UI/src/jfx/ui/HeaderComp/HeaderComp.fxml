@@ -8,7 +8,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER_LEFT" spacing="8.0" stylesheets="@HeaderCompCSS.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.HeaderComp.HeaderCompController">
+<HBox alignment="CENTER_LEFT" spacing="8.0"
+      xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      stylesheets="@../MainComp/MainCompCSS.css, @HeaderCompCSS.css"
+      fx:controller="jfx.ui.HeaderComp.HeaderCompController">
     <children>
         <Button id="LoadBTN" fx:id="loadButton" maxHeight="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" onAction="#handleLoadButton" text="Load file">
             <font>

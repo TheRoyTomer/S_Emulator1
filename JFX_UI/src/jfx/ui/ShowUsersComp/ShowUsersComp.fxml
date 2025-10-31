@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <SplitPane dividerPositions="0.6" orientation="VERTICAL" minWidth="300.0" prefWidth="400.0"
+           stylesheets="@../MainComp/MainCompCSS.css"
            xmlns="http://javafx.com/javafx/24.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="jfx.ui.ShowUsersComp.ShowUsersCompController">
@@ -18,7 +19,7 @@
             <padding>
                 <Insets top="5" right="5" bottom="5" left="5"/>
             </padding>
-            <Label text="Users History \ Statistics" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+            <Label text="Users History \ Statistics" styleClass="table-title-label"/>
             <fx:include fx:id="historyComp" source="../HistoryComp/HistoryComp.fxml"/>
         </VBox>
     </items>

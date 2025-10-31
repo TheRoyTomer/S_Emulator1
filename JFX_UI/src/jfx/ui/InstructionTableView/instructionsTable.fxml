@@ -3,7 +3,12 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 
-<TableView fx:id="instructionsTable" stylesheets="@InstructionTableViewCSS.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.InstructionTableView.InstructionsTableController">
+<TableView fx:id="instructionsTable"
+           styleClass="view-comp-table, execution-table"
+           stylesheets="@../MainComp/MainCompCSS.css, @InstructionTableViewCSS.css"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="jfx.ui.InstructionTableView.InstructionsTableController">
     <columns>
         <TableColumn id="IndexCol" fx:id="indexCol" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" sortable="false" text="Index" />
         <TableColumn id="BsCol" fx:id="bsCol" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" sortable="false" text="B\S" />

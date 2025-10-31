@@ -3,12 +3,17 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 
-<TableView fx:id="variableInputsTableView" editable="true" stylesheets="@VariableInputsTableViewCSS.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.VariableInputsTableView.VariableInputsTableViewController">
-  <columns>
-    <TableColumn fx:id="inputVarCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="100.0" sortable="false" text="Input var" />
-    <TableColumn fx:id="valueCol" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="100.0" sortable="false" text="Value" />
-  </columns>
-   <columnResizePolicy>
-      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-   </columnResizePolicy>
+<TableView fx:id="variableInputsTableView" editable="true"
+           styleClass="execution-table"
+           stylesheets="@../MainComp/MainCompCSS.css, @VariableInputsTableViewCSS.css"
+           xmlns="http://javafx.com/javafx/24.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="jfx.ui.VariableInputsTableView.VariableInputsTableViewController">
+    <columns>
+        <TableColumn fx:id="inputVarCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="100.0" sortable="false" text="Input var" />
+        <TableColumn fx:id="valueCol" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="100.0" sortable="false" text="Value" />
+    </columns>
+    <columnResizePolicy>
+        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+    </columnResizePolicy>
 </TableView>

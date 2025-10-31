@@ -21,5 +21,12 @@ public record VariableDTO(
         return Integer.parseInt(name.substring(1));
     }
 
+    public String getTypeRepresentation()
+    {
+        if (name.isEmpty()) return "";
+        return name.substring(0, 1).toUpperCase();
+
+    }
+
 
 }

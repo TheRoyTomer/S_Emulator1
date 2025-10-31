@@ -1,121 +1,61 @@
-/* General styling */
-.split-pane {
+/* ViewCompCSS.css */
+
+/* ================ Summary Line Label ================ */
+#summaryLineLabel {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1976d2;
+    -fx-padding: 8px 5px;
+}
+
+/* ================ Tables with Bold Text ================ */
+.view-comp-table {
+    -fx-font-weight: bold;
+}
+
+.view-comp-table .table-cell {
+    -fx-font-weight: bold;
+}
+
+.view-comp-table .column-header .label {
+    -fx-font-weight: bold;
+}
+
+/* ================ Column Separation ================ */
+.view-comp-table .table-cell {
+    -fx-border-color: #e9ecef transparent #e9ecef #dee2e6 !important;
+    -fx-border-width: 0 0 0 1px !important;
+}
+
+.view-comp-table .table-column:first-child .table-cell {
+    -fx-border-width: 0 !important;
+}
+
+/* ================ Striped Rows ================ */
+.view-comp-table .table-row-cell {
+    -fx-background-color: white;
+}
+
+.view-comp-table .table-row-cell:odd {
     -fx-background-color: #f8f9fa;
 }
 
-/* Table headers styling */
-.table-view .column-header {
-    -fx-background-color: #e9ecef;
-    -fx-text-fill: #495057;
-    -fx-font-weight: bold;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 0 0 1px 0;
+.view-comp-table .table-row-cell:hover {
+    -fx-background-color: #e3f2fd;
 }
 
-.table-view .column-header-background {
-    -fx-background-color: #e9ecef;
+.view-comp-table .table-row-cell:selected {
+    -fx-background-color: #64b5f6 !important;
+    -fx-text-fill: white !important;
 }
 
-/* Table content styling */
-.table-view {
-    -fx-background-color: white;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 1px;
-    -fx-border-radius: 4px;
-}
-
-.table-row-cell {
-    -fx-background-color: white;
-    -fx-border-color: transparent;
-}
-
-.table-row-cell:hover {
+/* ================ Summary Line HBox ================ */
+.summary-line-hbox {
     -fx-background-color: #f8f9fa;
 }
 
-.table-row-cell:selected {
-    -fx-background-color: #007bff;
-    -fx-text-fill: white;
-}
-
-/* Control styling */
-.combo-box {
-    -fx-background-color: white;
-    -fx-border-color: #ced4da;
-    -fx-border-width: 1px;
-    -fx-border-radius: 4px;
-}
-
-.combo-box:hover {
-    -fx-border-color: #86b7fe;
-}
-
-.combo-box:focused {
-    -fx-border-color: #0d6efd;
-    -fx-effect: dropshadow(gaussian, rgba(13, 110, 253, 0.25), 4, 0, 0, 0);
-}
-
-.button {
-    -fx-background-color: #6c757d;
-    -fx-text-fill: white;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
+.summary-line-hbox .label {
+    -fx-font-size: 15px;
     -fx-font-weight: bold;
-    -fx-cursor: hand;
-}
-
-.button:hover {
-    -fx-background-color: #5c636a;
-}
-
-.button:pressed {
-    -fx-background-color: #545b62;
-}
-
-.button:disabled {
-    -fx-background-color: #e9ecef;
-    -fx-text-fill: #6c757d;
-    -fx-cursor: default;
-}
-
-/* Primary buttons (Expand/Collapse) */
-#collapseButton, #expandButton {
-    -fx-background-color: #0d6efd;
-}
-
-#collapseButton:hover, #expandButton:hover {
-    -fx-background-color: #0b5ed7;
-}
-
-#collapseButton:pressed, #expandButton:pressed {
-    -fx-background-color: #0a58ca;
-}
-
-/* Labels styling */
-#CurrMaxlbl {
-    -fx-background-color: #e9ecef;
-    -fx-text-fill: #495057;
-    -fx-font-weight: bold;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 1px;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
-    -fx-padding: 4px 8px;
-}
-
-#summaryLbl {
-    -fx-background-color: #f8f9fa;
-    -fx-text-fill: #6c757d;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 1px 0 0 0;
-    -fx-padding: 6px;
-}
-
-/* Container styling */
-.vbox {
-    -fx-background-color: white;
-}
-
-.hbox {
-    -fx-background-color: transparent;
+    -fx-text-fill: #1976d2;
 }

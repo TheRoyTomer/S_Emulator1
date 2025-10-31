@@ -5,14 +5,15 @@
 
 <TableView xmlns="http://javafx.com/javafx/24.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
+           stylesheets="@../MainComp/MainCompCSS.css"
            fx:controller="jfx.ui.FunctionsInfoTableView.FunctionsInfoTableViewController"
            fx:id="table" prefWidth="700.0" prefHeight="400.0">
     <columns>
-        <TableColumn fx:id="nameCol" text="Name" minWidth="80.0" maxWidth="1.7976931348623157E308" prefWidth="100.0"/>
-        <TableColumn fx:id="uploadUserNameCol" text="Uploaded By" minWidth="80.0" maxWidth="1.7976931348623157E308" prefWidth="100.0"/>
-        <TableColumn fx:id="instructionCountCol" text="Instructions" minWidth="80.0" maxWidth="80.0" prefWidth="80.0"/>
-        <TableColumn fx:id="maxDegreeCol" text="Max Degree" minWidth="85.0" maxWidth="85.0" prefWidth="85.0"/>
-        <TableColumn fx:id="relatedProgramCol" text="Related Program" minWidth="80.0" maxWidth="1.7976931348623157E308" prefWidth="120.0"/>
+        <TableColumn fx:id="nameCol" text="Name" minWidth="60.0" maxWidth="1.7976931348623157E308" prefWidth="90.0"/>
+        <TableColumn fx:id="uploadUserNameCol" text="Uploaded By" minWidth="60.0" maxWidth="1.7976931348623157E308" prefWidth="80.0"/>
+        <TableColumn fx:id="instructionCountCol" text="Instruc-&#10;tions" minWidth="55.0" maxWidth="55.0" prefWidth="55.0"/>
+        <TableColumn fx:id="maxDegreeCol" text="Max&#10;Degree" minWidth="55.0" maxWidth="55.0" prefWidth="55.0"/>
+        <TableColumn fx:id="relatedProgramCol" text="Related Program" minWidth="70.0" maxWidth="1.7976931348623157E308" prefWidth="100.0"/>
     </columns>
     <columnResizePolicy>
         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>

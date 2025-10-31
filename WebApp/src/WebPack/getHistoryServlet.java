@@ -1,3 +1,4 @@
+/*
 package WebPack;
 
 import Engine.EngineFacade;
@@ -33,3 +34,4 @@ public class getHistoryServlet extends BaseServlet
     }
 
 }
+*/

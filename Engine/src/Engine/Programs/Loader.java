@@ -17,6 +17,7 @@ import Engine.Vars.VariableType;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 //import java.util.function.Function;
 
 public class Loader
@@ -30,18 +31,18 @@ public class Loader
         this.context = destProgram.getContext();
     }
 
-    public void load(File file)
+    public void load(File file, ConcurrentMap<String, Function> functions, Set<String> programKeyName)
     {
-        XML_Reader reader = new XML_Reader(file);
-        loadFromReader(reader);
+        XML_Reader reader = new XML_Reader(file, functions, programKeyName);
+        loadFromReader(reader,functions);
 
     }
 
-    public void loadFromReader(XML_Reader reader)
+    public void loadFromReader(XML_Reader reader,  ConcurrentMap<String, Function> functions)
     {
         context.clearMaps();
         destProgram.setName(reader.getName());
-        destProgram.setFunctions(convertToFunctionsList(reader.getFunctions()));
+        destProgram.setFunctions(convertToFunctionsList(reader.getFunctions(),functions));
         List<SInstruction> newInstructions = reader.getSInstructionList();
         destProgram.setInstructions(convertToInstructionList(newInstructions, context));
         //destProgram.setProgramAlreadyDoneMaxExpensions(false);
@@ -204,10 +205,10 @@ public class Loader
         };
     }
 
-    public List<Function> convertToFunctionsList(List<SFunction> functions)
+    public List<Function> convertToFunctionsList(List<SFunction> functions, ConcurrentMap<String, Function> functionsMap)
     {
         List<Function> res = functions.stream().map(this::ConvertToFunction).toList();
-        functions.forEach(this::setOneFunctionInstructions);
+        functions.forEach(f -> setOneFunctionInstructions(f,functionsMap));
         return res;
     }
 
@@ -219,11 +220,19 @@ public class Loader
         return res;
     }
 
-    public void setOneFunctionInstructions(SFunction sFunction)
+    public void setOneFunctionInstructions(SFunction sFunction, ConcurrentMap<String, Function> functionsMap)
     {
         Function func = destProgram.getFunctionByName(sFunction.getName());
-        List<SInstruction> newInstructions = sFunction.getSInstructions().getSInstruction();
-        func.setInstructions(convertToInstructionList(newInstructions, func.getContext()));
+        List<SInstruction> newInstructions = new ArrayList<>();
+        if (functionsMap.containsKey(func.getName()))
+        {
+            func.setInstructions(functionsMap.get(func.getName()).getInstructions());
+        }
+        else
+        {
+            newInstructions = sFunction.getSInstructions().getSInstruction();
+            func.setInstructions(convertToInstructionList(newInstructions, func.getContext()));
+        }
     }
 
 }

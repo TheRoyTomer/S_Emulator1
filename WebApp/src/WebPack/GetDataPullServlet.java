@@ -1,5 +1,6 @@
 package WebPack;
 
+import EngineObject.StatisticDTO;
 import Out.FunctionInfoDTO;
 import Out.ProgramInfoDTO;
 import Out.UpdateDataDTO;
@@ -49,13 +50,18 @@ public class GetDataPullServlet extends BaseServlet
         ConcurrentMap<String, UserData> allUsers =
                 (ConcurrentMap<String, UserData>) getServletContext().getAttribute("USERS");
 
-        // Get current user's credits
+        // Get current user's credits and history
         int userCredits = 0;
+        List<StatisticDTO> currUserHistory = new ArrayList<>();
         if (username != null && allUsers != null)
         {
             UserData userData = allUsers.get(username);
 
-            if (userData != null) {userCredits = userData.getCurrentCredits();}
+            if (userData != null)
+            {
+                userCredits = userData.getCurrentCredits();
+                currUserHistory = userData.getUserHistory();
+            }
         }
 
         // Convert programs to DTOs using convertToProgramInfoDTO
@@ -67,7 +73,7 @@ public class GetDataPullServlet extends BaseServlet
                 programDTOs.add(dto);
             });
 
-            programDTOs.forEach(dto -> System.out.println("  Final DTO: " + dto.getName()));
+            //programDTOs.forEach(dto -> System.out.println("  Final DTO: " + dto.getName()));
         }
 
         // Convert functions to DTOs using convertToProgramInfoDTO
@@ -89,7 +95,7 @@ public class GetDataPullServlet extends BaseServlet
         }
 
         // Create the response DTO with user credits
-        UpdateDataDTO updateData = new UpdateDataDTO(programDTOs, functionDTOs, userDTOs, userCredits);
+        UpdateDataDTO updateData = new UpdateDataDTO(programDTOs, functionDTOs, userDTOs, userCredits, currUserHistory);
 
         // Log the JSON before sending
         String jsonResponse = GSON.toJson(updateData);

@@ -501,7 +501,6 @@ public class httpRequests
                 } catch (Exception ignored) { }
             }
 
-            System.out.println("[CLIENT] Invalid JSON: " + body);
             return -1;
 
         } catch (IOException e) {
@@ -509,55 +508,5 @@ public class httpRequests
             return -1;
         }
     }
-
-
-    public void httpGetHistory(Consumer<List<StatisticDTO>> callback) {
-        Request getHistoryRequest = new Request.Builder()
-                .url(SERVER_URL + "/getHistory")
-                .get()
-                .addHeader("Accept", "application/json")
-                .build();
-
-        HTTP_CLIENT.newCall(getHistoryRequest).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String json;
-                try {
-                    int code = response.code();
-                    json = (response.body() != null) ? response.body().string() : "";
-
-                    if (!response.isSuccessful()) {
-                        final String msg = "GetHistory failed: HTTP " + code;
-                        Platform.runLater(() -> UTILS.showError(msg));
-                        return;
-                    }
-
-                    try {
-                        Type t = new TypeToken<List<StatisticDTO>>() {}.getType();
-                        List<StatisticDTO> historyLst = GSON.fromJson(json, t);
-
-                        Platform.runLater(() -> {
-                            if (callback != null) {
-                                callback.accept(historyLst);
-                            }
-                        });
-
-                    } catch (Exception parseEx2) {
-                        final String msg = "GetHistory JSON parse error: " + parseEx2.getMessage();
-                        Platform.runLater(() -> UTILS.showError(msg));
-                    }
-                } finally {
-                    response.close();
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call2, @NotNull IOException e) {
-                Platform.runLater(() -> UTILS.showError("Failed to get history: " + e.getMessage()));
-            }
-        });
-    }
-
-
 
 }

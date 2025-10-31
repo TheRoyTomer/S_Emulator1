@@ -89,9 +89,11 @@ public class VariableInputsTableViewController {
             return 0L;
     }
 
-    public void loadInputValues(List<Long> inputs)
+    public void loadInputValues(List<Long> inputs, List<VariableDTO> inputVars)
     {
-        for (VariableDTO var : variableInputsTableView.getItems())
+        System.out.println("HEREEEE");
+        if(inputVars.isEmpty()) {System.out.println("EMPTY");}
+        for (VariableDTO var : inputVars)
         {
             int serial = var.getSerial();
             if (serial > 0 && serial <= inputs.size())
@@ -100,15 +102,34 @@ public class VariableInputsTableViewController {
             }
         }
 
-        variableInputsTableView.refresh();
+        //variableInputsTableView.refresh();
+        // Force complete refresh
+        var items = variableInputsTableView.getItems();
+        variableInputsTableView.setItems(null);
+        variableInputsTableView.setItems(items);
     }
 
+
+   /* public void setRows(List<VariableDTO> list)
+    {
+        variableInputsTableView.setItems(FXCollections.observableArrayList(list));
+    }
+*/
 
     public void setRows(List<VariableDTO> list)
     {
         variableInputsTableView.setItems(FXCollections.observableArrayList(list));
-    }
 
+        // Initialize userInputs map with empty values for new variables
+        for (VariableDTO var : list) {
+            if (!userInputs.containsKey(var.getSerial())) {
+                userInputs.put(var.getSerial(), ""); // Empty string as default
+            }
+        }
+
+        // Force refresh so cells display userInputs correctly
+        variableInputsTableView.refresh();
+    }
     public void setValueColEditable(boolean editable)
     {
         valueCol.setEditable(editable);

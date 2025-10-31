@@ -1,0 +1,113 @@
+/* HistoryCompCSS.css */
+
+/* ================ TreeView Styling ================ */
+.tree-view {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+/* Tree Cell - Each item background */
+.tree-cell {
+    -fx-background-color: white;
+    -fx-padding: 5px 8px;
+    -fx-border-color: #e9ecef transparent #e9ecef transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.tree-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.tree-cell:hover {
+    -fx-background-color: #e3f2fd;
+}
+
+.tree-cell:selected {
+    -fx-background-color: #64b5f6;
+    -fx-text-fill: white;
+}
+
+/* Disclosure Node - The Arrow */
+.tree-cell .tree-disclosure-node {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.tree-cell .tree-disclosure-node .arrow {
+    -fx-background-color: #2196F3;
+    -fx-shape: "M 0 0 L 6 4 L 0 8 Z";
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+    -fx-padding: 4px;
+}
+
+.tree-cell:expanded .tree-disclosure-node .arrow {
+    -fx-rotate: 90;
+}
+
+.tree-cell:selected .tree-disclosure-node .arrow {
+    -fx-background-color: white;
+}
+
+/* ================ History Buttons ================ */
+#reRunButton, #viewButton {
+    -fx-min-width: 100px;
+    -fx-pref-width: 100px;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-cursor: hand;
+}
+
+#reRunButton {
+    -fx-background-color: linear-gradient(to bottom, #17a2b8, #138496);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(23, 162, 184, 0.3), 4, 0, 0, 2);
+}
+
+#reRunButton:hover {
+    -fx-background-color: linear-gradient(to bottom, #138496, #10707f);
+    -fx-effect: dropshadow(gaussian, rgba(23, 162, 184, 0.4), 6, 0, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+#reRunButton:pressed {
+    -fx-background-color: linear-gradient(to bottom, #10707f, #0e6674);
+}
+
+#reRunButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #adb5bd;
+    -fx-effect: none;
+    -fx-opacity: 0.6;
+}
+
+#viewButton {
+    -fx-background-color: linear-gradient(to bottom, #6c757d, #5c636a);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(108, 117, 125, 0.3), 4, 0, 0, 2);
+}
+
+#viewButton:hover {
+    -fx-background-color: linear-gradient(to bottom, #5c636a, #545b62);
+    -fx-effect: dropshadow(gaussian, rgba(108, 117, 125, 0.4), 6, 0, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+#viewButton:pressed {
+    -fx-background-color: linear-gradient(to bottom, #545b62, #4e555b);
+}
+
+#viewButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #adb5bd;
+    -fx-effect: none;
+    -fx-opacity: 0.6;
+}

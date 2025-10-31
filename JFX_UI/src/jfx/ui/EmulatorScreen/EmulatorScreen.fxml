@@ -3,7 +3,11 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.EmulatorScreen.EmulatorScreenController" fitToHeight="true" fitToWidth="true">
+<ScrollPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../MainComp/MainCompCSS.css, @EmulatorScreen_CSS.css"
+            fx:controller="jfx.ui.EmulatorScreen.EmulatorScreenController"
+            fitToHeight="true" fitToWidth="true">
     <content>
         <BorderPane minHeight="400.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0">
             <center>

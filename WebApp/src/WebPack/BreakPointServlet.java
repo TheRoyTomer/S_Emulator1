@@ -55,7 +55,7 @@ public class BreakPointServlet extends BaseServlet
             }
         }
 
-        StepOverResult result = facade.breakPoint(startPC, destPC, thisUser.getCurrentCredits());
+        StepOverResult result = facade.breakPoint(startPC, destPC, thisUser.getCurrentCredits(), architecture);
 
         if (result.isFailed())
         {
@@ -68,6 +68,11 @@ public class BreakPointServlet extends BaseServlet
 
             if (result.isDebugCompleted() && p != null)
             {
+                if (facade.getRecentExecutionStatistics() != null)
+                {
+                    thisUser.getUserHistory().add(facade.getRecentExecutionStatistics());
+                }
+
                 updateInfo(thisUser, facade, result.cycles() + archCost);
 
             }

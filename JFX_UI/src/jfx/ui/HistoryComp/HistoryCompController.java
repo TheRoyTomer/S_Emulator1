@@ -2,6 +2,7 @@ package jfx.ui.HistoryComp;
 
 import EngineObject.StatisticDTO;
 import EngineObject.VariableDTO;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -11,13 +12,17 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jfx.ui.DashboardScreenComp.DashboardScreenCompController;
 import jfx.ui.EmulatorScreen.EmulatorScreenController;
+import jfx.ui.ShowUsersComp.ShowUsersCompController;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class HistoryCompController {
 
-    private EmulatorScreenController emulatorScreenController;
+    private ShowUsersCompController fatherController;
 
     @FXML
     private TreeView<StatisticDTO> historyTreeView;
@@ -53,24 +58,67 @@ public class HistoryCompController {
         });
     }
 
-
-    public void setMainFXController(EmulatorScreenController emulatorScreenController)
+    public void setFatherController(ShowUsersCompController fatherController)
     {
-        this.emulatorScreenController = emulatorScreenController;
-        reRunButton.disableProperty().bind(emulatorScreenController.getDebugModeProperty());
+        this.fatherController = fatherController;
+        BooleanProperty boolProp = this.fatherController.getDebugPropertyToBind();
+        if (boolProp != null)
+        {
+            reRunButton.disableProperty().bind(boolProp);
+        }
     }
 
     public void updateHistoryTree(List<StatisticDTO> statistics)
     {
         TreeItem<StatisticDTO> rootItem = historyTreeView.getRoot();
+
+        // Save expanded state BEFORE clearing
+        Set<Integer> expandedExecuteIDs = new HashSet<>();
+        for (TreeItem<StatisticDTO> item : rootItem.getChildren()) {
+            if (item.isExpanded() && item.getValue() != null) {
+                expandedExecuteIDs.add(item.getValue().executeID());
+            }
+        }
+
+        // Save selected item BEFORE clearing
+        TreeItem<StatisticDTO> selectedItem = historyTreeView.getSelectionModel().getSelectedItem();
+        Integer selectedExecuteID = null;
+        boolean isParentSelected = false;
+
+        if (selectedItem != null && selectedItem.getValue() != null) {
+            selectedExecuteID = selectedItem.getValue().executeID();
+            // Check if the selected item is a parent (History #X) or child (details)
+            isParentSelected = (selectedItem.getParent() == rootItem);
+        }
+
         rootItem.getChildren().clear();
+
+        TreeItem<StatisticDTO> itemToSelect = null;
 
         for (StatisticDTO stat : statistics) {
             TreeItem<StatisticDTO> historyItem = new TreeItem<>(stat);
             TreeItem<StatisticDTO> detailsItem = new TreeItem<>(stat);
             historyItem.getChildren().add(detailsItem);
+
+            // Restore expanded state
+            if (expandedExecuteIDs.contains(stat.executeID())) {
+                historyItem.setExpanded(true);
+            }
+
+            // Find the item to re-select
+            if (selectedExecuteID != null && stat.executeID() == selectedExecuteID) {
+                itemToSelect = isParentSelected ? historyItem : detailsItem;
+            }
+
             rootItem.getChildren().add(historyItem);
         }
+
+        // Restore selection
+        if (itemToSelect != null) {
+            historyTreeView.getSelectionModel().select(itemToSelect);
+        }
+
+        historyTreeView.refresh();
     }
 
     public void resetHistory()
@@ -91,8 +139,8 @@ public class HistoryCompController {
     void onRerun(ActionEvent event)
     {
         StatisticDTO selected = getSelectedStatistic();
-        if (selected != null) {
-            emulatorScreenController.handleReRun(selected);}
+
+        if (selected != null) {fatherController.handleReRun(selected);}
     }
 
     @FXML

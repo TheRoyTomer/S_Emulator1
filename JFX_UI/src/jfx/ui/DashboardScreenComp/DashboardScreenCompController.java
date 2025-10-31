@@ -2,6 +2,7 @@ package jfx.ui.DashboardScreenComp;
 
 import Client_UTILS.ClientConstants;
 import Client_UTILS.StateRefresher;
+import EngineObject.StatisticDTO;
 import Out.UpdateDataDTO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -18,6 +19,8 @@ import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 
 import static Client_UTILS.ClientConstants.REFRESH_RATE;
@@ -46,6 +49,8 @@ public class DashboardScreenCompController
     private StateRefresher refresher;
 
     private MainCompController mainCompController;
+
+    private List<StatisticDTO> userHistory = new ArrayList<>();
 
 
 
@@ -130,6 +135,11 @@ public class DashboardScreenCompController
         if (showUsersCompController != null)
         {
             showUsersCompController.UpdateUsersTable(data.getAllUsers());
+            this.userHistory = data.getCurrUserStatistics();
+            if (showUsersCompController.getSelectedUser() == null)
+            {
+                showUsersCompController.updateHistoryBySelection();
+            }
         }
 
         // Update credits in MainComp
@@ -137,5 +147,15 @@ public class DashboardScreenCompController
         {
             mainCompController.setCredits(data.getUserCredits());
         }
+    }
+
+    public List<StatisticDTO> getUserHistory()
+    {
+        return userHistory;
+    }
+
+    public void setUserHistory(List<StatisticDTO> userHistory)
+    {
+        this.userHistory = userHistory;
     }
 }

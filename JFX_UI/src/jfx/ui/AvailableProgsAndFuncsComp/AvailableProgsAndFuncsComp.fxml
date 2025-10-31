@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <SplitPane dividerPositions="0.5" orientation="VERTICAL" minWidth="450.0" prefWidth="700.0"
+           stylesheets="@../MainComp/MainCompCSS.css, @AvailableProgsAndFuncsCompCSS.css"
            xmlns="http://javafx.com/javafx/24.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="jfx.ui.AvailableProgsAndFuncsComp.AvailableProgsAndFuncsCompController">
@@ -19,7 +20,7 @@
                 <padding>
                     <Insets top="5" right="5" bottom="5" left="5"/>
                 </padding>
-                <Label text="Available Programs" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <Label text="Available Programs" styleClass="table-title-label"/>
                 <Pane HBox.hgrow="ALWAYS"/>
                 <Button fx:id="executeProgramBtn" text="Execute Program" onAction="#onExecuteProgram"/>
             </HBox>
@@ -32,7 +33,7 @@
                 <padding>
                     <Insets top="5" right="5" bottom="5" left="5"/>
                 </padding>
-                <Label text="Available Functions" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <Label text="Available Functions" styleClass="table-title-label"/>
                 <Pane HBox.hgrow="ALWAYS"/>
                 <Button fx:id="executeFunctionBtn" text="Execute Function" onAction="#onExecuteFunction"/>
             </HBox>

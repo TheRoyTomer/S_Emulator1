@@ -1,13 +1,14 @@
 package Engine.JAXB.generated;
 
 import Engine.Programs.Convertor;
+import Engine.Programs.Function;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Function;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 public class XML_Reader
@@ -16,7 +17,7 @@ public class XML_Reader
     private SProgram sProgram;
     private File XMLfile;
 
-    public XML_Reader(File file)
+    public XML_Reader(File file, ConcurrentMap<String, Function> functions, Set<String> programKeyName)
     {
 
         this.XMLfile = file;
@@ -28,13 +29,19 @@ public class XML_Reader
             availableFunctions.add(func.getName());
         }
 
+        if (programKeyName.contains(getName()))
+        {
+            throw new RuntimeException(getName() + " has already exist in the S-EMULATOR!" );
+        }
+
         validateLabels(getSInstructionList(), getName());
-        validateFunctionReferences(getSInstructionList(), getName(), availableFunctions);
+        validateFunctionReferences(getSInstructionList(), getName(), availableFunctions,functions);
 
         for (SFunction func : getFunctions()) {
             validateLabels(func.getSInstructions().getSInstruction(), func.getName());
-            validateFunctionReferences(func.getSInstructions().getSInstruction(), func.getName(), availableFunctions);
+            validateFunctionReferences(func.getSInstructions().getSInstruction(), func.getName(), availableFunctions,functions);
         }
+
 
 
     }
@@ -95,9 +102,10 @@ public class XML_Reader
                     throw new RuntimeException("Undefined label " + lbl + " in " + funcName + "!");
                 });
     }
-    private void validateFunctionReferences(List<SInstruction> instructions, String funcName, Set<String> availableFunctions)
+    private void validateFunctionReferences(List<SInstruction> instructions, String funcName, Set<String> availableFunctions, ConcurrentMap<String, Function> functions)
     {
         Set<String> usedFunctions = new HashSet<>();
+
         for (SInstruction inst : instructions)
         {
             String funcArgs = getFunctionArguments(inst);
@@ -108,11 +116,12 @@ public class XML_Reader
                         .split(",")).toList();
                 for (String str : strBetweenCommas)
                 {
-                    if (!Convertor.isArgVar(str) && !availableFunctions.contains(str))
+                    if (!Convertor.isArgVar(str) && availableFunctions.contains(str) == functions.containsKey(str))
                     {
-                        throw new RuntimeException(funcName + " has reference to " + str + " that doesnt exist!");
+                        throw new RuntimeException(funcName + " has reference to " + str + " that doesnt exist or already existed!");
                     }
                 }
+
             }
 
         }

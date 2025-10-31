@@ -1,6 +1,10 @@
 package Server_UTILS;
 
+import EngineObject.StatisticDTO;
 import Out.UserInfoDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserData {
     private final String userName;
@@ -10,6 +14,8 @@ public class UserData {
     private int usedCredits;
     private int executionCount;
 
+    List<StatisticDTO> userHistory;
+
     public UserData(String userName)
     {
         this.userName = userName;
@@ -18,6 +24,7 @@ public class UserData {
         this.currentCredits = 0;
         this.usedCredits = 0;
         this.executionCount = 0;
+        this.userHistory = new ArrayList<>();
     }
 
     // Getters
@@ -27,6 +34,16 @@ public class UserData {
     public int getCurrentCredits() { return currentCredits; }
     public int getUsedCredits() { return usedCredits; }
     public int getExecutionCount() { return executionCount; }
+
+    public List<StatisticDTO> getUserHistory()
+    {
+        return userHistory;
+    }
+
+    public void setUserHistory(List<StatisticDTO> userHistory)
+    {
+        this.userHistory = userHistory;
+    }
 
     // Methods to update
     public void incrementProgramCount() { uploadedProgramCount++; }
@@ -51,21 +68,6 @@ public class UserData {
 
     }
 
-/*    //returns whether client finishes his credits
-    public boolean getArchitectureCost(int architecture)
-    {
-        int amount = switch (architecture)
-        {
-            case 1 -> 5;
-            case 2 -> 100;
-            case 3 -> 500;
-            case 4 -> 1000;
-            default -> 0;
-        };
-
-        return this.useCredits(amount);
-    }*/
-
     public void chargeCredits(int amount)
     {
         currentCredits += amount;
@@ -81,7 +83,7 @@ public class UserData {
     public UserInfoDTO toDTO()
     {
         return new UserInfoDTO(userName, uploadedProgramCount, uploadedFunctionCount,
-                currentCredits, usedCredits, executionCount);
+                currentCredits, usedCredits, executionCount,  userHistory);
     }
 
 

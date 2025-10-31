@@ -6,18 +6,20 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-
-<VBox minHeight="150.0" prefHeight="200.0" spacing="5.0" stylesheets="@HistoryCompCSS.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfx.ui.HistoryComp.HistoryCompController">
+<VBox minHeight="150.0" prefHeight="200.0" spacing="5.0"
+      stylesheets="@../MainComp/MainCompCSS.css, @HistoryCompCSS.css"
+      xmlns="http://javafx.com/javafx/24.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="jfx.ui.HistoryComp.HistoryCompController">
     <children>
         <HBox spacing="10.0">
             <children>
-                <Button fx:id="showButton" mnemonicParsing="false" onAction="#onShowPress" prefWidth="80.0" text="Show" HBox.hgrow="ALWAYS">
+                <Button fx:id="viewButton" mnemonicParsing="false" onAction="#onShowPress" text="Show" HBox.hgrow="ALWAYS">
                     <HBox.margin>
                         <Insets left="5.0" />
                     </HBox.margin>
                 </Button>
-                <Button fx:id="reRunButton" mnemonicParsing="false" onAction="#onRerun" prefWidth="80.0" text="Rerun" HBox.hgrow="ALWAYS">
+                <Button fx:id="reRunButton" mnemonicParsing="false" onAction="#onRerun" text="Rerun" HBox.hgrow="ALWAYS">
                     <HBox.margin>
                         <Insets right="5.0" />
                     </HBox.margin>

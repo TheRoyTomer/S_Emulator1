@@ -1,0 +1,105 @@
+/* ================================================
+   LoginComp CSS - Login Screen Styling
+   ================================================ */
+
+/* ================ GridPane Container ================ */
+.grid-pane {
+    -fx-background-color: linear-gradient(to bottom right, #e3f2fd, #f8f9fa);
+}
+
+/* ================ Title Label (S-Emulator) ================ */
+/* Specific ID for main title only */
+#mainTitleLabel {
+    -fx-text-fill: #1976d2;
+    -fx-font-size: 42px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.3), 4, 0, 0, 2);
+}
+
+/* ================ Username Label ================ */
+#usernamePromptLabel {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1976d2;
+}
+
+/* ================ Username TextField ================ */
+#usernameField {
+    -fx-background-color: white;
+    -fx-border-color: #90caf9;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+    -fx-font-size: 16px;
+}
+
+#usernameField:hover {
+    -fx-border-color: #64b5f6;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0, 0, 3);
+}
+
+#usernameField:focused {
+    -fx-border-color: #1976d2;
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.4), 8, 0, 0, 3);
+}
+
+/* Prompt text styling */
+#usernameField .text {
+    -fx-fill: #212529;
+}
+
+#usernameField:focused .text {
+    -fx-fill: #212529;
+}
+
+/* ================ Login Button ================ */
+#loginButton {
+    -fx-background-color: linear-gradient(to bottom, #2196F3, #1976d2);
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.4), 6, 0, 0, 3);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px 1px 0 1px;
+}
+
+#loginButton:hover {
+    -fx-background-color: linear-gradient(to bottom, #1976d2, #1565c0);
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.5), 8, 0, 0, 4);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+#loginButton:pressed {
+    -fx-background-color: linear-gradient(to bottom, #1565c0, #0d47a1);
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.3), 4, 0, 0, 2);
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+#loginButton:disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #adb5bd;
+    -fx-effect: none;
+    -fx-opacity: 0.6;
+    -fx-cursor: default;
+    -fx-border-color: transparent;
+}
+
+/* ================ Error Label ================ */
+#errorLabel {
+    -fx-text-fill: #dc3545;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(220, 53, 69, 0.3), 3, 0, 0, 1);
+}
+
+/* Success message styling (for "Logging in...") */
+#errorLabel[text="Logging in..."] {
+    -fx-text-fill: #28a745;
+}

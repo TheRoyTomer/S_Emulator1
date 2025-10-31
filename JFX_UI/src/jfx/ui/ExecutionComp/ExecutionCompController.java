@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.util.StringConverter;
 import jfx.ui.MainComp.MainCompController;
 import jfx.ui.UTILS;
 import jfx.ui.EmulatorScreen.EmulatorScreenController;
@@ -45,6 +46,9 @@ public class ExecutionCompController {
     private final BooleanProperty stepOverStartedProperty = new SimpleBooleanProperty(false);
     private final IntegerProperty selectedArchitectureProperty = new SimpleIntegerProperty(0);
 
+    // Flag to prevent infinite loop in bidirectional binding
+    private boolean isUpdatingArchitecture = false;
+
 
 
 
@@ -55,7 +59,7 @@ public class ExecutionCompController {
         architectureSelectionComboBox.setItems(FXCollections.observableArrayList("I", "II", "III", "IV"));
 
         // Set prompt text instead of default value
-        architectureSelectionComboBox.setPromptText("Architecture Selection");
+        architectureSelectionComboBox.setPromptText("Architecture");
 
         // Set custom button cell to show prompt text when null
         architectureSelectionComboBox.setButtonCell(new ListCell<String>() {
@@ -63,26 +67,56 @@ public class ExecutionCompController {
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
-                    setText("Architecture Selection");
+                    setText("Architecture");
                 } else {
                     setText(item);
                 }
             }
         });
 
-        // Listen to selection changes and convert to integer
-        architectureSelectionComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null)
-            {
-                int archType = switch (newVal)
-                {
+        // Bidirectional binding between ComboBox (String) and Property (Integer)
+        StringConverter<Integer> converter = new StringConverter<Integer>() {
+            @Override
+            public String toString(Integer archType) {
+                // Integer → String (Property → ComboBox)
+                if (archType == null || archType == 0) return null;
+                return switch (archType) {
+                    case 1 -> "I";
+                    case 2 -> "II";
+                    case 3 -> "III";
+                    case 4 -> "IV";
+                    default -> null;
+                };
+            }
+
+            @Override
+            public Integer fromString(String archString) {
+                // String → Integer (ComboBox → Property)
+                if (archString == null) return 0;
+                return switch (archString) {
                     case "I" -> 1;
                     case "II" -> 2;
                     case "III" -> 3;
                     case "IV" -> 4;
-                    default -> 1;
+                    default -> 0;
                 };
-                selectedArchitectureProperty.set(archType);
+            }
+        };
+
+        // Manual bidirectional binding with loop prevention
+        architectureSelectionComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isUpdatingArchitecture) {
+                isUpdatingArchitecture = true;
+                selectedArchitectureProperty.set(converter.fromString(newVal));
+                isUpdatingArchitecture = false;
+            }
+        });
+
+        selectedArchitectureProperty.addListener((obs, oldVal, newVal) -> {
+            if (!isUpdatingArchitecture) {
+                isUpdatingArchitecture = true;
+                architectureSelectionComboBox.setValue(converter.toString(newVal.intValue()));
+                isUpdatingArchitecture = false;
             }
         });
     }
@@ -100,7 +134,7 @@ public class ExecutionCompController {
                 .or(mainController.getDebugModeProperty()).or(mainController.getIsArchFitForExecute().not()));
 
         breakpointButton.disableProperty().bind(mainController.getDebugModeProperty().not()
-               /* .or(getStepOverStartedProperty())*/);
+                /* .or(getStepOverStartedProperty())*/);
 
         stepOverButton.disableProperty().bind(mainController.getDebugModeProperty().not());
         resumeButton.disableProperty().bind(mainController.getDebugModeProperty().not());
@@ -147,8 +181,6 @@ public class ExecutionCompController {
         setStepOverStarted(false);
         mainController.setIsIsFirstStepInDebugPropertyValue(true);
         mainController.getRequests().httpGetInputVariables();
-
-
     }
 
     public void setinputVarsCompControllerRows(ObservableList<VariableDTO> inputVarsList)
@@ -219,9 +251,9 @@ public class ExecutionCompController {
     @FXML
     private void onExecutePress(ActionEvent e)
     {
-            if (!this.preRunCreditsValidation()) {return;}
+        if (!this.preRunCreditsValidation()) {return;}
 
-            try {
+        try {
             mainController.onExecution(handleInputs(), getSelectedArchitecture());
             inputVarsComp.setEditable(false);
 
@@ -276,10 +308,34 @@ public class ExecutionCompController {
         );
     }
 
-    public void onStatisticsNewRun(List<Long> inputs)
+   /* public void onStatisticsNewRun(List<Long> inputs, int archType, List<VariableDTO> inputVarsList)
     {
         onNewRun(null);
-        inputVarsCompController.loadInputValues(inputs);
+        selectedArchitectureProperty.set(archType); // Bidirectional binding will update ComboBox
+        inputVarsCompController.loadInputValues(inputs, inputVarsList);
+    }*/
+
+    public void onStatisticsNewRun(List<Long> inputs, int archType, List<VariableDTO> inputVarsList)
+    {
+        // Initialize state like onNewRun but without HTTP call
+        mainController.setNewRunStarted(true);
+        inputVarsCompController.clearInputVarMap();
+        inputVarsCompController.clearTableView();
+        varTableCompController.clearTableView();
+        mainController.resetCyclesProperty();
+        inputVarsComp.setEditable(true);
+        inputVarsCompController.setValueColEditable(true);
+        setStepOverStarted(false);
+        mainController.setIsIsFirstStepInDebugPropertyValue(true);
+
+        // Set architecture
+        selectedArchitectureProperty.set(archType); // Bidirectional binding will update ComboBox
+
+        // Directly set the input variables (no HTTP needed - we already have them!)
+        inputVarsCompController.setRows(inputVarsList);
+
+        // Load the values into the table
+        inputVarsCompController.loadInputValues(inputs, inputVarsList);
     }
 
     public void updateChangedVariables(List<VariableDTO> changedVars)
@@ -315,7 +371,7 @@ public class ExecutionCompController {
     {
         MainCompController mainCompController = mainController.getMainCompController();
         if (mainCompController != null && mainCompController.getCurrentProgramInfo() != null
-            && mainCompController.getCredits() < mainCompController.getCurrentProgramInfo().getAvgCreditCost())
+                && mainCompController.getCredits() < mainCompController.getCurrentProgramInfo().getAvgCreditCost())
         {
 
             UTILS.showInfo("Your credit balance is lower than the average cost of running this program.\n" +

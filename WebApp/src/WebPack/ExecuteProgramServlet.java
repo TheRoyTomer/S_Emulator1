@@ -133,7 +133,7 @@ public class ExecuteProgramServlet extends BaseServlet
                 return;
             }
 
-            ExecuteResultDTO result = facade.executeProgram(deg, inputs, thisUser.getCurrentCredits());
+            ExecuteResultDTO result = facade.executeProgram(deg, inputs, thisUser.getCurrentCredits(), architecture);
 
             if (result.isFailed())
             {
@@ -142,6 +142,10 @@ public class ExecuteProgramServlet extends BaseServlet
             }
             else
             {
+                if (facade.getRecentExecutionStatistics() != null)
+                {
+                    thisUser.getUserHistory().add(facade.getRecentExecutionStatistics());
+                }
                 updateInfo(thisUser, facade, result.cycles() + archCost);
                 thisUser.useCredits(result.cycles());
                 response.getWriter().println(GSON.toJson(result));

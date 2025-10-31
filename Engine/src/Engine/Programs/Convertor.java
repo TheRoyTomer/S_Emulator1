@@ -68,15 +68,19 @@ public class Convertor
                 .toList();
     }
 
-    public static StatisticDTO convertStatisticToDTO(ExecutionStatistics stat)
+    public static StatisticDTO convertStatisticToDTO(ExecutionStatistics stat, int id, boolean isFunction, int ArchTypeSerial, String name)
     {
+
         return new StatisticDTO(
-                stat.getExecuteId(),
+                name,
+                id,
                 stat.getExecuteDegree(),
                 stat.getInputsVals(),
                 stat.getVariablesVals(),
                 stat.getFinalYValue(),
-                stat.getTotalCycles());
+                stat.getTotalCycles(),
+                isFunction,
+                ArchTypeSerial);
 
     }
 

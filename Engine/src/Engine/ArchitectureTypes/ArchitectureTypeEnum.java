@@ -29,5 +29,6 @@ public enum ArchitectureTypeEnum implements ArchitectureInterface
 
         @Override
         public int getCostArchitecture() {return 1000;}
-    }
+    };
+
 }

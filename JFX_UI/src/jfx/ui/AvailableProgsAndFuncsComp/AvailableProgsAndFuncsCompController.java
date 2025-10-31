@@ -40,7 +40,6 @@ public class AvailableProgsAndFuncsCompController {
     @FXML
     private void initialize()
     {
-        // Todo Optional: init logic
     }
 
     @FXML

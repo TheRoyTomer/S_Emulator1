@@ -149,15 +149,6 @@ public class EmulatorScreenController
         executionCompController.resetInputFieldsState();
         //requests.loadAvailablePrograms();
     }
-
-//Todo: what to do with that?
-/*
-    public void handleLoad()
-    {
-        currentBreakpoint = null;
-    }
-*/
-
     private void setupIsArchFitForExecuteBinding()
     {
         isArchFitForExecute.bind(Bindings.createBooleanBinding(() -> {
@@ -232,15 +223,10 @@ public class EmulatorScreenController
     {
         currentDegreeProperty.set(currentDegreeProperty.get() - 1);
     }
-
-    public void changeDegree(int newDegree)
-    {
-        currentDegreeProperty.set(newDegree);
-    }
-
     public void setCurrentDegree(int degree)
     {
-        if (degree >= 0 && degree <= maxDegreeProperty.get()) {
+        if (degree >= 0 && degree <= maxDegreeProperty.get())
+        {
             currentDegreeProperty.set(degree);
         }
     }
@@ -249,12 +235,6 @@ public class EmulatorScreenController
     {
         requests.httpViewExpandedProgram(currentDegreeProperty.get());
         currentBreakpoint = null;
-    }
-
-    public void handleReRun(StatisticDTO dto)
-    {
-        executionCompController.onStatisticsNewRun(dto.inputs());
-        currentDegreeProperty.set(dto.degree());
     }
 
     public void InstructionsUpdate(ViewResultDTO resDTO)
@@ -296,12 +276,9 @@ public class EmulatorScreenController
         }
         cyclesProperty.setValue(res.cycles());
         executionCompController.updateVarTable(res.usedVarsByOrder());
-        requests.httpGetHistory(history -> {
-            //historyCompController.updateHistoryTree(history);
             newRunStartedProperty.set(false);
             debugModeProperty.set(false);
             requests.httpViewExpandedProgram(currentDegreeProperty.get());
-        });
 
     }
 
@@ -325,12 +302,9 @@ public class EmulatorScreenController
         executionCompController.refreshAndClear();
         cyclesProperty.setValue(res.cycles());
         executionCompController.updateVarTable(res.usedVarsByOrder());
-        requests.httpGetHistory(history -> {
-            //historyCompController.updateHistoryTree(history);
             newRunStartedProperty.set(false);
             debugModeProperty.set(false);
             requests.httpViewExpandedProgram(currentDegreeProperty.get());
-        });
     }
 
     public void handleStepOver(int architecture)
@@ -343,11 +317,8 @@ public class EmulatorScreenController
             resetCurrAndNextPC();
             debugModeProperty.set(false);
             newRunStartedProperty.set(false);
-            requests.httpGetHistory(history -> {
-                //historyCompController.updateHistoryTree(history);
                 executionCompController.refreshAndClear();
                 viewCompController.refreshInstructionsTable();
-            });
         }
         
         requests.httpViewExpandedProgram(currentDegreeProperty.getValue());
@@ -437,10 +408,7 @@ public class EmulatorScreenController
             resetCurrAndNextPC();
             debugModeProperty.set(false);
             newRunStartedProperty.set(false);
-            requests.httpGetHistory(history -> {
-               // historyCompController.updateHistoryTree(history);
-                executionCompController.refreshAndClear();
-            });
+            executionCompController.refreshAndClear();
         }
 
         cyclesProperty.setValue(cyclesProperty.get() + res.cycles());

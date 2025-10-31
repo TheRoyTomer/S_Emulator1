@@ -3,6 +3,7 @@ package WebPack;
 import Engine.EngineFacade;
 import Engine.Programs.Function;
 import Engine.Programs.Program;
+import EngineObject.StatisticDTO;
 import Server_UTILS.FunctionHolderWrapper;
 import Server_UTILS.ProgramHolderWrapper;
 import Server_UTILS.ServerConstants;
@@ -77,6 +78,8 @@ public abstract class BaseServlet extends HttpServlet {
                 thisProgram.IncreaseExecutions();
                 thisProgram.addTotalCreditCost(creditCost);
         }
+
+
     }
 
 }

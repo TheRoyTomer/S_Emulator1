@@ -8,10 +8,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import jfx.ui.ShowUsersComp.ShowUsersCompController;
 
 import java.util.List;
 
-public class UserInfoTableViewController {
+public class UserInfoTableViewController
+{
 
     // FXML Data Members
     @FXML
@@ -38,14 +40,18 @@ public class UserInfoTableViewController {
     @FXML
     private Button unselectUserBtn;
 
+    private ShowUsersCompController fatherController;
+
     @FXML
     public void initialize()
     {
         // Set up row factory for styling and selection
         usersTable.setRowFactory(tv -> {
-            TableRow<UserInfoDTO> row = new TableRow<UserInfoDTO>() {
+            TableRow<UserInfoDTO> row = new TableRow<UserInfoDTO>()
+            {
                 @Override
-                protected void updateItem(UserInfoDTO item, boolean empty) {
+                protected void updateItem(UserInfoDTO item, boolean empty)
+                {
                     super.updateItem(item, empty);
 
                     // Clear previous styles
@@ -62,7 +68,6 @@ public class UserInfoTableViewController {
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && row.getItem() != null) {
                     UserInfoDTO selectedUser = row.getItem();
-                    // TODO: Handle user selection
                     handleUserSelection(selectedUser);
                 }
             });
@@ -94,30 +99,32 @@ public class UserInfoTableViewController {
         executionsColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().executionCount()).asObject()
         );
-        System.out.println("########## INITIALIZE START ##########");
 
     }
 
+    public void setFatherController(ShowUsersCompController fatherController)
+    {
+        this.fatherController = fatherController;
+    }
 
     public void setRows(List<UserInfoDTO> list)
     {
         //System.out.println("setRows called with " + list.size() + " users");
         //System.out.println("usersTable is null? " + (usersTable == null));
 
-        if (usersTable == null)
-        {
+        if (usersTable == null) {
             System.out.println("ERROR: usersTable is NULL! Cannot set items.");
             return;
         }
 
         usersTable.setItems(FXCollections.observableArrayList(list));
         usersTable.refresh();
-        //System.out.println("Table items size: " + usersTable.getItems().size());
     }
 
-    private void handleUserSelection(UserInfoDTO user) {
-        // TODO: Implement what happens when a user is selected
-        //System.out.println("Selected user: " + user.userName());
+    private void handleUserSelection(UserInfoDTO user)
+    {
+        fatherController.setSelectedUser(user);
+        fatherController.updateHistoryBySelection();
     }
 
     @FXML
@@ -125,5 +132,7 @@ public class UserInfoTableViewController {
     {
         // Clear table selection
         usersTable.getSelectionModel().clearSelection();
+        fatherController.setSelectedUser(null);
+        fatherController.updateHistoryBySelection();
     }
 }

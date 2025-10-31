@@ -1,6 +1,8 @@
 package jfx.ui.ShowUsersComp;
 
+import EngineObject.StatisticDTO;
 import Out.UserInfoDTO;
+import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import jfx.ui.DashboardScreenComp.DashboardScreenCompController;
@@ -32,33 +34,73 @@ public class ShowUsersCompController {
         this.mainController = mainController;
     }
 
+    public HistoryCompController getHistoryCompController()
+    {
+        return historyCompController;
+    }
+
+    public UserInfoDTO selectedUser;
+
     @FXML
     public void initialize()
     {
-        // TODO: Initialize the component
-        // TODO: Set up bindings between user selection and history display
+        if (userInfoTableViewController != null)
+        {
+            userInfoTableViewController.setFatherController(this);
+        }
+
+        if (historyCompController != null)
+        {
+            historyCompController.setFatherController(this);
+        }
+
     }
 
-    // Getters for sub-controllers
-    public UserInfoTableViewController getUserInfoTableViewController() {
-        // TODO: Return user info table view controller
-        return null;
+    public UserInfoDTO getSelectedUser()
+    {
+        return selectedUser;
     }
 
-    public HistoryCompController getHistoryCompController() {
-        // TODO: Return history component controller
-        return null;
+    public void setSelectedUser(UserInfoDTO selectedUser)
+    {
+        this.selectedUser = selectedUser;
+    }
+
+    public BooleanProperty getDebugPropertyToBind()
+    {
+        try
+        {
+            return mainController.getMainCompController().getEmulatorScreenController().getDebugModeProperty();
+        }
+        catch (Exception e)
+        {return null;}
     }
 
     // Update table method
     public void UpdateUsersTable(List<UserInfoDTO> userDTOs)
     {
-        System.out.println("UpdateUsersTable called with " + userDTOs.size() + " users");
-        if (userInfoTableViewController != null) {
-            userInfoTableViewController.setRows(userDTOs);
-        } else {
-            System.out.println("ERROR: userInfoTableViewController is NULL!");
+        if (userInfoTableViewController != null) {userInfoTableViewController.setRows(userDTOs);}
+    }
+
+    public void updateHistoryBySelection()
+    {
+        if (historyCompController != null)
+        {
+            if (this.selectedUser != null)
+            {
+                historyCompController.updateHistoryTree(selectedUser.userHistory());
+            }
+             else
+            {
+                historyCompController.updateHistoryTree(mainController.getUserHistory());
+            }
         }
+
+    }
+
+    public void handleReRun(StatisticDTO selected)
+    {
+        mainController.getMainCompController().reRunStatistic(selected);
     }
 
 }

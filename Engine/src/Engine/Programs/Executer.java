@@ -64,9 +64,8 @@ public class Executer
         {
             return ExecuteResultDTO.FAILED;
         }
-        //Inserts new statistic to the history.
         List<VariableDTO> varsInList = getAllVarsInRun();
-        program.getHistory().addExecutionStatistics(
+        program.setRecentExecutionStatistics(
                 degree,
                 context.getVarValue(Variable.OUTPUT),
                 getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), inputs),
@@ -96,8 +95,8 @@ public class Executer
         int cycles = cyclesSoFar += statePreDebug.getCycle();
 
         List<VariableDTO> varsInList = getAllVarsInRun();
-        //Inserts new statistic to the history.
-        program.getHistory().addExecutionStatistics(
+
+        program.setRecentExecutionStatistics(
                 statePreDebug.getDegree(),
                 context.getVarValue(Variable.OUTPUT),
                 getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), statePreDebug.getInputs()),
@@ -186,7 +185,7 @@ public class Executer
             debugFinished = true;
 
 
-            program.getHistory().addExecutionStatistics(
+            program.setRecentExecutionStatistics(
                     statePreDebug.getDegree(),
                     context.getVarValue(Variable.OUTPUT),
                     getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), statePreDebug.getInputs()),
@@ -219,7 +218,7 @@ public class Executer
             debugFinished = true;
 
 
-            program.getHistory().addExecutionStatistics(
+            program.setRecentExecutionStatistics(
                     statePreDebug.getDegree(),
                     context.getVarValue(Variable.OUTPUT),
                     getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), statePreDebug.getInputs()),

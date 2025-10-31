@@ -50,7 +50,7 @@ public class ResumeDebugServlet extends BaseServlet
                 return;
             }
         }
-            ExecuteResultDTO result = facade.resumeDebug(pc, thisUser.getCurrentCredits());
+            ExecuteResultDTO result = facade.resumeDebug(pc, thisUser.getCurrentCredits(), architecture);
             if (result.isFailed())
             {
                 thisUser.takeAllCredits();
@@ -60,6 +60,10 @@ public class ResumeDebugServlet extends BaseServlet
             {
                 Program p = facade.getProgram();
 
+                if (facade.getRecentExecutionStatistics() != null)
+                {
+                    thisUser.getUserHistory().add(facade.getRecentExecutionStatistics());
+                }
                 updateInfo(thisUser, facade, result.cycles() + archCost);
                 thisUser.useCredits(result.cycles());
                 response.getWriter().println(GSON.toJson(result));
