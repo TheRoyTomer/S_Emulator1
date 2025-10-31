@@ -242,22 +242,32 @@ public class MainCompController {
         }
     }
 
+    public void displaySelectedProgram(String programName, Runnable onComplete)
+    {
+        loadEmulatorScreen();
+        emulatorScreenController.preDisplaySelectedProgram();
+        changeAndDisplayProgram("/changeSelectedProgram", "programName", programName, onComplete);
+    }
+
+    // Overload for backward compatibility
     public void displaySelectedProgram(String programName)
     {
-        loadEmulatorScreen();
-        emulatorScreenController.preDisplaySelectedProgram();
-        changeAndDisplayProgram("/changeSelectedProgram", "programName", programName);
+        displaySelectedProgram(programName, null);
     }
 
-    public void displaySelectedFunction(String functionName)
+    public void displaySelectedFunction(String functionName, Runnable onComplete)
     {
         loadEmulatorScreen();
         emulatorScreenController.preDisplaySelectedProgram();
-        changeAndDisplayProgram("/changeSelectedFunction", "functionName", functionName);
+        changeAndDisplayProgram("/changeSelectedFunction", "functionName", functionName, onComplete);
     }
 
-    // Generic method - handles both programs and functions!
-    private void changeAndDisplayProgram(String endpoint, String paramName, String paramValue)
+    // Overload for backward compatibility
+    public void displaySelectedFunction(String functionName)
+    {
+        displaySelectedFunction(functionName, null);
+    }
+    private void changeAndDisplayProgram(String endpoint, String paramName, String paramValue, Runnable onComplete)
     {
         final String changeUrl = SERVER_URL + endpoint;
 
@@ -285,22 +295,24 @@ public class MainCompController {
                         return;
                     }
 
-                    viewAndDisplayProgram();
+                    // Pass the callback to viewAndDisplayProgram
+                    viewAndDisplayProgram(onComplete);
 
                 } finally {
-                    response.close();
+                    if (response.body() != null) {
+                        response.body().close();
+                    }
                 }
             }
 
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e)
-            {
-                Platform.runLater(() -> UTILS.showError("Failed to change selection: " + e.getMessage()));
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> UTILS.showError("Network error: " + e.getMessage()));
             }
         });
     }
 
-    private void viewAndDisplayProgram()
+    private void viewAndDisplayProgram(Runnable onComplete)
     {
         final String viewUrl = SERVER_URL + "/viewProgram";
         final String degreeUrl = SERVER_URL + "/GetMaxDegree";
@@ -354,48 +366,57 @@ public class MainCompController {
                                     return;
                                 }
 
-                                Map<String, Object> result;
+                                int maxDegree;
                                 try {
-                                    result = GSON.fromJson(json2, Map.class);
-                                } catch (Exception parseEx2) {
-                                    Platform.runLater(() -> UTILS.showError("GetMaxDegree JSON parse error: " + parseEx2.getMessage()));
+                                    com.google.gson.JsonObject obj = GSON.fromJson(json2, com.google.gson.JsonObject.class);
+                                    maxDegree = obj.get("maxDegree").getAsInt();
+                                } catch (Exception parseEx) {
+                                    Platform.runLater(() -> UTILS.showError("GetMaxDegree JSON parse error: " + parseEx.getMessage()));
                                     return;
                                 }
-
-                                Object md = result.get("maxDegree");
-                                if (md == null) {
-                                    Platform.runLater(() -> UTILS.showError("GetMaxDegree: missing 'maxDegree' in response"));
-                                    return;
-                                }
-                                int maxDegree = (md instanceof Number) ? ((Number) md).intValue() : Integer.parseInt(md.toString());
 
                                 Platform.runLater(() -> {
                                     emulatorScreenController.postDisplaySelectedProgram(res, maxDegree);
+
+                                    // NOW call the callback after everything is truly done
+                                    if (onComplete != null) {
+                                        onComplete.run();
+                                    }
                                 });
 
                             } finally {
-                                response2.close();
+                                if (response2.body() != null) {
+                                    response2.body().close();
+                                }
                             }
                         }
 
                         @Override
                         public void onFailure(@NotNull Call call2, @NotNull IOException e)
                         {
-                            Platform.runLater(() -> UTILS.showError("Failed to get max degree: " + e.getMessage()));
+                            Platform.runLater(() -> UTILS.showError("GetMaxDegree failed: " + e.getMessage()));
                         }
                     });
 
                 } finally {
-                    response.close();
+                    if (response.body() != null) {
+                        response.body().close();
+                    }
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e)
             {
-                Platform.runLater(() -> UTILS.showError("Failed to view program: " + e.getMessage()));
+                Platform.runLater(() -> UTILS.showError("viewProgram failed: " + e.getMessage()));
             }
         });
+    }
+
+    // Overload for backward compatibility
+    private void viewAndDisplayProgram()
+    {
+        viewAndDisplayProgram(null);
     }
 
     public int getArchitectureCost(int architecture)
@@ -409,19 +430,13 @@ public class MainCompController {
             default -> 0;
         };
     }
-
     public void reRunStatistic(StatisticDTO selected)
     {
-            if (emulatorScreenController != null && emulatorScreenController.getExecutionCompController() != null)
-            {
-                if(selected.isFunction())
-                {
-                    displaySelectedFunction(selected.name());
-                }
-                else
-                {
-                    displaySelectedProgram(selected.name());
-                }
+        if (emulatorScreenController != null && emulatorScreenController.getExecutionCompController() != null)
+        {
+
+            // Callback to run AFTER the program/function is loaded
+            Runnable onComplete = () -> {
                 ExecutionCompController execCompController = emulatorScreenController.getExecutionCompController();
                 List<VariableDTO> inputVars = selected.variables().stream()
                         .filter(var -> var.getTypeRepresentation().equals("X"))
@@ -429,8 +444,18 @@ public class MainCompController {
 
                 execCompController.onStatisticsNewRun(selected.inputs(), selected.arcType(), inputVars);
                 emulatorScreenController.setCurrentDegree(selected.degree());
-            }
-    }
+            };
 
+            // Load program/function with callback
+            if(selected.isFunction())
+            {
+                displaySelectedFunction(selected.name(), onComplete);
+            }
+            else
+            {
+                displaySelectedProgram(selected.name(), onComplete);
+            }
+        }
+    }
 
 }

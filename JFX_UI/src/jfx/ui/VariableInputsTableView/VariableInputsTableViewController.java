@@ -76,23 +76,28 @@ public class VariableInputsTableViewController {
 
     public Long getFromInputVarsMap(int key)
     {
-            if (userInputs.containsKey(key))
-            {
-                String value = userInputs.get(key);
-                long res =  Long.parseLong(value);
-                if(res < 0 )
-                {
-                    throw new IllegalArgumentException(res + "is a negative number");
-                }
-                return Long.parseLong(value);
+        if (userInputs.containsKey(key))
+        {
+            String value = userInputs.get(key);
+
+            // If empty or null, return 0
+            if (value == null || value.trim().isEmpty()) {
+                return 0L;
             }
-            return 0L;
+
+            long res = Long.parseLong(value);
+            if(res < 0 )
+            {
+                throw new IllegalArgumentException(res + " is a negative number");
+            }
+            return res;
+        }
+        return 0L;
     }
 
     public void loadInputValues(List<Long> inputs, List<VariableDTO> inputVars)
     {
-        System.out.println("HEREEEE");
-        if(inputVars.isEmpty()) {System.out.println("EMPTY");}
+
         for (VariableDTO var : inputVars)
         {
             int serial = var.getSerial();
