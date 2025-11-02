@@ -125,4 +125,14 @@ public class JumpEqualFunction extends S_Instruction
 
     }
 
+    public Function getFunction()
+    {
+        return this.function;
+    }
+
+    public List<String> getFuncArgs()
+    {
+        return this.functionArguments;
+    }
+
 }

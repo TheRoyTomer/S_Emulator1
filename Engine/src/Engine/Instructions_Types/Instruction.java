@@ -34,6 +34,11 @@ public abstract class Instruction implements Calculable
         return instructionData.getArchitectureType();
     }
 
+    public Context getContext()
+    {
+        return context;
+    }
+
     @Override
     public abstract int calcMaxDegree();
 

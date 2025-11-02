@@ -176,6 +176,7 @@ public class Quote extends S_Instruction
         this.instructions = new ArrayList<>();
         if (this.label != FixedLabels.EMPTY)
         {this.instructions.add(new Neutral(context, this, Variable.OUTPUT, this.label));}
+        //{this.instructions.add(new Neutral(context, this, this.var, this.label));}
 
         Iterator<String> iterator = functionArguments.iterator();
 

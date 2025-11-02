@@ -292,6 +292,7 @@ public class ExecutionCompController {
     @FXML
     private void onStepOver(ActionEvent e)
     {
+
         mainController.handleStepOver(getSelectedArchitecture());
         setStepOverStarted(true);
     }

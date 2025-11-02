@@ -134,7 +134,7 @@ public class ExecuteProgramServlet extends BaseServlet
             }
 
             ExecuteResultDTO result = facade.executeProgram(deg, inputs, thisUser.getCurrentCredits(), architecture);
-
+            System.out.println(result.outputVal());
             if (result.isFailed())
             {
                 thisUser.takeAllCredits();

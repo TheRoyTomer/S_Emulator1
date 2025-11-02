@@ -37,16 +37,16 @@ import static Client_UTILS.ClientConstants.*;
 public class EmulatorScreenController
 {
 
-  /*  @FXML
-    private HBox headerComp;*/
+    /*  @FXML
+      private HBox headerComp;*/
     @FXML
     private SplitPane viewComp;
     @FXML
     private VBox executionComp;
 
 
-   /* @FXML
-    private HeaderCompController headerCompController;*/
+    /* @FXML
+     private HeaderCompController headerCompController;*/
     @FXML
     private ViewCompController viewCompController;
     @FXML
@@ -276,9 +276,9 @@ public class EmulatorScreenController
         }
         cyclesProperty.setValue(res.cycles());
         executionCompController.updateVarTable(res.usedVarsByOrder());
-            newRunStartedProperty.set(false);
-            debugModeProperty.set(false);
-            requests.httpViewExpandedProgram(currentDegreeProperty.get());
+        newRunStartedProperty.set(false);
+        debugModeProperty.set(false);
+        requests.httpViewExpandedProgram(currentDegreeProperty.get());
 
     }
 
@@ -302,13 +302,14 @@ public class EmulatorScreenController
         executionCompController.refreshAndClear();
         cyclesProperty.setValue(res.cycles());
         executionCompController.updateVarTable(res.usedVarsByOrder());
-            newRunStartedProperty.set(false);
-            debugModeProperty.set(false);
-            requests.httpViewExpandedProgram(currentDegreeProperty.get());
+        newRunStartedProperty.set(false);
+        debugModeProperty.set(false);
+        requests.httpViewExpandedProgram(currentDegreeProperty.get());
     }
 
     public void handleStepOver(int architecture)
     {
+
         currPC_Property.set(this.nextPC);
         if (currPC_Property.get() < viewCompController.getInstructionTableSize()) {
             requests.httpStepOver(currPC_Property.get(), architecture);
@@ -317,30 +318,51 @@ public class EmulatorScreenController
             resetCurrAndNextPC();
             debugModeProperty.set(false);
             newRunStartedProperty.set(false);
-                executionCompController.refreshAndClear();
-                viewCompController.refreshInstructionsTable();
+            executionCompController.refreshAndClear();
+            viewCompController.refreshInstructionsTable();
         }
-        
+
         requests.httpViewExpandedProgram(currentDegreeProperty.getValue());
     }
 
-    public void postStepOverAction(StepOverResult res)
-    {
-        if (res.isFailed())
-        {
+
+    public void postStepOverAction(StepOverResult res) {
+        if (res.isFailed()) {
             UTILS.showError("Step over stopped: Insufficient credits.\nPlease charge your account to continue.");
             handleStop();
             newRunStartedProperty.set(false);
             debugModeProperty.set(false);
             cyclesProperty.setValue(0);
             this.nextPC = 0;
+            currPC_Property.set(-1);
+            viewCompController.clearInstructionHighlight();
             return;
         }
+
         cyclesProperty.setValue(cyclesProperty.get() + res.cycles());
-        this.nextPC = res.nextPC();
+
+        int next = (int) res.nextPC();
+        int curr = next - 1;
+        int total = viewCompController.getInstructionTableSize();
+
+        if (curr >= 0 && curr < total) {
+            currPC_Property.set(curr);
+            this.nextPC = next;
+
+            viewCompController.selectAndScrollInstruction(curr); // או getInstructionsTable().getSelectionModel()...
+        } else {
+            currPC_Property.set(-1);
+            this.nextPC = 0;
+            debugModeProperty.set(false);
+            newRunStartedProperty.set(false);
+            executionCompController.refreshAndClear();
+            viewCompController.clearInstructionHighlight();
+        }
+
         executionCompController.updateChangedVariables(res.changedVars());
         viewCompController.refreshInstructionsTable();
     }
+
 
     public void handleStop()
     {
@@ -423,7 +445,7 @@ public class EmulatorScreenController
         ObservableList<VariableDTO> observableListInput = FXCollections.observableArrayList(variablesRes);
         Platform.runLater(() -> executionCompController.setinputVarsCompControllerRows(observableListInput));
     }
-    
+
 
     public void postPreDebug(List<VariableDTO> variablesRes)
     {
@@ -441,4 +463,3 @@ public class EmulatorScreenController
         return executionCompController;
     }
 }
-

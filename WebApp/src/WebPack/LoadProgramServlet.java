@@ -46,6 +46,9 @@ public class LoadProgramServlet extends BaseServlet
             return;
         }
 
+        // Optional degree from client (default 1)
+        final int degree = parseIntOrDefault(request.getParameter("degree"), 1);
+
         Path tempFile = Files.createTempFile("program-", ".xml");
         try (InputStream input = filePart.getInputStream()) {
             Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
@@ -54,6 +57,7 @@ public class LoadProgramServlet extends BaseServlet
         //EngineFacade facade = requireFacade(request, response);
         EngineFacade facade = new EngineFacade();
 
+        @SuppressWarnings("unchecked")
         ConcurrentMap<String, FunctionHolderWrapper> Functions =
                 (ConcurrentMap<String, FunctionHolderWrapper>) getServletContext().getAttribute("ALL_FUNCTIONS");
         ConcurrentMap<String, Function> functionMap = Functions.entrySet().stream()
@@ -62,6 +66,7 @@ public class LoadProgramServlet extends BaseServlet
                         entry -> entry.getValue().getFunction()
                 ));
 
+        @SuppressWarnings("unchecked")
         ConcurrentMap<String, ProgramHolderWrapper> allProgramKeySet =
                 (ConcurrentMap<String, ProgramHolderWrapper>) getServletContext().getAttribute("ALL_PROGRAMS");
         Set<String> inputSet = allProgramKeySet.keySet();
@@ -84,10 +89,15 @@ public class LoadProgramServlet extends BaseServlet
                 String uploadedUsername = getUsername(request, response);
                 UserData thisUser = users.get(uploadedUsername);
 
-
                 Program mainProgram = facade.getProgram();
-                allPrograms.put(mainProgram.getName(), new ProgramHolderWrapper(mainProgram, uploadedUsername));
+                // === החדשות: קבע Degree ובצע initProgram כדי לבנות הרחבות לפני חשיפה ===
+                if (mainProgram != null) {
+                    mainProgram.setMaxDegree(degree);
+                    mainProgram.initProgram();
+                }
+                // ================================================================
 
+                allPrograms.put(mainProgram.getName(), new ProgramHolderWrapper(mainProgram, uploadedUsername));
 
                 thisUser.incrementProgramCount();
                 List<Function> functions = mainProgram.getFunctions();
@@ -98,7 +108,6 @@ public class LoadProgramServlet extends BaseServlet
                         thisUser.incrementFunctionCount();
                     });
                 }
-
             }
 
             response.setStatus(HttpServletResponse.SC_OK);
@@ -113,5 +122,11 @@ public class LoadProgramServlet extends BaseServlet
         }
     }
 
-
+    private static int parseIntOrDefault(String s, int defVal) {
+        try {
+            return (s == null || s.isBlank()) ? defVal : Integer.parseInt(s.trim());
+        } catch (Exception e) {
+            return defVal;
+        }
+    }
 }

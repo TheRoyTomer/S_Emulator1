@@ -65,7 +65,7 @@ public class DashboardScreenCompController
             this.availableProgsAndFuncsCompController.setMainController(this);
         }
 
-        startPolling();
+        //startPolling();
 
     }
 

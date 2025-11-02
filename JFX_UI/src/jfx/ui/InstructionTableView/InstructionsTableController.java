@@ -133,6 +133,12 @@ public class InstructionsTableController {
     public void setViewController(ViewCompController viewController)
     {
         this.viewController = viewController;
+
+        if (viewController != null && viewController.getMainController() != null) {
+            viewController.getMainController().getCurrPC_Property().addListener((obs, oldVal, newVal) -> {
+                instructionsTable.refresh();
+            });
+        }
     }
 
     public ReadOnlyObjectProperty<InstructionDTO> selectedItemProperty() {

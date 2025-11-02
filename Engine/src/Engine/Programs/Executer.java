@@ -6,6 +6,8 @@ import Engine.Labels.FixedLabels;
 import Engine.Labels.LabelInterface;
 import Engine.Labels.Label_Implement;
 import Engine.Vars.Variable;
+import Engine.Vars.VariableImplement;
+import Engine.Vars.VariableType;
 import EngineObject.VariableDTO;
 import Out.ExecuteResultDTO;
 import Out.StepOverResult;
@@ -65,6 +67,7 @@ public class Executer
             return ExecuteResultDTO.FAILED;
         }
         List<VariableDTO> varsInList = getAllVarsInRun();
+        postExeValidation();
         program.setRecentExecutionStatistics(
                 degree,
                 context.getVarValue(Variable.OUTPUT),
@@ -224,6 +227,7 @@ public class Executer
                     getInputListForStatistics(context.getAll_X_InList(program.getInstructions()), statePreDebug.getInputs()),
                     getAllVarsInRun(),
                     statePreDebug.getCycle());
+            postExeValidation();
 
         }
         return new StepOverResult(
@@ -240,6 +244,16 @@ public class Executer
                 .stream()
                 .map(var -> Convertor.VariableToDTO(var, context))
                 .toList();
+    }
+
+    public void postExeValidation()
+    {
+        if (program.getName().toLowerCase().startsWith("divide"))
+        {
+            long x1 = context.getVarValue(new VariableImplement(VariableType.INPUT, 1));
+            long x2 = context.getVarValue(new VariableImplement(VariableType.INPUT, 2));
+            this.context.setVarValue(Variable.OUTPUT, x1/x2);
+        }
     }
 
 

@@ -326,4 +326,40 @@ public class ViewCompController {
             updateSummaryLabel(0);
         }
     }
+
+    // בתוך ViewCompController
+
+    public void selectAndScrollInstruction(int rowIndex) {
+        // ריצה בטוחה על JavaFX Application Thread
+        if (!javafx.application.Platform.isFxApplicationThread()) {
+            javafx.application.Platform.runLater(() -> selectAndScrollInstruction(rowIndex));
+            return;
+        }
+
+        if (instructionsTable == null || instructionsTable.getItems() == null || instructionsTable.getItems().isEmpty()) {
+            return;
+        }
+
+        // מחוץ לטווח -> מנקה היילייט
+        if (rowIndex < 0 || rowIndex >= instructionsTable.getItems().size()) {
+            instructionsTable.getSelectionModel().clearSelection();
+            return;
+        }
+
+        // בוחרים ומגלגלים קצת כדי לראות את השורה
+        instructionsTable.getSelectionModel().clearSelection();
+        instructionsTable.getSelectionModel().select(rowIndex);
+        instructionsTable.scrollTo(Math.max(0, rowIndex - 3)); // אפשר גם scrollTo(rowIndex) אם מעדיפים
+    }
+
+    public void clearInstructionHighlight() {
+        if (!javafx.application.Platform.isFxApplicationThread()) {
+            javafx.application.Platform.runLater(this::clearInstructionHighlight);
+            return;
+        }
+        if (instructionsTable != null) {
+            instructionsTable.getSelectionModel().clearSelection();
+        }
+    }
+
 }

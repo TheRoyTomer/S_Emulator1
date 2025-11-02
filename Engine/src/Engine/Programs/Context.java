@@ -158,6 +158,8 @@ public class  Context
         MapForZ.replaceAll((k, v) -> 0L);
     }
 
+
+
     public TreeSet<Variable> getAll_X_InList(List<Instruction> instructions)
     {
         return instructions.stream()
@@ -203,6 +205,5 @@ public class  Context
         System.out.println("L-MAP: " + MapForL + "\n");
         System.out.println("Y: " + Y + "\n");
     }
-
 
 }

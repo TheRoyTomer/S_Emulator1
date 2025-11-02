@@ -145,51 +145,51 @@ public class Loader
         List<String> functionArguments;
         long constant;
         return switch (type) {
-                case INCREASE: yield new Increase(myContext, null , var, label);
-                case InstructionData.DECREASE: yield new Decrease(myContext, null, var, label);
+            case INCREASE: yield new Increase(myContext, null , var, label);
+            case InstructionData.DECREASE: yield new Decrease(myContext, null, var, label);
 
-                case JUMP_NOT_ZERO:
-                    labelToJump = requireArg(Instruction, "JNZLabel",
-                            this::convertToLabelInterface, "JUMP_NOT_ZERO");
-                    yield new JNZ(myContext, null, var, label, labelToJump);
+            case JUMP_NOT_ZERO:
+                labelToJump = requireArg(Instruction, "JNZLabel",
+                        this::convertToLabelInterface, "JUMP_NOT_ZERO");
+                yield new JNZ(myContext, null, var, label, labelToJump);
 
-                case NEUTRAL: yield new Neutral(myContext, null, var, label);
+            case NEUTRAL: yield new Neutral(myContext, null, var, label);
 
-                case ZERO_VARIABLE: yield new Zero_Variable(myContext, null, var, label);
+            case ZERO_VARIABLE: yield new Zero_Variable(myContext, null, var, label);
 
-                case ASSIGNMENT:
-                    arg = requireArg(Instruction, "assignedVariable",
-                            this::convertToVariable, "ASSIGNMENT");
-                    yield new Assignment(myContext, null, var, arg, label);
+            case ASSIGNMENT:
+                arg = requireArg(Instruction, "assignedVariable",
+                        this::convertToVariable, "ASSIGNMENT");
+                yield new Assignment(myContext, null, var, arg, label);
 
-                case CONSTANT_ASSIGNMENT:
-                    constant = requireArg(Instruction, "constantValue",
-                            Long::parseLong, "CONSTANT_ASSIGNMENT");
-                    yield new Constant_Assignment(myContext, null, var, label, constant);
+            case CONSTANT_ASSIGNMENT:
+                constant = requireArg(Instruction, "constantValue",
+                        Long::parseLong, "CONSTANT_ASSIGNMENT");
+                yield new Constant_Assignment(myContext, null, var, label, constant);
 
-                case GOTO_LABEL:
-                    labelToJump = requireArg(Instruction, "gotoLabel",
-                            this::convertToLabelInterface, "GOTO_LABEL");
-                    yield new Goto_Label(myContext, null, var, label, labelToJump);
+            case GOTO_LABEL:
+                labelToJump = requireArg(Instruction, "gotoLabel",
+                        this::convertToLabelInterface, "GOTO_LABEL");
+                yield new Goto_Label(myContext, null, var, label, labelToJump);
 
-                case JUMP_ZERO:
-                    labelToJump = requireArg(Instruction, "JZLabel",
-                            this::convertToLabelInterface, "JUMP_ZERO");
-                    yield new Jump_Zero(myContext, null, var, label, labelToJump);
+            case JUMP_ZERO:
+                labelToJump = requireArg(Instruction, "JZLabel",
+                        this::convertToLabelInterface, "JUMP_ZERO");
+                yield new Jump_Zero(myContext, null, var, label, labelToJump);
 
-                case JUMP_EQUAL_CONSTANT:
-                    labelToJump = requireArg(Instruction, "JEConstantLabel",
-                            this::convertToLabelInterface, "JUMP_EQUAL_CONSTANT");
-                    constant = requireArg(Instruction, "constantValue",
-                            Long::parseLong, "JUMP_EQUAL_CONSTANT");
-                    yield new Jump_Equal_Constant(myContext, null, var, label, labelToJump, constant);
+            case JUMP_EQUAL_CONSTANT:
+                labelToJump = requireArg(Instruction, "JEConstantLabel",
+                        this::convertToLabelInterface, "JUMP_EQUAL_CONSTANT");
+                constant = requireArg(Instruction, "constantValue",
+                        Long::parseLong, "JUMP_EQUAL_CONSTANT");
+                yield new Jump_Equal_Constant(myContext, null, var, label, labelToJump, constant);
 
-                case JUMP_EQUAL_VARIABLE:
-                    labelToJump = requireArg(Instruction, "JEVariableLabel",
-                            this::convertToLabelInterface, "JUMP_EQUAL_VARIABLE");
-                    arg = requireArg(Instruction, "variableName",
-                            this::convertToVariable, "JUMP_EQUAL_VARIABLE");
-                    yield new Jump_Equal_Variable(myContext, null, var, label, labelToJump, arg);
+            case JUMP_EQUAL_VARIABLE:
+                labelToJump = requireArg(Instruction, "JEVariableLabel",
+                        this::convertToLabelInterface, "JUMP_EQUAL_VARIABLE");
+                arg = requireArg(Instruction, "variableName",
+                        this::convertToVariable, "JUMP_EQUAL_VARIABLE");
+                yield new Jump_Equal_Variable(myContext, null, var, label, labelToJump, arg);
 
             case QUOTE:
                 funcName = requireArg(Instruction, "functionName", String::toString, "QUOTE");
@@ -236,4 +236,3 @@ public class Loader
     }
 
 }
-
